@@ -1,0 +1,163 @@
+---
+/**
+ * Brand-Logo mit File-First-Strategie:
+ *   1. Falls /public/logos/{brand}.svg existiert → <img> laden
+ *   2. Sonst → Inline-SVG-Fallback (monochrom, currentColor)
+ *
+ * Das Vite-import.meta.glob-Lookup erkennt zur Build-Zeit,
+ * welche Logo-Dateien vorhanden sind.
+ */
+
+interface Props {
+  brand: string;
+  class?: string;
+}
+
+const { brand, class: className = '' } = Astro.props;
+const cx = `${className}`;
+
+// Build-time lookup of all logo files in /public/logos/
+const logoModules = import.meta.glob('/public/logos/*.svg', { eager: true, query: '?url', import: 'default' });
+const availableLogos = new Set(
+  Object.keys(logoModules).map((p) => {
+    const m = p.match(/\/public\/logos\/([^/]+)\.svg$/);
+    return m ? m[1] : '';
+  }).filter(Boolean)
+);
+
+const hasLogoFile = availableLogos.has(brand);
+const logoUrl = hasLogoFile ? `/logos/${brand}.svg` : null;
+---
+
+<div class={`brand-logo-wrap ${cx}`}>
+{logoUrl && (
+  <img src={logoUrl} alt={`${brand} Logo`} loading="lazy" width="56" height="56" />
+)}
+
+{!logoUrl && brand === 'openai' && (
+  <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor">
+    <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494zM3.6 18.304a4.47 4.47 0 0 1-.535-3.014l.142.085 4.783 2.759a.771.771 0 0 0 .78 0l5.843-3.369v2.332a.08.08 0 0 1-.033.062L9.74 19.95a4.5 4.5 0 0 1-6.14-1.646zM2.34 7.896a4.485 4.485 0 0 1 2.366-1.973V11.6a.766.766 0 0 0 .388.676l5.815 3.355-2.02 1.168a.076.076 0 0 1-.071 0l-4.83-2.786A4.504 4.504 0 0 1 2.34 7.872zm16.597 3.855l-5.833-3.387L15.119 7.2a.076.076 0 0 1 .071 0l4.83 2.791a4.494 4.494 0 0 1-.676 8.105v-5.678a.79.79 0 0 0-.407-.667zm2.01-3.023l-.141-.085-4.774-2.782a.776.776 0 0 0-.785 0L9.409 9.23V6.897a.066.066 0 0 1 .028-.061l4.83-2.787a4.5 4.5 0 0 1 6.68 4.66zm-12.64 4.135l-2.02-1.164a.08.08 0 0 1-.038-.057V6.075a4.5 4.5 0 0 1 7.375-3.453l-.142.08L8.704 5.46a.795.795 0 0 0-.393.681zm1.097-2.365l2.602-1.5 2.607 1.5v2.999l-2.597 1.5-2.607-1.5z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'anthropic' && (
+  <svg viewBox="0 0 92.2 65" width="120" height="56" fill="currentColor">
+    <path d="M66.5 0H52.4l25.7 65h14.1L66.5 0zM25.7 0L0 65h14.4l5.3-13.6h26.8L51.7 65h14.4L40.5 0H25.7zm-1.5 39.3l8.8-22.6 8.8 22.6H24.2z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'deepmind' && (
+  <svg viewBox="0 0 256 256" width="56" height="56" fill="currentColor">
+    <path d="M128 16c61.86 0 112 50.14 112 112s-50.14 112-112 112S16 189.86 16 128 66.14 16 128 16zm0 16C75 32 32 75 32 128s43 96 96 96 96-43 96-96-43-96-96-96zm-21.13 56.49l44.79 27.59c.99.6 1.6 1.7 1.6 2.86s-.61 2.26-1.6 2.86l-44.79 27.59c-1.06.65-2.4.65-3.46 0-1.06-.65-1.71-1.81-1.71-3.05V91.54c0-1.24.65-2.4 1.71-3.05 1.06-.65 2.4-.65 3.46 0z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'meta' && (
+  <svg viewBox="0 0 24 24" width="64" height="64" fill="currentColor">
+    <path d="M22.96 6.71c-.48-2.27-2.27-3.79-4.5-3.79-2.13 0-3.91 1.04-5.65 3.18C11.34 4.21 9.67 3 7.62 3 4.46 3 2 5.93 2 9.85c0 5.59 3.41 10.96 7.34 13.16.62.34 1.42.39 2.06-.06.6-.42.95-1.08 1.05-1.83.16-1.18-.42-2.27-1.4-2.85-1.94-1.13-3.66-3.91-3.97-6.85-.05-.43-.07-.86-.07-1.27 0-2.32 1.16-3.99 2.81-3.99 1.18 0 2.05.9 3.32 2.86 0 0 1.06 1.65 1.41 2.21l.32.5c.69 1.08.42 1.55-.18 2.21-.66.71-1.46 1.7-1.46 3.13 0 2.43 2 4.41 4.4 4.41 2.43 0 4.39-1.97 4.39-4.41 0-2.5-1.94-4.71-4.46-7.65 1.39-1.78 2.51-2.43 3.7-2.43 1.4 0 2.05.96 2.05 2.95 0 .85-.16 1.78-.46 2.78-.21.71.04 1.44.66 1.86.41.27.92.34 1.4.18.86-.27 1.46-1.04 1.55-1.94.16-1.5.16-3.07-.13-4.46z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'mistral' && (
+  <svg viewBox="0 0 100 100" width="56" height="56" fill="currentColor">
+    <rect x="10" y="10" width="80" height="15"/>
+    <rect x="10" y="30" width="80" height="15" opacity="0.7"/>
+    <rect x="10" y="50" width="60" height="15" opacity="0.5"/>
+    <rect x="10" y="70" width="40" height="15" opacity="0.3"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'xai' && (
+  <svg viewBox="0 0 1000 1000" width="56" height="56" fill="currentColor">
+    <path d="M226.83 411.04L501.04 802.5h187.79L414.61 411.04H226.83zm456.66-178.34L226.83 802.5h187.79l456.66-569.8H683.49z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'huggingface' && (
+  <svg viewBox="0 0 32 32" width="56" height="56" fill="currentColor">
+    <circle cx="16" cy="16" r="14" fill="currentColor" opacity="0.95"/>
+    <circle cx="11" cy="14" r="2.5" fill="#f5f1e8"/>
+    <circle cx="21" cy="14" r="2.5" fill="#f5f1e8"/>
+    <path d="M10 19c0 0 1.5 3 6 3s6-3 6-3" stroke="#f5f1e8" stroke-width="2" stroke-linecap="round" fill="none"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'stability' && (
+  <svg viewBox="0 0 200 60" width="160" height="48" fill="currentColor">
+    <text x="0" y="40" font-family="Inter, sans-serif" font-size="32" font-weight="800" letter-spacing="-1">stability.ai</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'nvidia' && (
+  <svg viewBox="0 0 200 60" width="160" height="48" fill="currentColor">
+    <text x="0" y="42" font-family="Arial Black, sans-serif" font-size="36" font-weight="900" letter-spacing="2">NVIDIA</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'amd' && (
+  <svg viewBox="0 0 100 60" width="100" height="60" fill="currentColor">
+    <text x="0" y="48" font-family="Arial Black, sans-serif" font-size="48" font-weight="900">AMD</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'cerebras' && (
+  <svg viewBox="0 0 200 60" width="160" height="48" fill="currentColor">
+    <circle cx="22" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="3"/>
+    <circle cx="22" cy="30" r="6"/>
+    <text x="48" y="38" font-family="Inter, sans-serif" font-size="22" font-weight="700">CEREBRAS</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'groq' && (
+  <svg viewBox="0 0 100 60" width="120" height="60" fill="currentColor">
+    <text x="0" y="48" font-family="Inter, sans-serif" font-size="44" font-weight="800" letter-spacing="-2">groq</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'chatgpt' && (
+  <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor">
+    <path d="M22.282 9.821a5.985 5.985 0 0 0-.516-4.91 6.046 6.046 0 0 0-6.51-2.9A6.065 6.065 0 0 0 4.981 4.18a5.985 5.985 0 0 0-3.998 2.9 6.046 6.046 0 0 0 .743 7.097 5.98 5.98 0 0 0 .51 4.911 6.051 6.051 0 0 0 6.515 2.9A5.985 5.985 0 0 0 13.26 24a6.056 6.056 0 0 0 5.772-4.206 5.99 5.99 0 0 0 3.997-2.9 6.056 6.056 0 0 0-.747-7.073zM13.26 22.43a4.476 4.476 0 0 1-2.876-1.04l.141-.081 4.779-2.758a.795.795 0 0 0 .392-.681v-6.737l2.02 1.168a.071.071 0 0 1 .038.052v5.583a4.504 4.504 0 0 1-4.494 4.494z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'claude' && (
+  <svg viewBox="0 0 92.2 65" width="100" height="48" fill="currentColor">
+    <path d="M66.5 0H52.4l25.7 65h14.1L66.5 0zM25.7 0L0 65h14.4l5.3-13.6h26.8L51.7 65h14.4L40.5 0H25.7zm-1.5 39.3l8.8-22.6 8.8 22.6H24.2z"/>
+  </svg>
+)}
+
+{!logoUrl && brand === 'perplexity' && (
+  <svg viewBox="0 0 200 60" width="160" height="48" fill="currentColor">
+    <circle cx="22" cy="30" r="14" fill="none" stroke="currentColor" stroke-width="3"/>
+    <line x1="22" y1="16" x2="22" y2="44" stroke="currentColor" stroke-width="3"/>
+    <text x="48" y="38" font-family="Inter, sans-serif" font-size="22" font-weight="700">PERPLEXITY</text>
+  </svg>
+)}
+
+{!logoUrl && brand === 'github' && (
+  <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor">
+    <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.4 3-.405 1.02.005 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+  </svg>
+)}
+
+{!logoUrl && (brand === 'default' || !['openai','anthropic','deepmind','meta','mistral','xai','huggingface','stability','nvidia','amd','cerebras','groq','chatgpt','claude','perplexity','github'].includes(brand)) && (
+  <svg viewBox="0 0 24 24" width="56" height="56" fill="currentColor">
+    <circle cx="12" cy="12" r="10" fill="none" stroke="currentColor" stroke-width="2"/>
+    <circle cx="12" cy="12" r="3"/>
+  </svg>
+)}
+</div>
+
+<style>
+  .brand-logo-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .brand-logo-wrap img {
+    width: 56px;
+    height: 56px;
+    object-fit: contain;
+    object-position: left center;
+  }
+</style>

@@ -1,0 +1,75 @@
+---
+/**
+ * Animated mesh gradient background — CSS-based for performance.
+ * Four blob-circles morph and drift in absolute position.
+ */
+interface Props {
+  variant?: 'accent' | 'warm' | 'cool' | 'burgundy';
+  intensity?: number;
+  class?: string;
+}
+const { variant = 'accent', intensity = 1, class: className = '' } = Astro.props;
+
+const variants = {
+  accent: ['#c4b5fd', '#ebe3f7', '#fbebe4', '#f5e0e8'],
+  warm: ['#f5e0e8', '#fbebe4', '#f5e6cc', '#d8e8de'],
+  cool: ['#ebe3f7', '#d8e8de', '#c4b5fd', '#f5e0e8'],
+  burgundy: ['#f5e0e8', '#ebe3f7', '#fbebe4', '#f5e0e8'],
+};
+
+const colors = variants[variant];
+const opacity = Math.min(1, intensity);
+---
+
+<div class={`mesh-gradient absolute inset-0 pointer-events-none overflow-hidden ${className}`}
+  style={`opacity: ${opacity};`}
+>
+  <div
+    class="blob blob-1 absolute rounded-full"
+    style={`background: ${colors[0]}; width: 50vw; height: 50vw; top: -10%; left: -10%; filter: blur(60px); animation: blob-drift-1 20s ease-in-out infinite;`}
+  ></div>
+  <div
+    class="blob blob-2 absolute rounded-full"
+    style={`background: ${colors[1]}; width: 45vw; height: 45vw; top: 20%; right: -10%; filter: blur(60px); animation: blob-drift-2 25s ease-in-out infinite;`}
+  ></div>
+  <div
+    class="blob blob-3 absolute rounded-full"
+    style={`background: ${colors[2]}; width: 40vw; height: 40vw; bottom: -10%; left: 20%; filter: blur(60px); animation: blob-drift-3 28s ease-in-out infinite;`}
+  ></div>
+  <div
+    class="blob blob-4 absolute rounded-full"
+    style={`background: ${colors[3]}; width: 35vw; height: 35vw; bottom: 10%; right: 15%; filter: blur(60px); animation: blob-drift-4 22s ease-in-out infinite;`}
+  ></div>
+  <!-- Grain overlay for texture -->
+  <div
+    class="absolute inset-0 pointer-events-none"
+    style="background-image: url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.09 0 0 0 0 0.07 0 0 0 0.5 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E&quot;); opacity: 0.08; mix-blend-mode: multiply;"
+  ></div>
+</div>
+
+<style is:global>
+  @keyframes blob-drift-1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(15%, 8%) scale(1.15); }
+    66% { transform: translate(-8%, 12%) scale(0.92); }
+  }
+  @keyframes blob-drift-2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-12%, -8%) scale(0.88); }
+    66% { transform: translate(8%, 15%) scale(1.1); }
+  }
+  @keyframes blob-drift-3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(8%, -15%) scale(1.12); }
+    66% { transform: translate(-15%, 8%) scale(0.9); }
+  }
+  @keyframes blob-drift-4 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-8%, 12%) scale(0.95); }
+    66% { transform: translate(12%, -8%) scale(1.08); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mesh-gradient .blob { animation: none !important; }
+  }
+</style>

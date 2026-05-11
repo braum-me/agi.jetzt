@@ -1,0 +1,54 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/companies.json';
+
+const trendIcon = (t: string) => t === 'up' ? '↑' : t === 'down' ? '↓' : '→';
+const trendColor = (t: string) => t === 'up' ? 'text-forest' : t === 'down' ? 'text-burgundy' : 'text-text-muted';
+---
+
+<WidgetCard
+  title="Company Leaderboard"
+  subtitle="Top 15 AI-Unternehmen nach Valuation"
+  stand={data.stand}
+  source={data.source}
+  size="md"
+  span="md:col-span-5"
+  moreLink="/laender"
+  moreLinkLabel="Länder-Ranking"
+>
+  <div class="overflow-x-auto overflow-y-auto -mx-1 px-1" style="max-height: 420px;">
+    <table class="w-full text-sm" style="min-width: 480px;">
+      <thead class="sticky top-0 bg-bg-card text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">
+        <tr class="border-b border-border">
+          <th class="text-left pb-2 pr-2">#</th>
+          <th class="text-left pb-2 pr-2">Firma</th>
+          <th class="text-right pb-2 pr-2">Val</th>
+          <th class="text-left pb-2 pr-2">Kategorie</th>
+          <th class="text-center pb-2">Trend</th>
+        </tr>
+      </thead>
+      <tbody>
+        {data.companies.map((c) => (
+          <tr class="border-b border-border/40 hover:bg-bg-card-hover transition-colors">
+            <td class="py-2 pr-2 font-mono text-text-muted text-xs">
+              {c.rank <= 3 ? (['🥇','🥈','🥉'][c.rank - 1]) : c.rank.toString().padStart(2, '0')}
+            </td>
+            <td class="py-2 pr-2">
+              <div class="font-medium text-text-primary">{c.name}</div>
+              <div class="text-[10px] text-text-muted truncate" style="max-width: 180px;">{c.key_product}</div>
+            </td>
+            <td class="py-2 pr-2 text-right font-mono tabular-nums text-accent-deep">
+              ${c.valuation}B
+            </td>
+            <td class="py-2 pr-2 text-xs text-text-secondary">
+              {c.category}
+            </td>
+            <td class={`py-2 text-center ${trendColor(c.trend)} text-lg`}>
+              {trendIcon(c.trend)}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</WidgetCard>

@@ -1,0 +1,19 @@
+{
+  "stand": "Q2 2026 (Stand 11. Mai)",
+  "source": "ArXiv Monthly Submissions (CS total)",
+  "source_url": "https://arxiv.org/stats/monthly_submissions",
+  "note": "Monatliche CS-Submissions gesamt auf ArXiv — dominiert von cs.AI, cs.LG und cs.CL (~35% Anteil). Reiner cs.AI-Subset liegt real bei ~3–5k/Monat. Zwischenmonate folgen dem quartalsweise publizierten Trend und sind keine punktgenauen Einzelmonats-Messungen.",
+  "months": ["04/24","05/24","06/24","07/24","08/24","09/24","10/24","11/24","12/24","01/25","02/25","03/25","04/25","05/25","06/25","07/25","08/25","09/25","10/25","11/25","12/25","01/26","02/26","03/26","04/26"],
+  "counts": [8200,8400,8650,9100,9300,9800,10200,10800,11200,11500,11800,12200,12400,12800,13100,13400,13700,14000,14200,14400,14600,14820,15100,15300,15580],
+  "key_releases": [
+    { "month": "12/24", "label": "o3 announced" },
+    { "month": "02/25", "label": "Grok 3" },
+    { "month": "04/25", "label": "Llama 4 Scout" },
+    { "month": "07/25", "label": "GPT-5 released" },
+    { "month": "10/25", "label": "Claude 4.5" },
+    { "month": "11/25", "label": "Gemini 3 Pro" },
+    { "month": "02/26", "label": "Gemini 3.1 Pro · Grok 4.20" },
+    { "month": "03/26", "label": "ARC-AGI-3 · Qwen3.6 Plus" },
+    { "month": "04/26", "label": "Opus 4.7 · GPT-5.5 · Mistral 3.5" }
+  ]
+}

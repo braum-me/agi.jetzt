@@ -1,0 +1,19 @@
+{
+  "stand": "Q1 2026",
+  "source": "EpochAI + SemiAnalysis + NVIDIA IR",
+  "gpu_prices": [
+    { "model": "H100 80GB", "listed_price": 30000, "cloud_hour": 2.45, "availability": "stable", "shipping": "Q1 2026", "vendor": "NVIDIA" },
+    { "model": "H200 141GB", "listed_price": 42000, "cloud_hour": 3.80, "availability": "limited", "shipping": "Q1 2026", "vendor": "NVIDIA" },
+    { "model": "Blackwell B200", "listed_price": 67000, "cloud_hour": 6.20, "availability": "backlog", "shipping": "Q2 2026", "vendor": "NVIDIA" },
+    { "model": "Blackwell B300", "listed_price": 78000, "cloud_hour": 7.40, "availability": "backlog", "shipping": "Q2 2026", "vendor": "NVIDIA" },
+    { "model": "MI350X", "listed_price": 48000, "cloud_hour": 4.20, "availability": "stable", "shipping": "Q1 2026", "vendor": "AMD" },
+    { "model": "TPU v6e", "listed_price": 0, "cloud_hour": 1.80, "availability": "cloud-only", "shipping": "Q1 2026", "vendor": "Google" }
+  ],
+  "cluster_sizes": [
+    { "org": "xAI Colossus 2", "gpus": 200000, "type": "H200", "status": "online", "since": "Q4 2025" },
+    { "org": "Meta 'Dark Matter'", "gpus": 350000, "type": "H100+H200", "status": "online", "since": "Q3 2025" },
+    { "org": "Microsoft (OpenAI)", "gpus": 220000, "type": "mixed", "status": "online", "since": "Q2 2025" },
+    { "org": "Google DeepMind", "gpus": 180000, "type": "TPU v6e", "status": "online", "since": "Q4 2025" },
+    { "org": "Stargate (Oracle/OpenAI)", "gpus": 450000, "type": "B200+B300", "status": "building", "since": "Q4 2026 (est.)" }
+  ]
+}

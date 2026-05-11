@@ -1,0 +1,21 @@
+{
+  "stand": "Q1 2026",
+  "source": "Aggregiert aus ArXiv cs.AI Abstracts + News Headlines Q1 2026",
+  "tags": [
+    { "tag": "Agents", "count": 2840, "trend": "up" },
+    { "tag": "Reasoning", "count": 2120, "trend": "up" },
+    { "tag": "Multimodal", "count": 1980, "trend": "flat" },
+    { "tag": "RLHF", "count": 1760, "trend": "down" },
+    { "tag": "Alignment", "count": 1540, "trend": "up" },
+    { "tag": "Long-Context", "count": 1420, "trend": "up" },
+    { "tag": "Coding", "count": 1380, "trend": "up" },
+    { "tag": "RAG", "count": 1260, "trend": "flat" },
+    { "tag": "Open Source", "count": 1180, "trend": "up" },
+    { "tag": "Diffusion", "count": 1080, "trend": "down" },
+    { "tag": "Robotics", "count": 980, "trend": "up" },
+    { "tag": "MoE", "count": 880, "trend": "flat" },
+    { "tag": "Safety", "count": 820, "trend": "up" },
+    { "tag": "Compute", "count": 740, "trend": "up" },
+    { "tag": "Fine-Tuning", "count": 680, "trend": "down" }
+  ]
+}

@@ -1,0 +1,79 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import { getCollection } from 'astro:content';
+
+const now = new Date();
+const briefings = await getCollection('briefing', ({ data }) => !data.draft && data.date.valueOf() <= now.valueOf());
+const latest = briefings.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())[0];
+
+const formattedDate = latest?.data.date.toLocaleDateString('de-DE', {
+  day: '2-digit', month: 'short', year: 'numeric',
+}) ?? '';
+---
+
+{latest && (
+  <WidgetCard
+    title="Neuestes Briefing"
+    subtitle={`KW ${String(latest.data.kw).padStart(2, '0')} · ${formattedDate} · ${latest.data.author}`}
+    stand={`KW ${latest.data.kw}`}
+    source="agi.jetzt Weekly Briefing"
+    sourceUrl="/briefing"
+    size="md"
+    span="col-span-12"
+    moreLink={`/briefing/${latest.slug}/`}
+    moreLinkLabel="Ausgabe lesen"
+  >
+    <a
+      href={`/briefing/${latest.slug}/`}
+      class="block group no-underline"
+    >
+      <div class="grid grid-cols-1 md:grid-cols-[1fr_auto] gap-6 items-start">
+        <!-- Linke Spalte: Headline + Summary + Tags -->
+        <div class="min-w-0">
+          <h3 class="font-display text-xl md:text-2xl text-text-primary leading-tight mb-3 group-hover:text-accent-deep transition-colors">
+            {latest.data.subtitle}
+          </h3>
+          <p class="text-sm text-text-secondary leading-relaxed mb-4 max-w-2xl">
+            {latest.data.summary}
+          </p>
+          <div class="flex flex-wrap gap-1.5">
+            {latest.data.tags.map((t) => (
+              <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-bg-secondary text-text-muted">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        <!-- Rechte Spalte: Zahl der Woche -->
+        <div class="md:w-64 md:border-l md:border-border md:pl-6 shrink-0">
+          <div class="text-[9px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">
+            Zahl der Woche
+          </div>
+          <div class="font-display text-3xl md:text-4xl tabular-nums leading-none mb-2" style="color: var(--color-accent-deep);">
+            {latest.data.statsHighlight.value}
+          </div>
+          <div class="text-xs text-text-primary font-medium mb-1">
+            {latest.data.statsHighlight.label}
+          </div>
+          <p class="text-[11px] text-text-muted leading-relaxed">
+            {latest.data.statsHighlight.context}
+          </p>
+        </div>
+      </div>
+    </a>
+  </WidgetCard>
+)}
+
+<style>
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  a.block {
+    text-decoration: none;
+    color: inherit;
+  }
+</style>

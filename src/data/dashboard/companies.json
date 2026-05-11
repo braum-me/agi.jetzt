@@ -1,0 +1,22 @@
+{
+  "stand": "Q2 2026",
+  "source": "Dealroom + PitchBook + SEC Filings + Public Announcements",
+  "note": "Valuations basieren auf letzter dokumentierter Funding-Runde oder öffentlichem Marktwert. Private Labs nur wenn publik bestätigt.",
+  "companies": [
+    { "rank": 1, "name": "OpenAI", "valuation": 852, "trend": "up", "category": "Frontier Lab", "employees": "3200", "key_product": "GPT-5.5 Pro, GPT-5.5 Instant", "hq": "San Francisco" },
+    { "rank": 2, "name": "Anthropic", "valuation": 380, "trend": "up", "category": "Frontier Lab", "employees": "1100", "key_product": "Claude Opus 4.7", "hq": "San Francisco" },
+    { "rank": 3, "name": "xAI", "valuation": 230, "trend": "up", "category": "Frontier Lab", "employees": "800", "key_product": "Grok 4.20 Heavy, Colossus 2", "hq": "Memphis" },
+    { "rank": 4, "name": "Databricks", "valuation": 134, "trend": "up", "category": "AI Platform", "employees": "7500", "key_product": "Mosaic, Agent Bricks", "hq": "San Francisco" },
+    { "rank": 5, "name": "Scale AI", "valuation": 29, "trend": "down", "category": "Data Labeling", "employees": "900", "key_product": "Donovan, SEAL Leaderboards", "hq": "San Francisco" },
+    { "rank": 6, "name": "Cerebras", "valuation": 23, "trend": "up", "category": "Hardware", "employees": "480", "key_product": "WSE-3, CS-3", "hq": "Sunnyvale" },
+    { "rank": 7, "name": "Perplexity", "valuation": 22.6, "trend": "up", "category": "Application", "employees": "220", "key_product": "Comet, Deep Research", "hq": "San Francisco" },
+    { "rank": 8, "name": "Mistral AI", "valuation": 14, "trend": "up", "category": "Frontier Lab", "employees": "280", "key_product": "Medium 3.5, Large 3, Le Chat", "hq": "Paris" },
+    { "rank": 9, "name": "DeepSeek", "valuation": 8, "trend": "up", "category": "Open Source", "employees": "190", "key_product": "V3.2, V3.2-Speciale, Coder", "hq": "Hangzhou" },
+    { "rank": 10, "name": "Cohere", "valuation": 7, "trend": "flat", "category": "Enterprise AI", "employees": "520", "key_product": "Command R+, Embed v4", "hq": "Toronto" },
+    { "rank": 11, "name": "Groq", "valuation": 6.9, "trend": "up", "category": "Hardware", "employees": "240", "key_product": "LPU v2, GroqCloud", "hq": "Mountain View" },
+    { "rank": 12, "name": "Z.ai (Zhipu)", "valuation": 6.55, "trend": "up", "category": "Open Source", "employees": "450", "key_product": "GLM-5, CogVLM", "hq": "Peking" },
+    { "rank": 13, "name": "Runway", "valuation": 5.3, "trend": "up", "category": "Application", "employees": "160", "key_product": "Gen-4, Act-Two", "hq": "New York" },
+    { "rank": 14, "name": "Hugging Face", "valuation": 4.5, "trend": "flat", "category": "Platform", "employees": "270", "key_product": "Hub, Transformers", "hq": "New York" },
+    { "rank": 15, "name": "Stability AI", "valuation": 2.8, "trend": "flat", "category": "Open Source", "employees": "110", "key_product": "Stable Diffusion", "hq": "London" }
+  ]
+}

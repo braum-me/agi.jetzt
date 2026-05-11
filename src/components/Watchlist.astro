@@ -1,0 +1,207 @@
+---
+import data from '../data/watchlist.json';
+
+const { milestones, forecasts } = data;
+
+// Sort forecasts by year for timeline layout
+const sortedForecasts = [...forecasts].sort((a, b) => a.year - b.year);
+const minYear = 2025;
+const maxYear = 2050;
+const range = maxYear - minYear;
+
+const categoryConfig: Record<string, { label: string; color: string; bg: string }> = {
+  benchmark: { label: 'Benchmark', color: '#5b3aa3', bg: 'rgba(91, 58, 163, 0.1)' },
+  release: { label: 'Release', color: '#8b2c4d', bg: 'rgba(139, 44, 77, 0.1)' },
+  capability: { label: 'Capability', color: '#b8721c', bg: 'rgba(184, 114, 28, 0.1)' },
+  research: { label: 'Research', color: '#2d5a3f', bg: 'rgba(45, 90, 63, 0.1)' },
+};
+---
+
+<section id="watchlist" class="relative py-20 md:py-28">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-20">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Was kommt als Nächstes
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Die <em class="italic gradient-text">Watchlist</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        Sechs Milestones, die das Rennen Richtung AGI entscheiden werden.
+      </p>
+    </div>
+
+    <!-- Milestones Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 mb-24 md:mb-32">
+      {milestones.map((m: any) => {
+        const cat = categoryConfig[m.category] || categoryConfig['research'];
+        return (
+          <article class="paper-elevated rounded-2xl p-7 group hover:bg-bg-card-hover transition-all duration-500">
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-[0.08em] font-medium border"
+                style={`background: ${cat.bg}; color: ${cat.color}; border-color: ${cat.color}40;`}
+              >
+                {cat.label}
+              </span>
+              <div class="text-right">
+                <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-0.5">Erwartet</div>
+                <div class="font-display text-lg text-text-primary tabular-nums">{m.expected}</div>
+              </div>
+            </div>
+
+            <h3 class="font-display font-normal text-2xl md:text-3xl text-text-primary leading-tight mb-3 group-hover:text-accent-deep transition-colors">
+              {m.title}
+            </h3>
+
+            <p class="text-text-secondary text-sm leading-relaxed mb-4">
+              {m.description}
+            </p>
+
+            <div>
+              <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Im Auge behalten</div>
+              <div class="flex flex-wrap gap-1.5">
+                {m.watchers.map((w: string) => (
+                  <span class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-bg-secondary text-text-secondary">
+                    {w}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- Forecast Divergenz -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Die Experten sind sich uneins
+      </div>
+      <h3 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2rem,5vw,4rem)] mb-6">
+        <em class="italic gradient-text">Wann</em> AGI?
+      </h3>
+      <p class="text-text-secondary text-lg leading-relaxed">
+        18 Jahre Spanne zwischen den Prognosen. Die Antwort hängt davon ab, wen du fragst.
+      </p>
+    </div>
+
+    <!-- Forecast Timeline (alternierend über/unter zentraler Linie) -->
+    <div class="paper-elevated rounded-3xl p-8 md:p-12 mb-8">
+      <!-- Alternating axis with central line -->
+      <div class="relative" style="height: 320px;">
+        <!-- Gradient track — zentral -->
+        <div
+          class="absolute left-0 right-0 rounded-full"
+          style="top: 50%; height: 3px; transform: translateY(-50%); background: linear-gradient(90deg, #8b2c4d 0%, #7a55cc 25%, #5b3aa3 50%, #b8721c 70%, #2d5a3f 85%, #8b4a2c 100%);"
+          aria-hidden="true"
+        ></div>
+
+        {sortedForecasts.map((f: any, i: number) => {
+          const pos = Math.min(96, Math.max(4, ((f.year - minYear) / range) * 100));
+          const isAbove = i % 2 === 0;
+          return (
+            <button
+              type="button"
+              class="forecast-marker group absolute -translate-x-1/2 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-lg"
+              style={`left: ${pos}%; top: 50%;`}
+              data-forecast-index={i}
+              aria-label={`${f.source}, Prognose ${f.year}`}
+            >
+              <!-- Vertical stem -->
+              <div
+                class="absolute left-1/2 -translate-x-1/2 w-px pointer-events-none"
+                style={`background: ${f.color}; opacity: 0.55; ${isAbove ? 'bottom: 8px; height: 44px;' : 'top: 8px; height: 44px;'}`}
+                aria-hidden="true"
+              ></div>
+
+              <!-- Dot on line -->
+              <span
+                class="absolute left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full transition-transform duration-300 group-hover:scale-125"
+                style={`top: 0; width: 14px; height: 14px; background: ${f.color}; box-shadow: 0 0 0 4px var(--color-bg-elevated), 0 0 0 5px ${f.color}55;`}
+              ></span>
+
+              <!-- Label block -->
+              <span
+                class={`absolute left-1/2 -translate-x-1/2 block text-center whitespace-nowrap ${isAbove ? 'bottom-[54px]' : 'top-[54px]'}`}
+              >
+                <span class="block font-display text-3xl md:text-4xl tabular-nums leading-none mb-1" style={`color: ${f.color};`}>
+                  {f.year}
+                </span>
+                <span class="block font-mono text-[10px] uppercase tracking-[0.2em] text-text-primary font-medium">
+                  {f.name}
+                </span>
+                <span class="block font-mono text-[9px] uppercase tracking-wider text-text-muted mt-0.5">
+                  {f.stance}
+                </span>
+              </span>
+            </button>
+          );
+        })}
+      </div>
+
+      <!-- Year axis below -->
+      <div class="relative h-6 mt-4 pt-4 border-t border-border">
+        <div class="absolute inset-x-0 top-4 flex justify-between text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">
+          <span>2025</span>
+          <span>2030</span>
+          <span>2035</span>
+          <span>2040</span>
+          <span>2045</span>
+          <span>2050+</span>
+        </div>
+      </div>
+
+      <!-- Detail panel: zeigt selected expert -->
+      <div
+        id="forecast-detail"
+        class="mt-10 pt-6 border-t border-border transition-all"
+      >
+        <div class="flex items-start gap-4">
+          <div class="w-1.5 shrink-0 rounded-full" id="forecast-color-bar" style={`background: ${sortedForecasts[0].color}; height: 60px;`}></div>
+          <div class="flex-1">
+            <div class="flex items-baseline gap-3 flex-wrap mb-2">
+              <span class="font-display text-3xl tabular-nums leading-none" id="forecast-year" style={`color: ${sortedForecasts[0].color};`}>{sortedForecasts[0].year}</span>
+              <span class="font-mono text-sm text-text-primary font-medium" id="forecast-source">{sortedForecasts[0].source}</span>
+              <span class="text-[10px] font-mono uppercase text-text-muted tracking-wider" id="forecast-stance">{sortedForecasts[0].stance}</span>
+            </div>
+            <p class="text-text-secondary leading-relaxed" id="forecast-confidence">{sortedForecasts[0].confidence}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-xs font-mono text-text-muted max-w-2xl mx-auto leading-relaxed">
+      Die Bandbreite verschiebt sich jedes Quartal. 2022 lag der Metaculus-Median noch bei 2040.
+    </p>
+  </div>
+
+  <script is:inline define:vars={{ forecasts: sortedForecasts }}>
+    const markers = document.querySelectorAll('.forecast-marker');
+    const dYear = document.getElementById('forecast-year');
+    const dSource = document.getElementById('forecast-source');
+    const dStance = document.getElementById('forecast-stance');
+    const dConfidence = document.getElementById('forecast-confidence');
+    const dColorBar = document.getElementById('forecast-color-bar');
+
+    const show = (idx) => {
+      const f = forecasts[idx];
+      if (!f) return;
+      markers.forEach((m, i) => m.classList.toggle('is-active', i === idx));
+      if (dYear) { dYear.textContent = f.year; dYear.style.color = f.color; }
+      if (dSource) dSource.textContent = f.source;
+      if (dStance) dStance.textContent = f.stance;
+      if (dConfidence) dConfidence.textContent = f.confidence;
+      if (dColorBar) dColorBar.style.background = f.color;
+    };
+
+    markers.forEach((m) => {
+      const idx = parseInt(m.getAttribute('data-forecast-index') || '0', 10);
+      m.addEventListener('click', () => show(idx));
+      m.addEventListener('mouseenter', () => show(idx));
+    });
+  </script>
+</section>

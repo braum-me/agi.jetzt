@@ -1,0 +1,21 @@
+{
+  "name": "agi.jetzt — Der Weg zur Künstlichen Allgemeinen Intelligenz",
+  "short_name": "agi.jetzt",
+  "description": "Live-Tracker und Deep-Dive-Archiv zu AGI — trocken dokumentiert, datengetrieben.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "theme_color": "#1a1814",
+  "background_color": "#f5f1e8",
+  "lang": "de-DE",
+  "categories": ["news", "education", "productivity"],
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "type": "image/svg+xml",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}

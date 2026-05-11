@@ -1,0 +1,161 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Impressum – agi.jetzt"
+  description="Impressum und Anbieterkennzeichnung nach § 5 TMG für agi.jetzt."
+>
+  <Navigation />
+
+  <main id="main" class="pt-28 md:pt-36 pb-20">
+    <div class="section-container mb-8">
+      <a href="/" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group">
+        <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span class="font-mono uppercase tracking-[0.2em] text-[10px]">Zurück zur Übersicht</span>
+      </a>
+    </div>
+
+    <article class="section-container max-w-3xl mx-auto legal-body">
+      <header class="mb-12">
+        <div class="badge mb-6">
+          <span class="w-1 h-1 rounded-full bg-accent"></span>
+          Rechtliches
+        </div>
+        <h1 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2.25rem,6vw,4.5rem)]">
+          Impressum
+        </h1>
+      </header>
+
+      <section>
+        <h2>Diensteanbieter</h2>
+        <p>
+          Stefan Braum<br/>
+          Schlüchterner Straße 31<br/>
+          36391 Sinntal<br/>
+          Deutschland
+        </p>
+      </section>
+
+      <section>
+        <h2>Kontakt</h2>
+        <p>
+          E-Mail: <a href="mailto:&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;">&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;</a><br/>
+          Website: <a href="https://braum.consulting" target="_blank" rel="noopener noreferrer">braum.consulting</a>
+        </p>
+      </section>
+
+      <section>
+        <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+        <p>
+          Stefan Braum (Anschrift wie oben)
+        </p>
+      </section>
+
+      <section>
+        <h2>Online-Streitbeilegung (OS)</h2>
+        <p>
+          Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die unter
+          <a href="https://ec.europa.eu/consumers/odr/" target="_blank" rel="noopener noreferrer">https://ec.europa.eu/consumers/odr/</a>
+          erreichbar ist. Zur Teilnahme an einem Streitbeilegungsverfahren vor einer Verbraucherschlichtungsstelle sind wir nicht verpflichtet und nicht bereit.
+        </p>
+      </section>
+
+      <section>
+        <h2>Social-Media-Präsenz</h2>
+        <ul>
+          <li><a href="https://www.linkedin.com/in/stefanbraum/" target="_blank" rel="noopener noreferrer">LinkedIn — linkedin.com/in/stefanbraum</a></li>
+          <li><a href="https://braum.me" target="_blank" rel="noopener noreferrer">braum.me — Linktree</a></li>
+          <li><a href="https://github.com/braum-me" target="_blank" rel="noopener noreferrer">GitHub — github.com/braum-me</a></li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Haftungs- und Schutzrechtshinweise</h2>
+        <p>
+          Alle auf dieser Website dargestellten Inhalte — insbesondere Texte, Grafiken, Visualisierungen, Dashboards,
+          ausgewiesene Benchmark-Aggregate und Analysen — sind durch die jeweiligen Schutzrechte geschützt.
+          Die aggregierten Daten stammen aus den im <a href="/methodik/#quellen-register">Quellen-Register</a>
+          ausgewiesenen Primärquellen; bei Verwendung bitte dort zitieren.
+        </p>
+        <p>
+          Die Inhalte werden mit Sorgfalt erstellt, jedoch wird keine Gewähr für Aktualität, Richtigkeit und Vollständigkeit übernommen.
+          Fehler bitte per E-Mail oder GitHub-Issue melden — siehe <a href="/methodik/">Methodik</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>Bildnachweise</h2>
+        <p>
+          Logos der aufgeführten Unternehmen (OpenAI, Anthropic, Google DeepMind u. a.) sind Eigentum der jeweiligen Rechteinhaber
+          und werden lediglich zu redaktionell-dokumentarischen Zwecken im Rahmen der Berichterstattung verwendet
+          (§ 51 UrhG — Zitat).
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  .legal-body section {
+    margin-bottom: 2.25rem;
+  }
+  .legal-body h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    font-weight: 400;
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .legal-body p {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  .legal-body a {
+    color: var(--color-accent-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .legal-body a:hover {
+    color: var(--color-accent);
+  }
+  .legal-body ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .legal-body ul li {
+    position: relative;
+    padding-left: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+  }
+  .legal-body ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-accent-deep);
+  }
+  .legal-body code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+  }
+</style>

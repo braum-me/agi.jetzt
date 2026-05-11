@@ -1,0 +1,110 @@
+[
+  {
+    "term": "AGI",
+    "long": "Artificial General Intelligence",
+    "category": "grundbegriffe",
+    "definition": "Eine KI, die jede intellektuelle Aufgabe lösen kann, die auch ein Mensch lösen kann. Abgrenzung zu ANI (spezialisiert) und ASI (übermenschlich)."
+  },
+  {
+    "term": "ARC-AGI",
+    "long": "Abstraction and Reasoning Corpus",
+    "category": "benchmarks",
+    "definition": "Von François Chollet entwickelter Benchmark, der explizit abstraktes, menschenähnliches Reasoning misst. Gilt als härtester AGI-Test."
+  },
+  {
+    "term": "RLHF",
+    "long": "Reinforcement Learning from Human Feedback",
+    "category": "training",
+    "definition": "Training-Methode, bei der KI durch menschliche Bewertungen 'gut' vs 'schlecht' lernt. Macht aus einem Basis-Modell einen hilfreichen Assistenten."
+  },
+  {
+    "term": "Transformer",
+    "long": "Transformer-Architektur",
+    "category": "architektur",
+    "definition": "Neuronale Netzarchitektur von 2017, Basis aller modernen LLMs. Nutzt 'Attention' um Kontext über lange Sequenzen zu verstehen."
+  },
+  {
+    "term": "MoE",
+    "long": "Mixture of Experts",
+    "category": "architektur",
+    "definition": "Modell-Architektur mit mehreren spezialisierten Sub-Netzwerken. Nur ein Teil wird pro Anfrage aktiviert — effizienter als monolithische Modelle."
+  },
+  {
+    "term": "Agent",
+    "long": "KI-Agent",
+    "category": "agents",
+    "definition": "KI, die autonom Aufgaben ausführt: Tools benutzt, Entscheidungen trifft, mit Umwelt interagiert. Unterschied zu einem Chat-Modell: Agents handeln."
+  },
+  {
+    "term": "RAG",
+    "long": "Retrieval-Augmented Generation",
+    "category": "agents",
+    "definition": "KI kombiniert Sprachmodell mit externer Wissensdatenbank. Statt alles im Modell zu speichern, wird bei Bedarf nachgeschlagen."
+  },
+  {
+    "term": "Context Window",
+    "long": "Kontextfenster",
+    "category": "grundbegriffe",
+    "definition": "Wie viele Tokens (≈ Wörter) ein Modell gleichzeitig 'im Kopf' haben kann. GPT-4 hatte 8K/32K (GPT-4 Turbo 128K). Claude Opus 4.7 und GPT-5.5 bei 1M, Grok 4.20 Heavy bei 2M, Llama 4 Scout bei 10M."
+  },
+  {
+    "term": "Tokens",
+    "long": "Token",
+    "category": "grundbegriffe",
+    "definition": "Text-Einheiten, mit denen KI rechnet. 1 Token ≈ 0.75 Wörter auf Deutsch. 'Hallo Welt' sind ca. 3 Tokens."
+  },
+  {
+    "term": "Inferenz",
+    "long": "Inference",
+    "category": "training",
+    "definition": "Wenn ein trainiertes Modell Antworten generiert. Gegensatz: Training = das Modell lernt. Inferenz = das Modell antwortet."
+  },
+  {
+    "term": "FLOPs",
+    "long": "Floating Point Operations",
+    "category": "compute",
+    "definition": "Maßeinheit für Rechenleistung. Ein GPT-4-Training kostete ~2×10²⁵ FLOPs (Epoch AI) — würde auf einem Laptop Tausende Jahre dauern."
+  },
+  {
+    "term": "Emergence",
+    "long": "Emergente Fähigkeiten",
+    "category": "grundbegriffe",
+    "definition": "Plötzliche neue Fähigkeiten ab einer bestimmten Modellgröße. GPT-3 konnte plötzlich programmieren, GPT-2 nicht. Warum? Weiß niemand."
+  },
+  {
+    "term": "Alignment",
+    "long": "AI Alignment",
+    "category": "safety",
+    "definition": "Forschungsfeld: Wie stelle ich sicher, dass KI das tut, was ich will — und nicht nur das, was ich sage? Kernfrage der AGI-Sicherheit."
+  },
+  {
+    "term": "Hallucination",
+    "long": "Halluzination",
+    "category": "safety",
+    "definition": "KI erfindet überzeugend klingende, aber falsche Informationen. Größtes praktisches Problem heutiger LLMs."
+  },
+  {
+    "term": "Constitutional AI",
+    "long": "Konstitutionelle KI",
+    "category": "safety",
+    "definition": "Anthropic-Ansatz: KI wird mit einer 'Verfassung' aus Prinzipien trainiert, die sie zur Selbstkritik nutzt. Claude ist das prominenteste Beispiel."
+  },
+  {
+    "term": "Scaling Laws",
+    "long": "Skalierungsgesetze",
+    "category": "compute",
+    "definition": "Empirische Regeln: Mehr Daten + mehr Compute + mehr Parameter = bessere KI. Grund, warum Labs Milliarden in größere Modelle investieren."
+  },
+  {
+    "term": "Fine-Tuning",
+    "long": "Feintuning",
+    "category": "training",
+    "definition": "Ein vortrainiertes Modell auf einem spezifischen Datensatz weitertrainieren. Macht aus einem Generalisten einen Spezialisten."
+  },
+  {
+    "term": "Multimodal",
+    "long": "Multimodalität",
+    "category": "architektur",
+    "definition": "Modell versteht und erzeugt verschiedene Datentypen: Text, Bild, Audio, Video. Gemini 3.1, GPT-5.5 und Claude Opus 4.7 (mit 3.75 MP Vision) sind nativ multimodal."
+  }
+]

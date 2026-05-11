@@ -1,0 +1,281 @@
+---
+/**
+ * Methodik-Deep-Dive: Wie Daten auf agi.jetzt erhoben, geprüft und freigegeben werden.
+ * Self-contained Component — Hero + Flowchart + Sektionen + Quellen-Register.
+ */
+
+const pipelineSteps = [
+  {
+    label: 'Scheduled Task',
+    desc: 'Claude Code Agent läuft nach Cron-Rhythmus (weekly / monthly / quarterly)',
+    icon: 'clock',
+    color: '#5b3aa3',
+  },
+  {
+    label: 'Claude Research',
+    desc: 'WebSearch über Primärquellen, Cross-Referenzen, Faktenabgleich',
+    icon: 'search',
+    color: '#7a55cc',
+  },
+  {
+    label: 'data.json',
+    desc: 'Strukturierte Ausgabe ins Repo-File (Git-versioniert, reproduzierbar)',
+    icon: 'database',
+    color: '#b8721c',
+  },
+  {
+    label: 'Review Queue',
+    desc: 'Changes landen als Commit-Vorschlag, Diff sichtbar, Quellen-Prüfung',
+    icon: 'eye',
+    color: '#8b4a2c',
+  },
+  {
+    label: 'Human Approval',
+    desc: 'Stefan prüft manuell, gleicht gegen Primärquelle ab, merged oder verwirft',
+    icon: 'check',
+    color: '#2d5a3f',
+  },
+  {
+    label: 'Deploy',
+    desc: 'release.sh → GitHub Orphan-Branch → Coolify baut statisch, deployed edge',
+    icon: 'rocket',
+    color: '#8b2c4d',
+  },
+];
+
+const sources = [
+  {
+    category: 'Benchmarks & Capabilities',
+    items: [
+      { label: 'Artificial Analysis', url: 'https://artificialanalysis.ai', freq: 'Monatlich' },
+      { label: 'ARC Prize Foundation', url: 'https://arcprize.org', freq: 'Quarterly' },
+      { label: 'METR (Agent Evals)', url: 'https://metr.org/research', freq: 'Quarterly' },
+      { label: 'GPQA / SWE-bench / MMMU', url: 'https://www.swebench.com', freq: 'Monatlich' },
+      { label: 'Epoch AI', url: 'https://epoch.ai', freq: 'Quarterly' },
+    ],
+  },
+  {
+    category: 'Markt, Kapital, Adoption',
+    items: [
+      { label: 'Dealroom', url: 'https://dealroom.co', freq: 'Monatlich' },
+      { label: 'Crunchbase', url: 'https://crunchbase.com', freq: 'Monatlich' },
+      { label: 'Similarweb', url: 'https://www.similarweb.com', freq: 'Monatlich' },
+      { label: 'Apptopia / Sensor Tower', url: 'https://apptopia.com', freq: 'Monatlich' },
+      { label: 'Public Earnings Calls (Alphabet, MSFT)', url: 'https://abc.xyz/investor/', freq: 'Quarterly' },
+    ],
+  },
+  {
+    category: 'Forschung, Papers, Labs',
+    items: [
+      { label: 'ArXiv cs.AI', url: 'https://arxiv.org/list/cs.AI/recent', freq: 'Wöchentlich' },
+      { label: 'Anthropic Research', url: 'https://www.anthropic.com/research', freq: 'Continuous' },
+      { label: 'OpenAI Research', url: 'https://openai.com/research', freq: 'Continuous' },
+      { label: 'Google DeepMind Blog', url: 'https://deepmind.google/discover/blog/', freq: 'Continuous' },
+      { label: 'Stanford HAI AI Index', url: 'https://hai.stanford.edu/ai-index', freq: 'Yearly' },
+    ],
+  },
+  {
+    category: 'Safety & Incidents',
+    items: [
+      { label: 'AI Incidents Database (AIID)', url: 'https://incidentdatabase.ai', freq: 'Monatlich' },
+      { label: 'Center for AI Safety (CAIS)', url: 'https://www.safe.ai', freq: 'Wöchentlich' },
+      { label: 'UK AISI Reports', url: 'https://www.aisi.gov.uk', freq: 'Quarterly' },
+    ],
+  },
+  {
+    category: 'Regulation & Policy',
+    items: [
+      { label: 'EU AI Act Tracker', url: 'https://artificialintelligenceact.eu', freq: 'Monatlich' },
+      { label: 'US Executive Orders (Federal Register)', url: 'https://www.federalregister.gov', freq: 'Wöchentlich' },
+      { label: 'China MIIT AI Governance', url: 'https://www.miit.gov.cn', freq: 'Monatlich' },
+    ],
+  },
+];
+---
+
+<section class="section-container max-w-5xl mx-auto">
+  <!-- Intro -->
+  <div class="max-w-3xl mb-16">
+    <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+      Jede Zahl auf dieser Seite hat einen Weg von der Primärquelle bis ins Dashboard —
+      <em class="italic">und dieser Weg ist dokumentiert</em>. Keine scraping-Black-Boxes, keine „Irgendeine KI hat das gesagt".
+      Sechs Schritte, alle reproduzierbar, alle nachvollziehbar.
+    </p>
+  </div>
+
+  <!-- Pipeline-Flowchart -->
+  <div class="paper-elevated rounded-3xl p-6 md:p-10 mb-16">
+    <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-6">
+      Pipeline
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-6 gap-4 md:gap-2 relative">
+      {pipelineSteps.map((step, i) => (
+        <div class="relative flex md:flex-col items-start md:items-center gap-4 md:gap-3 text-left md:text-center">
+          <!-- Connector line (desktop) -->
+          {i < pipelineSteps.length - 1 && (
+            <div class="hidden md:block absolute top-[22px] left-[calc(50%+22px)] right-[-50%] h-px" style={`background: linear-gradient(to right, ${step.color}80, ${pipelineSteps[i+1].color}40);`}></div>
+          )}
+          <!-- Connector line (mobile, vertikal) -->
+          {i < pipelineSteps.length - 1 && (
+            <div class="md:hidden absolute left-[21px] top-[44px] bottom-[-16px] w-px" style={`background: linear-gradient(to bottom, ${step.color}80, ${pipelineSteps[i+1].color}40);`}></div>
+          )}
+          <!-- Step circle -->
+          <div class="shrink-0 relative z-10 w-11 h-11 rounded-full flex items-center justify-center font-display text-sm font-medium text-white" style={`background: ${step.color}; box-shadow: 0 4px 12px ${step.color}40;`}>
+            {String(i + 1).padStart(2, '0')}
+          </div>
+          <div class="flex-1 md:flex-none">
+            <div class="font-display text-sm md:text-base text-text-primary leading-tight mb-1">
+              {step.label}
+            </div>
+            <div class="text-[11px] text-text-muted leading-snug">
+              {step.desc}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+
+  <!-- Sektion 1: Datenerhebung -->
+  <article class="paper rounded-3xl p-8 md:p-10 mb-6">
+    <div class="flex items-start gap-5 mb-6">
+      <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-white" style="background: #5b3aa3;">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">01 — Datenerhebung</div>
+        <h2 class="font-display text-2xl md:text-3xl text-text-primary leading-tight">Wie die Zahlen entstehen</h2>
+      </div>
+    </div>
+    <div class="space-y-4 text-text-secondary leading-relaxed">
+      <p>
+        Die Grundeinheit ist der <strong class="text-text-primary">Scheduled Task</strong> — ein Claude-Code-Agent, der zu festen Rhythmen läuft:
+        <strong class="text-text-primary">wöchentlich</strong> für News und Briefings, <strong class="text-text-primary">monatlich</strong> für Benchmarks und Investitionen,
+        <strong class="text-text-primary">quartalsweise</strong> für tiefgreifende Stats wie den AGI Proximity Index. Jeder Task hat einen klaren Auftrag und einen definierten Quellen-Pool.
+      </p>
+      <p>
+        Der Agent nutzt <strong class="text-text-primary">WebSearch</strong> und arbeitet gegen die Primärquellen aus dem Register weiter unten — nicht gegen aggregierte Drittseiten, soweit möglich.
+        Bei widersprüchlichen Angaben (etwa WAU vs. MAU für Consumer-Apps) wird das im Output explizit markiert und nicht harmonisiert.
+        Die Ausgabe ist <strong class="text-text-primary">strikt strukturiert</strong>: eine oder mehrere <code class="text-xs font-mono bg-bg-tertiary px-1.5 py-0.5 rounded">.json</code>-Dateien im Repo, die vom Build-Prozess direkt gerendert werden.
+      </p>
+      <p>
+        Das heißt: Zwischen der Primärquelle und der Darstellung im Dashboard liegen <strong class="text-text-primary">maximal zwei Schritte</strong> (Agent-Lookup + JSON-Schreibung). Keine Datenbank, keine ETL-Pipeline, keine Caches.
+        Das macht die Kette überschaubar — und jeder Schritt ist im Git-Commit nachvollziehbar.
+      </p>
+    </div>
+  </article>
+
+  <!-- Sektion 2: Qualitätssicherung -->
+  <article class="paper rounded-3xl p-8 md:p-10 mb-6">
+    <div class="flex items-start gap-5 mb-6">
+      <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-white" style="background: #8b4a2c;">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">02 — Qualitätssicherung</div>
+        <h2 class="font-display text-2xl md:text-3xl text-text-primary leading-tight">Vier Checks bevor es im Dashboard landet</h2>
+      </div>
+    </div>
+    <div class="space-y-4 text-text-secondary leading-relaxed">
+      <ol class="space-y-3 list-none">
+        <li class="flex items-start gap-3">
+          <span class="shrink-0 w-6 h-6 rounded-full bg-bg-tertiary text-[11px] font-mono text-text-primary flex items-center justify-center mt-0.5">1</span>
+          <div><strong class="text-text-primary">Quellen-Match.</strong> Jeder Wert muss auf eine URL aus dem Register unten (oder auf eine gleichwertige Primärquelle) zeigen. Sekundärquellen werden als solche markiert.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="shrink-0 w-6 h-6 rounded-full bg-bg-tertiary text-[11px] font-mono text-text-primary flex items-center justify-center mt-0.5">2</span>
+          <div><strong class="text-text-primary">Zeit-Stempel.</strong> Jeder Datensatz hat ein <code class="text-xs font-mono bg-bg-tertiary px-1.5 py-0.5 rounded">stand</code>-Feld. Das Dashboard zeigt einen farbigen Dot (fresh / current / aging / stale), damit veraltete Widgets sofort erkennbar sind.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="shrink-0 w-6 h-6 rounded-full bg-bg-tertiary text-[11px] font-mono text-text-primary flex items-center justify-center mt-0.5">3</span>
+          <div><strong class="text-text-primary">Plausibilitäts-Check.</strong> Bei Zahlensprüngen &gt;30% Q/Q oder bei Werten, die neue Größenordnungen erreichen (z.B. Frontier-Model-Parameter), vergleicht der Agent explizit gegen 2 zusätzliche unabhängige Quellen.</div>
+        </li>
+        <li class="flex items-start gap-3">
+          <span class="shrink-0 w-6 h-6 rounded-full bg-bg-tertiary text-[11px] font-mono text-text-primary flex items-center justify-center mt-0.5">4</span>
+          <div><strong class="text-text-primary">Methodik-Transparenz.</strong> Wo Daten heterogen kommuniziert werden (WAU vs. MAU, Gemini App vs. AI Overviews, ChatGPT Free vs. Plus), werden die Metriken <em>nicht</em> ineinander umgerechnet, sondern getrennt gelabelt — inklusive Kontextbox für relevante Alternative (z.B. AI Overviews 2 Mrd.).</div>
+        </li>
+      </ol>
+    </div>
+  </article>
+
+  <!-- Sektion 3: Freigabe -->
+  <article class="paper rounded-3xl p-8 md:p-10 mb-6">
+    <div class="flex items-start gap-5 mb-6">
+      <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-white" style="background: #2d5a3f;">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">03 — Freigabe</div>
+        <h2 class="font-display text-2xl md:text-3xl text-text-primary leading-tight">Kein Auto-Publish</h2>
+      </div>
+    </div>
+    <div class="space-y-4 text-text-secondary leading-relaxed">
+      <p>
+        Alle Änderungen landen zunächst auf dem internen <strong class="text-text-primary">Gitea</strong>-Server als regulärer Commit.
+        Das Public-Repo auf GitHub und damit das Live-Deployment wird <strong class="text-text-primary">nie automatisch</strong> aktualisiert —
+        zwischen „Agent hat Daten geschrieben" und „Dashboard zeigt neue Zahlen" steht immer ein manuelles <strong class="text-text-primary">release.sh</strong>-Kommando.
+      </p>
+      <p>
+        Warum so umständlich? Weil AI-basierte Recherche bei aller Sorgfalt Fehler produzieren kann, die nur ein Mensch mit Projektkontext erkennt.
+        Ein offensichtliches Beispiel: Wenn ein Agent liest „OpenAI hat 900 Mio. Nutzer" und dabei nicht klar macht, ob das WAU oder MAU ist,
+        merkt das ein Reviewer sofort — ein automatisierter Pipeline-Schritt nicht. Die Freigabe ist also kein Verzögerer, sondern das Qualitäts-Gate.
+      </p>
+      <p>
+        Jeder Commit enthält eine klare Message (typischerweise <code class="text-xs font-mono bg-bg-tertiary px-1.5 py-0.5 rounded">feat:</code> oder <code class="text-xs font-mono bg-bg-tertiary px-1.5 py-0.5 rounded">fix:</code>),
+        die Git-History ist öffentlich auf GitHub einsehbar. Wer eine konkrete Zahl hinterfragen will, kann per <code class="text-xs font-mono bg-bg-tertiary px-1.5 py-0.5 rounded">git blame</code> sehen, wann und in welchem Commit sie gesetzt wurde.
+      </p>
+    </div>
+  </article>
+
+  <!-- Sektion 4: Quellen-Register -->
+  <article class="paper-elevated rounded-3xl p-8 md:p-10 mb-10">
+    <div class="flex items-start gap-5 mb-6">
+      <div class="shrink-0 w-11 h-11 rounded-xl flex items-center justify-center text-white" style="background: #8b2c4d;">
+        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h10M4 18h10"/>
+        </svg>
+      </div>
+      <div>
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">04 — Quellen-Register</div>
+        <h2 class="font-display text-2xl md:text-3xl text-text-primary leading-tight">Wo die Zahlen herkommen</h2>
+      </div>
+    </div>
+    <p class="text-text-secondary leading-relaxed mb-8">
+      Fünf Themenblöcke mit je 3–5 Primärquellen. Der angegebene Rhythmus ist die Frequenz, in der der Scheduled Task die jeweilige Quelle abfragt —
+      nicht notwendigerweise die Frequenz, in der die Quelle selbst updated.
+    </p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+      {sources.map((block) => (
+        <div class="paper rounded-2xl p-5">
+          <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-burgundy mb-3">{block.category}</div>
+          <ul class="space-y-2">
+            {block.items.map((s) => (
+              <li class="flex items-start justify-between gap-3 text-sm">
+                <a href={s.url} target="_blank" rel="noopener noreferrer" class="text-text-primary hover:text-accent-deep transition-colors underline-offset-2 hover:underline flex-1 min-w-0 truncate">
+                  {s.label} ↗
+                </a>
+                <span class="text-[10px] font-mono uppercase tracking-wider text-text-muted shrink-0">{s.freq}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))}
+    </div>
+  </article>
+
+  <!-- Closing note -->
+  <div class="max-w-2xl mb-8">
+    <p class="text-text-muted text-sm leading-relaxed italic">
+      Wer einen Fehler findet, eine Quelle ergänzen möchte oder eine Methodikfrage hat:
+      <a href="https://github.com/braum-me/agi.jetzt/issues" target="_blank" rel="noopener noreferrer" class="text-accent-deep hover:underline">GitHub-Issue öffnen</a>
+      oder direkt an <a href="mailto:hello@braum.me" class="text-accent-deep hover:underline">hello@braum.me</a>.
+      Transparenz ist nur so viel wert wie die Korrekturen, die sie ermöglicht.
+    </p>
+  </div>
+</section>

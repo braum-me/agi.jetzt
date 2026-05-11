@@ -1,0 +1,71 @@
+{
+  "updated": "2026-04-14",
+  "categories": [
+    {
+      "key": "benchmarks",
+      "label": "Benchmarks & Intelligence",
+      "items": [
+        { "name": "Artificial Analysis Intelligence Index", "url": "https://artificialanalysis.ai", "used_for": ["benchmarks", "model-specs", "stats"] },
+        { "name": "LMArena Leaderboard", "url": "https://lmarena.ai/leaderboard", "used_for": ["benchmarks"] },
+        { "name": "Stanford AI Index 2026", "url": "https://aiindex.stanford.edu", "used_for": ["investments", "stats", "papers"] },
+        { "name": "ARC Prize Foundation", "url": "https://arcprize.org", "used_for": ["agi-progress"] }
+      ]
+    },
+    {
+      "key": "funding",
+      "label": "Funding & Market",
+      "items": [
+        { "name": "Crunchbase AI Category", "url": "https://www.crunchbase.com/hub/artificial-intelligence-companies", "used_for": ["investments", "companies"] },
+        { "name": "Dealroom AI Insights", "url": "https://dealroom.co/reports", "used_for": ["investments", "funding-breakdown"] },
+        { "name": "PitchBook AI Report 2026", "url": "https://pitchbook.com", "used_for": ["companies"] },
+        { "name": "SEC EDGAR Filings", "url": "https://www.sec.gov/edgar", "used_for": ["companies"] }
+      ]
+    },
+    {
+      "key": "compute",
+      "label": "Compute & Infrastructure",
+      "items": [
+        { "name": "EpochAI Training Compute Tracker", "url": "https://epoch.ai", "used_for": ["compute", "stats"] },
+        { "name": "SemiAnalysis", "url": "https://www.semianalysis.com", "used_for": ["compute"] },
+        { "name": "NVIDIA Investor Relations", "url": "https://investor.nvidia.com", "used_for": ["compute"] }
+      ]
+    },
+    {
+      "key": "safety",
+      "label": "Safety & Governance",
+      "items": [
+        { "name": "AI Incident Database", "url": "https://incidentdatabase.ai", "used_for": ["incidents"] },
+        { "name": "METR Research", "url": "https://metr.org", "used_for": ["agi-progress", "incidents"] },
+        { "name": "EU AI Act Official Text", "url": "https://artificialintelligenceact.eu", "used_for": ["regulations"] },
+        { "name": "UK AI Safety Institute", "url": "https://www.aisi.gov.uk", "used_for": ["regulations"] }
+      ]
+    },
+    {
+      "key": "adoption",
+      "label": "Adoption & Jobs",
+      "items": [
+        { "name": "Similarweb", "url": "https://similarweb.com", "used_for": ["adoption"] },
+        { "name": "LinkedIn Economic Graph", "url": "https://economicgraph.linkedin.com", "used_for": ["hiring"] },
+        { "name": "Levels.fyi AI Salaries", "url": "https://levels.fyi", "used_for": ["hiring"] },
+        { "name": "OpenAI DevDay Announcements", "url": "https://openai.com/devday", "used_for": ["adoption"] }
+      ]
+    },
+    {
+      "key": "research",
+      "label": "Research Output",
+      "items": [
+        { "name": "ArXiv cs.AI Stats", "url": "https://arxiv.org/list/cs.AI/recent", "used_for": ["papers", "trends"] },
+        { "name": "Papers with Code", "url": "https://paperswithcode.com", "used_for": ["papers", "trends"] },
+        { "name": "Hugging Face Models Hub", "url": "https://huggingface.co/models", "used_for": ["stats"] }
+      ]
+    },
+    {
+      "key": "forecasts",
+      "label": "Forecasts",
+      "items": [
+        { "name": "Metaculus AGI Questions", "url": "https://www.metaculus.com/questions/?categories=ai", "used_for": ["agi-progress"] },
+        { "name": "80,000 Hours AGI Analysis", "url": "https://80000hours.org/problem-profiles/artificial-intelligence", "used_for": ["agi-progress"] }
+      ]
+    }
+  ]
+}

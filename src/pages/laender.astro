@@ -1,0 +1,19 @@
+---
+import DeepDiveLayout from '../layouts/DeepDiveLayout.astro';
+import CountryRanking from '../components/CountryRanking.astro';
+import CountryGraph from '../components/CountryGraph.astro';
+import Landscape from '../components/Landscape.astro';
+---
+
+<DeepDiveLayout
+  title="Der globale Wettlauf"
+  eyebrow="Länder & Ökosystem"
+  label="Länder"
+  seoTitle="Der globale KI-Wettlauf – agi.jetzt"
+  description="Acht Nationen im Ranking plus alle relevanten Labs, Hardware-Hersteller und Apps. Wer führt im globalen Rennen um Künstliche Intelligenz?"
+  image="/og/deep-dive/laender.png"
+>
+  <CountryRanking />
+  <CountryGraph />
+  <Landscape />
+</DeepDiveLayout>

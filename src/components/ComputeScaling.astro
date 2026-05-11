@@ -1,0 +1,252 @@
+---
+/**
+ * Compute Scaling — exponentielle FLOPs-Skalierung seit 2010
+ * Daten approximiert aus Epoch AI Tracker.
+ * Y-Achse: log scale (FLOPs)
+ * X-Achse: Jahre
+ */
+
+interface DataPoint {
+  year: number;
+  flops: number; // log10(FLOPs)
+  model: string;
+  lab: string;
+  color: string;
+}
+
+const data: DataPoint[] = [
+  { year: 2012, flops: 18.5, model: 'AlexNet', lab: 'Toronto', color: '#8b4a2c' },
+  { year: 2015, flops: 19.8, model: 'ResNet', lab: 'Microsoft', color: '#8b4a2c' },
+  { year: 2018, flops: 21.3, model: 'BERT-L', lab: 'Google', color: '#b8721c' },
+  { year: 2019, flops: 22.0, model: 'GPT-2', lab: 'OpenAI', color: '#b8721c' },
+  { year: 2020, flops: 23.5, model: 'GPT-3', lab: 'OpenAI', color: '#b8721c' },
+  { year: 2022, flops: 24.4, model: 'PaLM', lab: 'Google', color: '#5b3aa3' },
+  { year: 2023, flops: 25.3, model: 'GPT-4', lab: 'OpenAI', color: '#5b3aa3' },
+  { year: 2024, flops: 24.6, model: 'DeepSeek V3', lab: 'DeepSeek', color: '#5b3aa3' },
+  { year: 2024, flops: 25.7, model: 'Claude 3.5', lab: 'Anthropic', color: '#5b3aa3' },
+  { year: 2024, flops: 26.1, model: 'Gemini 2', lab: 'Google', color: '#5b3aa3' },
+  { year: 2025, flops: 25.8, model: 'GPT-5', lab: 'OpenAI', color: '#7a55cc' },
+  { year: 2025, flops: 26.5, model: 'Grok-3', lab: 'xAI', color: '#7a55cc' },
+  { year: 2025, flops: 26.7, model: 'Grok-4', lab: 'xAI', color: '#7a55cc' },
+  { year: 2025, flops: 26.8, model: 'Llama 4', lab: 'Meta', color: '#7a55cc' },
+  { year: 2026, flops: 27.1, model: 'Gemini 3.1', lab: 'Google', color: '#8b2c4d' },
+  { year: 2026, flops: 27.2, model: 'Claude 4.6', lab: 'Anthropic', color: '#8b2c4d' },
+];
+
+const minYear = 2012;
+const maxYear = 2026;
+const minFlops = 18;
+const maxFlops = 28;
+
+// Chart dimensions
+const chartW = 1000;
+const chartH = 400;
+const padL = 60;
+const padR = 40;
+const padT = 40;
+const padB = 50;
+
+const plotW = chartW - padL - padR;
+const plotH = chartH - padT - padB;
+
+const xScale = (year: number) => padL + ((year - minYear) / (maxYear - minYear)) * plotW;
+const yScale = (flops: number) => padT + (1 - (flops - minFlops) / (maxFlops - minFlops)) * plotH;
+
+// Axis ticks
+const yearTicks = [2012, 2015, 2018, 2021, 2024, 2026];
+const flopsTicks = [18, 20, 22, 24, 26, 28];
+
+// Build path for trend line
+const sortedData = [...data].sort((a, b) => a.year + a.flops / 100 - (b.year + b.flops / 100));
+const pathD = sortedData.map((d, i) => {
+  return `${i === 0 ? 'M' : 'L'} ${xScale(d.year)} ${yScale(d.flops)}`;
+}).join(' ');
+
+// Moore's Law reference (doubling every ~2 years for classical compute)
+const mooresStart = { year: 2012, flops: 18.5 };
+const mooresEnd = { year: 2026, flops: 18.5 + (2026 - 2012) / 2 }; // doubles every 2 years = +log10(2)/2 per year... ~1.5 = log10(2)*5
+const mooresPath = `M ${xScale(mooresStart.year)} ${yScale(mooresStart.flops)} L ${xScale(mooresEnd.year)} ${yScale(Math.min(28, 18.5 + (2026 - 2012) * 0.15))}`;
+---
+
+<section id="compute" class="relative py-20 md:py-28">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Compute-Skalierung
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Eine Milliarde-fach<br/>
+        <em class="italic gradient-text">in 14 Jahren</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        In 14 Jahren stieg der Trainings-Compute für Frontier-Modelle um knapp
+        <span class="font-mono gradient-text font-bold">eine Milliarde-fach</span>
+        (10<sup>8.7</sup>, Epoch AI).
+      </p>
+    </div>
+
+    <!-- Chart -->
+    <div class="paper-elevated rounded-3xl p-6 md:p-10 overflow-x-auto">
+      <div class="min-w-[800px]">
+        <svg viewBox={`0 0 ${chartW} ${chartH}`} class="w-full h-auto" style="max-height: 500px;">
+          <!-- Grid lines (horizontal) -->
+          {flopsTicks.map((t) => (
+            <line
+              x1={padL}
+              y1={yScale(t)}
+              x2={chartW - padR}
+              y2={yScale(t)}
+              stroke="var(--color-border)"
+              stroke-width="1"
+              stroke-dasharray="2,4"
+              opacity="0.5"
+            />
+          ))}
+
+          <!-- Y-Axis labels -->
+          {flopsTicks.map((t) => (
+            <text
+              x={padL - 10}
+              y={yScale(t) + 4}
+              text-anchor="end"
+              class="font-mono"
+              style="fill: var(--color-text-muted); font-size: 11px;"
+            >
+              10^{t}
+            </text>
+          ))}
+
+          <!-- X-Axis labels -->
+          {yearTicks.map((y) => (
+            <text
+              x={xScale(y)}
+              y={chartH - padB + 20}
+              text-anchor="middle"
+              class="font-mono"
+              style="fill: var(--color-text-muted); font-size: 11px;"
+            >
+              {y}
+            </text>
+          ))}
+
+          <!-- Moore's Law reference line -->
+          <path
+            d={mooresPath}
+            fill="none"
+            stroke="var(--color-text-muted)"
+            stroke-width="1.5"
+            stroke-dasharray="4,4"
+            opacity="0.5"
+          />
+          <text
+            x={xScale(2024)}
+            y={yScale(21.5)}
+            text-anchor="start"
+            class="font-mono"
+            style="fill: var(--color-text-muted); font-size: 10px;"
+          >
+            Moore's Law (×2 / 2 Jahre)
+          </text>
+
+          <!-- Actual trend path -->
+          <path
+            d={pathD}
+            fill="none"
+            stroke="url(#trend-gradient)"
+            stroke-width="2.5"
+            stroke-linejoin="round"
+            stroke-linecap="round"
+            opacity="0.4"
+          />
+
+          <!-- Gradient -->
+          <defs>
+            <linearGradient id="trend-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stop-color="#8b4a2c"/>
+              <stop offset="30%" stop-color="#b8721c"/>
+              <stop offset="60%" stop-color="#5b3aa3"/>
+              <stop offset="100%" stop-color="#8b2c4d"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Data points -->
+          {data.map((d, i) => (
+            <g>
+              <circle
+                cx={xScale(d.year)}
+                cy={yScale(d.flops)}
+                r="6"
+                fill={d.color}
+                stroke="var(--color-bg-elevated)"
+                stroke-width="2"
+                class="compute-point"
+                style={`animation: appear 0.6s ease-out ${i * 0.08}s backwards;`}
+              />
+              <text
+                x={xScale(d.year) + 10}
+                y={yScale(d.flops) + (i % 2 === 0 ? -8 : 18)}
+                class="font-mono"
+                style={`fill: ${d.color}; font-size: 10px; font-weight: 500;`}
+              >
+                {d.model}
+              </text>
+            </g>
+          ))}
+
+          <!-- Y-Axis title -->
+          <text
+            x="20"
+            y={padT + plotH / 2}
+            transform={`rotate(-90, 20, ${padT + plotH / 2})`}
+            text-anchor="middle"
+            class="font-mono"
+            style="fill: var(--color-text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;"
+          >
+            Training-FLOPs (log)
+          </text>
+        </svg>
+      </div>
+    </div>
+
+    <!-- Stats row -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+      <div class="paper rounded-xl p-5">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">×2 alle</div>
+        <div class="font-display text-3xl text-text-primary">~6 Monate</div>
+        <div class="text-xs text-text-secondary mt-1">Verdopplung Frontier-Compute</div>
+      </div>
+      <div class="paper rounded-xl p-5">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">2012→2026</div>
+        <div class="font-display text-3xl text-text-primary">×10⁸·⁷</div>
+        <div class="text-xs text-text-secondary mt-1">~500 Millionen-fach</div>
+      </div>
+      <div class="paper rounded-xl p-5">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Top-Cluster</div>
+        <div class="font-display text-3xl text-text-primary">200k+</div>
+        <div class="text-xs text-text-secondary mt-1">GPUs (xAI Colossus 2)</div>
+      </div>
+      <div class="paper rounded-xl p-5">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Budget '26</div>
+        <div class="font-display text-3xl text-text-primary">$500B+</div>
+        <div class="text-xs text-text-secondary mt-1">AI-Infrastruktur global</div>
+      </div>
+    </div>
+
+    <p class="text-center text-xs font-mono text-text-muted max-w-2xl mx-auto leading-relaxed mt-10">
+      Datenquelle: Epoch AI Tracker (epoch.ai). FLOPs-Schätzungen basierend auf öffentlichen Papers und Reports.
+    </p>
+  </div>
+</section>
+
+<style>
+  @keyframes appear {
+    from { opacity: 0; transform: scale(0); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  .compute-point {
+    transform-origin: center;
+    transform-box: fill-box;
+  }
+</style>

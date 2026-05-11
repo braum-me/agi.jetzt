@@ -1,0 +1,19 @@
+---
+import DeepDiveLayout from '../layouts/DeepDiveLayout.astro';
+import Controversies from '../components/Controversies.astro';
+import ControversiesEssay from '../components/ControversiesEssay.astro';
+import RiskRadar from '../components/RiskRadar.astro';
+---
+
+<DeepDiveLayout
+  title="Die offenen Wunden"
+  eyebrow="Kontroversen & Risiken"
+  label="Kontroversen"
+  seoTitle="Kontroversen & Risiken der KI – agi.jetzt"
+  description="Sieben ungelöste Debatten, die die KI-Branche spalten, plus fünf Risiko-Dimensionen bewertet. Von AI Safety über Open Source bis Macht-Zentralisierung."
+  image="/og/deep-dive/kontroversen.png"
+>
+  <Controversies />
+  <ControversiesEssay />
+  <RiskRadar />
+</DeepDiveLayout>

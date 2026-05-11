@@ -1,0 +1,51 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/hiring.json';
+---
+
+<WidgetCard
+  anchor="labor"
+  title="Hiring Trends"
+  subtitle={`${data.total_ai_job_listings.toLocaleString('de-DE')} offene AI-Stellen · ${data.growth_yoy} YoY`}
+  stand={data.stand}
+  source={data.source}
+  size="md"
+  span="md:col-span-4"
+>
+  <div class="space-y-4">
+    <!-- Top Hirers -->
+    <div>
+      <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-2">Top Arbeitgeber</div>
+      <div class="space-y-1.5">
+        {data.top_hirers.slice(0, 5).map((h) => (
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-text-primary">{h.company}</span>
+            <div class="flex items-center gap-3 font-mono">
+              <span class="tabular-nums text-text-secondary">{h.open_roles}</span>
+              <span class={`text-xs ${h.change.startsWith('+') ? 'text-forest' : 'text-burgundy'}`}>
+                {h.change}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Salary Top 3 -->
+    <div>
+      <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-2">Gehälter Median (USD)</div>
+      <div class="space-y-1.5">
+        {data.salary_medians_usd.slice(0, 4).map((s) => (
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-text-primary truncate pr-2">
+              {s.role} <span class="text-text-muted">· {s.level}</span>
+            </span>
+            <span class="font-mono tabular-nums text-accent-deep shrink-0">
+              ${(s.total_comp / 1000).toFixed(0)}k
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</WidgetCard>

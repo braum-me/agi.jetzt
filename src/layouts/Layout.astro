@@ -1,0 +1,235 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+}
+
+const {
+  title,
+  description = 'AGI-Tracker: Wie nah sind wir an Künstlicher Allgemeiner Intelligenz? Live-Indikator aus 8 Benchmarks, wöchentliches KI-Briefing, Deep-Dives zu Compute, Kapital, Geopolitik und Safety. Datengetrieben, ohne Hype.',
+  image = '/og-image.png',
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImageURL = new URL(image, Astro.site);
+
+// JSON-LD Schema
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'agi.jetzt',
+  url: 'https://agi.jetzt',
+  description,
+  inLanguage: 'de-DE',
+  author: {
+    '@type': 'Person',
+    name: 'Stefan Braum',
+    url: 'https://braum.me',
+    sameAs: [
+      'https://linkedin.com/in/stefanbraum',
+      'https://braum.consulting',
+    ],
+  },
+  publisher: {
+    '@type': 'Person',
+    name: 'Stefan Braum',
+    url: 'https://braum.me',
+  },
+  about: {
+    '@type': 'Thing',
+    name: 'Artificial General Intelligence',
+    description: 'Artificial General Intelligence (AGI) — die theoretische Form von KI, die jede menschliche kognitive Aufgabe ausführen kann.',
+  },
+};
+---
+
+<!doctype html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <meta name="author" content="Stefan Braum" />
+    <meta name="robots" content="index, follow" />
+    <meta name="theme-color" content="#050509" />
+    <meta name="color-scheme" content="dark" />
+
+    <!-- Keywords (still useful for some bots and discovery) -->
+    <meta name="keywords" content="AGI, Künstliche Allgemeine Intelligenz, KI-Tracker, AI Dashboard, AGI Proximity, KI-Briefing, ARC-AGI, GPQA, SWE-bench, OpenAI, Anthropic, Claude, GPT-5, Gemini, DeepSeek, AI Safety, Compute Scaling, Epoch AI, Stanford AI Index, AI Investments, AI Benchmarks, deutsch, Stefan Braum" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href={canonicalURL} />
+    <link rel="alternate" hreflang="de" href={canonicalURL} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:site_name" content="agi.jetzt" />
+    <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="agi.jetzt — Der Weg zur Künstlichen Allgemeinen Intelligenz" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageURL} />
+    <meta name="twitter:creator" content="@stefanbraum" />
+
+    <!-- Favicon + PWA Manifest -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- RSS Feeds -->
+    <link rel="alternate" type="application/rss+xml" title="agi.jetzt News" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="agi.jetzt Weekly Briefing" href="/briefing/feed.xml" />
+
+    <!-- Fonts werden lokal geladen (DSGVO) — keine Google-Preconnects notwendig. -->
+    <!-- Preload kritische Fonts für schnelleren First Paint -->
+    <link rel="preload" href="/fonts/instrument-serif-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-tight-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin />
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)}></script>
+
+    <!-- Umami Analytics (cookieless, DSGVO-konform). SRI-Hash schützt gegen
+         Kompromittierung von analytics.jetzt.group. Hash bei Umami-Update neu
+         generieren: `curl -s URL | openssl dgst -sha384 -binary | base64 -A` -->
+    <script
+      defer
+      src="https://analytics.jetzt.group/script.js"
+      data-website-id="ae933745-c045-4419-9a1c-31537098fcb3"
+      integrity="sha384-LTPPwaLbU0osA3KlbZu0gbKM+OX2/iNJYVcdtY6ZFUJfsuj7LJ+40McwiPCPpKad"
+      crossorigin="anonymous"
+    ></script>
+
+    <!-- Error-Tracking via Umami Custom Events (keine externen Dienste, keine Cookies) -->
+    <script is:inline>
+      (function () {
+        // Queue damit Events gepuffert werden bis Umami geladen ist
+        var queue = [];
+        var flushTimer = null;
+        function flush() {
+          if (typeof window.umami === 'undefined' || !window.umami.track) return;
+          while (queue.length) {
+            var e = queue.shift();
+            try { window.umami.track(e.name, e.data); } catch (_) {}
+          }
+          if (flushTimer) { clearInterval(flushTimer); flushTimer = null; }
+        }
+        function report(name, data) {
+          queue.push({ name: name, data: data });
+          if (typeof window.umami !== 'undefined' && window.umami.track) {
+            flush();
+          } else if (!flushTimer) {
+            flushTimer = setInterval(flush, 500);
+            setTimeout(function () { if (flushTimer) { clearInterval(flushTimer); flushTimer = null; } }, 10000);
+          }
+        }
+
+        // Rate-Limit: max 10 Error-Events pro Seitenaufruf, damit Umami-Endpoint nicht geflutet wird
+        var sent = 0;
+        var MAX = 10;
+        function cap() { sent++; return sent <= MAX; }
+
+        // Synchronous JS Errors
+        window.addEventListener('error', function (e) {
+          if (!cap()) return;
+          report('js-error', {
+            message: String(e.message || 'unknown').slice(0, 200),
+            source: String(e.filename || '').slice(0, 200),
+            line: e.lineno || 0,
+            col: e.colno || 0,
+            page: location.pathname,
+          });
+        });
+
+        // Unhandled Promise Rejections
+        window.addEventListener('unhandledrejection', function (e) {
+          if (!cap()) return;
+          var reason = e.reason;
+          var msg = '';
+          try {
+            msg = reason && reason.message ? reason.message : String(reason);
+          } catch (_) { msg = 'unknown rejection'; }
+          report('promise-rejection', {
+            reason: String(msg).slice(0, 200),
+            page: location.pathname,
+          });
+        });
+
+        // Resource-Load-Failures (404-Bilder, fehlende Scripts, CSS)
+        window.addEventListener('error', function (e) {
+          var t = e.target;
+          if (!t || t === window || !t.tagName) return;
+          var tag = t.tagName.toUpperCase();
+          if (tag !== 'IMG' && tag !== 'SCRIPT' && tag !== 'LINK') return;
+          if (!cap()) return;
+          report('resource-error', {
+            tag: tag,
+            url: String(t.src || t.href || '').slice(0, 200),
+            page: location.pathname,
+          });
+        }, true); // capture-phase für Resource-Errors
+      })();
+    </script>
+
+    <title>{title}</title>
+
+    <!-- Global Styles -->
+    <style is:global>
+      @import '../styles/global.css';
+    </style>
+  </head>
+  <body class="min-h-screen">
+    <a href="#main" class="skip-to-content">Zum Inhalt springen</a>
+    <noscript>
+      <div style="background:#8b2c4d;color:#f5f1e8;padding:12px 20px;text-align:center;font-family:system-ui,sans-serif;font-size:14px;">
+        <strong>Hinweis:</strong> Einige interaktive Elemente (Volltextsuche, Proximity-Rechner, Glossar-Tooltips, 3D-Hero, Command-Palette)
+        erfordern JavaScript. Alle Inhalte — Dashboard-Daten, Briefings, Deep Dives, Glossar — sind auch ohne JS lesbar.
+      </div>
+    </noscript>
+    <slot />
+
+    <style>
+      .skip-to-content {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border: 0;
+      }
+      .skip-to-content:focus,
+      .skip-to-content:focus-visible {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: auto;
+        height: auto;
+        margin: 0;
+        overflow: visible;
+        clip: auto;
+        white-space: normal;
+        padding: 0.75rem 1.25rem;
+        background: var(--color-burgundy, #8b2c4d);
+        color: var(--color-paper, #f5f1e8);
+        z-index: 9999;
+        text-decoration: none;
+        font-weight: 600;
+        border-bottom-right-radius: 4px;
+        outline: 2px solid var(--color-amber, #b8721c);
+        outline-offset: 2px;
+      }
+    </style>
+  </body>
+</html>

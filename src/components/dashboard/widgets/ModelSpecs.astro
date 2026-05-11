@@ -1,0 +1,55 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/model-specs.json';
+
+const models = data.models;
+---
+
+<WidgetCard
+  title="Model Specs"
+  subtitle="Context, Preis und Geschwindigkeit im Vergleich"
+  stand={data.stand}
+  source={data.source}
+  size="md"
+  span="md:col-span-7"
+>
+  <div class="overflow-x-auto overflow-y-auto -mx-1 px-1" style="max-height: 420px;">
+    <table class="w-full text-sm" style="min-width: 460px;">
+      <thead class="sticky top-0 bg-bg-card text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">
+        <tr class="border-b border-border">
+          <th class="text-left pb-2 pr-2">Modell</th>
+          <th class="text-right pb-2 pr-2">Context</th>
+          <th class="text-right pb-2 pr-2">$/1M</th>
+          <th class="text-right pb-2 pr-2">Speed</th>
+          <th class="text-center pb-2">Open</th>
+        </tr>
+      </thead>
+      <tbody>
+        {models.map((m) => (
+          <tr class="border-b border-border/40 hover:bg-bg-card-hover transition-colors">
+            <td class="py-2 pr-2">
+              <div class="font-medium text-text-primary">{m.name}</div>
+              <div class="text-[10px] text-text-muted">{m.vendor}</div>
+            </td>
+            <td class="py-2 pr-2 text-right font-mono tabular-nums text-text-secondary">
+              {m.context_k >= 1000 ? `${(m.context_k / 1000).toFixed(0)}M` : `${m.context_k}k`}
+            </td>
+            <td class="py-2 pr-2 text-right font-mono tabular-nums text-accent-deep">
+              ${m.price_per_m.toFixed(2)}
+            </td>
+            <td class="py-2 pr-2 text-right font-mono tabular-nums text-text-secondary">
+              {m.speed_tok_s} <span class="text-text-muted text-[10px]">t/s</span>
+            </td>
+            <td class="py-2 text-center">
+              {m.open_weight ? (
+                <span class="inline-block w-2 h-2 rounded-full bg-forest" title="Open Weight"></span>
+              ) : (
+                <span class="inline-block w-2 h-2 rounded-full bg-border-strong" title="Closed"></span>
+              )}
+            </td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</WidgetCard>

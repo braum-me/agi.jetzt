@@ -1,0 +1,59 @@
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Build
+dist/
+build/
+.astro/
+
+# Environment & Secrets
+.env
+.env.*
+.env.local
+.env.production
+.env.development
+*.pem
+*.key
+*.cert
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Python artifacts (legacy)
+__pycache__/
+*.pyc
+
+# Claude Code / Skills (interne Projekt-Steuerung)
+CLAUDE.md
+.claude/
+.agents/
+skills-lock.json
+.gstack/
+
+# Interne Dokumentation (nur Gitea, nicht GitHub)
+CONTENT-PIPELINE.md
+FAKTENCHECK.md
+SECURITY-REVIEW.md
+docs/*
+!docs/*.png
+
+# Release-Script (enthält interne Remote-URLs)
+release.sh
+
+# Automation-Logs + Secrets
+automation/logs/*.log
+!automation/logs/.gitkeep
+automation/.env
+automation/.env.*
+
+# n8n/Inbox Staging
+_inbox/
+_temp/
+DESIGN.md
+DESIGN-REVIEW.md

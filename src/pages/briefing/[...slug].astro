@@ -1,0 +1,372 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import CommandPalette from '../../components/CommandPalette.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const now = new Date();
+  const briefings = await getCollection('briefing', ({ data }) => !data.draft && data.date.valueOf() <= now.valueOf());
+  const sorted = briefings.sort((a, b) => a.data.date.valueOf() - b.data.date.valueOf());
+  return sorted.map((entry, i) => ({
+    params: { slug: entry.slug },
+    props: {
+      entry,
+      prev: i > 0 ? sorted[i - 1] : null,
+      next: i < sorted.length - 1 ? sorted[i + 1] : null,
+    },
+  }));
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await entry.render();
+
+const formattedDate = entry.data.date.toLocaleDateString('de-DE', {
+  day: '2-digit', month: 'long', year: 'numeric',
+});
+const isoDate = entry.data.date.toISOString();
+const canonicalUrl = `https://agi.jetzt/briefing/${entry.slug}/`;
+const shareText = encodeURIComponent(`${entry.data.title}: ${entry.data.subtitle}`);
+const shareUrl = encodeURIComponent(canonicalUrl);
+---
+
+<Layout
+  title={`${entry.data.title}: ${entry.data.subtitle} – agi.jetzt`}
+  description={entry.data.summary}
+  image={`/og/briefing/${entry.slug}.png`}
+>
+  <Navigation />
+
+  <main id="main" class="pt-28 md:pt-36 pb-20">
+    <!-- Back link -->
+    <div class="section-container mb-8">
+      <a href="/briefing" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group">
+        <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span class="font-mono uppercase tracking-[0.2em] text-[10px]">Alle Briefings</span>
+      </a>
+    </div>
+
+    <!-- Briefing Header -->
+    <article class="section-container max-w-3xl mx-auto" data-pagefind-body data-pagefind-meta={`title:${entry.data.title}: ${entry.data.subtitle}`}>
+      <header class="mb-12 text-center">
+        <div class="badge mx-auto mb-6" style="background: rgba(139, 44, 77, 0.1); border-color: rgba(139, 44, 77, 0.3); color: #8b2c4d;">
+          <span class="w-1 h-1 rounded-full bg-burgundy"></span>
+          {entry.data.title}
+        </div>
+        <h1 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2.25rem,5vw,4rem)] mb-6">
+          {entry.data.subtitle}
+        </h1>
+        <p class="text-text-secondary text-lg md:text-xl leading-relaxed font-light max-w-2xl mx-auto mb-6">
+          {entry.data.summary}
+        </p>
+        <div class="flex flex-wrap items-center justify-center gap-3 text-[11px] font-mono text-text-muted uppercase tracking-[0.2em]">
+          <span>KW {String(entry.data.kw).padStart(2, '0')} · {entry.data.year}</span>
+          <span>·</span>
+          <time datetime={isoDate}>{formattedDate}</time>
+          <span>·</span>
+          <span>{entry.data.author}</span>
+        </div>
+      </header>
+
+      <!-- Stats Highlight -->
+      <aside class="ink rounded-3xl p-7 md:p-10 mb-12 text-center">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] opacity-50 mb-3 text-bg-primary">
+          Zahl der Woche
+        </div>
+        <div class="font-display text-5xl md:text-7xl tabular-nums leading-none mb-3 text-bg-primary">
+          {entry.data.statsHighlight.value}
+        </div>
+        <div class="text-sm md:text-base font-medium mb-3 text-bg-primary opacity-80">
+          {entry.data.statsHighlight.label}
+        </div>
+        <p class="text-xs md:text-sm opacity-60 max-w-xl mx-auto leading-relaxed text-bg-primary">
+          {entry.data.statsHighlight.context}
+        </p>
+      </aside>
+
+      <!-- Content (Markdown-rendered) -->
+      <div class="briefing-body prose-editorial" data-glossary-scope>
+        <Content />
+      </div>
+
+      <!-- Tags -->
+      <div class="mt-12 pt-8 border-t border-border">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-3">Themen</div>
+        <div class="flex flex-wrap gap-2">
+          {entry.data.tags.map((t) => (
+            <a
+              href={`/briefing?tag=${encodeURIComponent(t)}`}
+              class="text-xs font-mono uppercase tracking-wider px-3 py-1 rounded-full bg-bg-secondary text-text-secondary hover:text-text-primary hover:bg-bg-card-hover transition-colors"
+            >
+              {t}
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Share Buttons -->
+      <div class="mt-8 pt-8 border-t border-border">
+        <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-3">Teilen</div>
+        <div class="flex flex-wrap items-center gap-3">
+          <a
+            href={`https://twitter.com/intent/tweet?text=${shareText}&url=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary !py-2 !px-4 !text-xs"
+            aria-label="Auf X teilen"
+          >
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+            X
+          </a>
+          <a
+            href={`https://www.linkedin.com/sharing/share-offsite/?url=${shareUrl}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-secondary !py-2 !px-4 !text-xs"
+            aria-label="Auf LinkedIn teilen"
+          >
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.063 2.063 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>
+            LinkedIn
+          </a>
+          <button
+            type="button"
+            class="btn-secondary !py-2 !px-4 !text-xs"
+            id="briefing-copy-btn"
+            data-url={canonicalUrl}
+          >
+            <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8 5H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1M8 5a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2M8 5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2m0 0h2a2 2 0 0 1 2 2v3m2 4H10m0 0 3-3m-3 3 3 3"/>
+            </svg>
+            <span id="briefing-copy-label">Link kopieren</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Prev / Next -->
+      <nav class="mt-12 pt-8 border-t border-border flex items-center justify-between gap-4">
+        {prev ? (
+          <a href={`/briefing/${prev.slug}/`} class="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary group">
+            <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+            <div class="text-right md:text-left">
+              <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">Vorherige</div>
+              <div class="truncate max-w-[180px]">KW {String(prev.data.kw).padStart(2, '0')} · {prev.data.year}</div>
+            </div>
+          </a>
+        ) : <span></span>}
+        {next ? (
+          <a href={`/briefing/${next.slug}/`} class="flex items-center gap-2 text-sm text-text-secondary hover:text-text-primary group ml-auto">
+            <div class="text-right">
+              <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">Nächste</div>
+              <div class="truncate max-w-[180px]">KW {String(next.data.kw).padStart(2, '0')} · {next.data.year}</div>
+            </div>
+            <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+          </a>
+        ) : <span></span>}
+      </nav>
+    </article>
+
+    <!-- Bottom CTA: Dashboard + Deep Dives -->
+    <section class="section-container mt-20 max-w-3xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/dashboard" class="group paper-elevated rounded-2xl p-6 hover:bg-bg-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Live-Daten</div>
+          <div class="font-display text-xl text-text-primary leading-tight mb-1 group-hover:text-accent-deep">
+            Dashboard →
+          </div>
+          <p class="text-xs text-text-secondary">17 Widgets, quartalsweise aktualisiert.</p>
+        </a>
+        <a href="/briefing" class="group paper-elevated rounded-2xl p-6 hover:bg-bg-card-hover hover:-translate-y-0.5 transition-all">
+          <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Mehr lesen</div>
+          <div class="font-display text-xl text-text-primary leading-tight mb-1 group-hover:text-accent-deep">
+            Alle Briefings →
+          </div>
+          <p class="text-xs text-text-secondary">Jeden Freitag eine neue Ausgabe.</p>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <Footer />
+  <CommandPalette />
+</Layout>
+
+<style is:global>
+  /* Editorial Prose-Styles für Briefing-Body */
+  .briefing-body h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.6rem, 3vw, 2.25rem);
+    line-height: 1.1;
+    color: var(--color-text-primary);
+    margin-top: 3rem;
+    margin-bottom: 1.25rem;
+  }
+  .briefing-body h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1.3rem;
+    line-height: 1.2;
+    color: var(--color-text-primary);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+  }
+  .briefing-body p {
+    color: var(--color-text-secondary);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    margin-bottom: 1.25rem;
+  }
+  .briefing-body a {
+    color: var(--color-accent-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    text-decoration-thickness: 1px;
+  }
+  .briefing-body a:hover {
+    color: var(--color-accent);
+  }
+  .briefing-body strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+  .briefing-body em {
+    font-style: italic;
+  }
+  .briefing-body ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1.5rem;
+  }
+  .briefing-body ul li {
+    position: relative;
+    padding-left: 1.5rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.625rem;
+  }
+  .briefing-body ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent-deep);
+  }
+  .briefing-body hr {
+    border: 0;
+    height: 1px;
+    background: var(--color-border);
+    margin: 3rem 0;
+  }
+
+  /* Glossary inline tooltips */
+  .gloss-term {
+    position: relative;
+    display: inline;
+    border-bottom: 1px dashed rgba(91, 58, 163, 0.45);
+    cursor: help;
+    color: inherit;
+  }
+  .gloss-term:hover,
+  .gloss-term:focus-visible {
+    color: var(--color-accent-deep);
+    outline: none;
+  }
+  .gloss-tip {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 50%;
+    transform: translateX(-50%) translateY(4px);
+    width: min(320px, 88vw);
+    padding: 14px 16px;
+    background: var(--color-bg-ink, #1a1814);
+    color: var(--color-bg-primary, #f5f1e8);
+    border-radius: 12px;
+    box-shadow: 0 12px 32px rgba(26, 24, 20, 0.25);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.18s, transform 0.18s;
+    z-index: 80;
+    text-align: left;
+    font-style: normal;
+    font-weight: 400;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .gloss-term:hover .gloss-tip,
+  .gloss-term:focus-visible .gloss-tip,
+  .gloss-tip:hover {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
+  }
+  .gloss-tip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--color-bg-ink, #1a1814);
+  }
+  .gloss-tip-title {
+    font-family: var(--font-display);
+    font-size: 0.875rem;
+    opacity: 0.95;
+    font-weight: 500;
+  }
+  .gloss-tip-body {
+    opacity: 0.78;
+  }
+  .gloss-tip-link {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.6875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    color: var(--color-accent-bright, #a78bfa) !important;
+    text-decoration: none !important;
+    align-self: flex-start;
+  }
+  .gloss-tip-link:hover {
+    text-decoration: underline !important;
+  }
+  /* Mobile: anchor below if too high */
+  @media (max-width: 640px) {
+    .gloss-tip {
+      width: min(280px, 86vw);
+      font-size: 0.78rem;
+      padding: 12px 14px;
+    }
+  }
+</style>
+
+<script>
+  import { initGlossaryTooltips } from '../../scripts/glossary-tooltips';
+  initGlossaryTooltips();
+
+  const btn = document.getElementById('briefing-copy-btn') as HTMLButtonElement | null;
+  const label = document.getElementById('briefing-copy-label');
+  btn?.addEventListener('click', async () => {
+    const url = btn.dataset.url || window.location.href;
+    try {
+      await navigator.clipboard.writeText(url);
+      if (label) {
+        label.textContent = '✓ Kopiert';
+        setTimeout(() => { label.textContent = 'Link kopieren'; }, 2000);
+      }
+    } catch {}
+  });
+</script>

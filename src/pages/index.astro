@@ -1,0 +1,78 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import HeroSection from '../components/HeroSection.astro';
+import AgiDefinition from '../components/AgiDefinition.astro';
+import ProximityMeter from '../components/ProximityMeter.astro';
+import BriefingTeaser from '../components/BriefingTeaser.astro';
+import DeepDivesTeaser from '../components/DeepDivesTeaser.astro';
+import DashboardTeaser from '../components/DashboardTeaser.astro';
+import About from '../components/About.astro';
+import Footer from '../components/Footer.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+---
+
+<Layout
+  title="AGI-Tracker: Wie nah sind wir wirklich? | agi.jetzt"
+  description="Live-Indikator zur AGI-Distanz aus 8 Benchmarks (ARC-AGI, GPQA, SWE-bench). Wöchentliches KI-Briefing, Dashboard mit 17 Widgets, Deep-Dives zu Compute, Kapital, Geopolitik. Datengetrieben, deutsch, ohne Hype."
+>
+  <!-- Subtile gradient — entspannt verteilt, statisch, hinter allem -->
+  <div
+    class="absolute top-0 left-0 w-full pointer-events-none overflow-hidden"
+    style="z-index: -2; height: 100%; min-height: 100vh;"
+    aria-hidden="true"
+  >
+    <div class="g-blob" style="width: 70vw; height: 70vw; top: 5%; left: -20%; background: radial-gradient(circle, #ebe3f7, transparent 60%);"></div>
+    <div class="g-blob" style="width: 60vw; height: 60vw; top: 20%; right: -15%; background: radial-gradient(circle, #f5e0e8, transparent 60%);"></div>
+    <div class="g-blob" style="width: 55vw; height: 55vw; top: 45%; left: -10%; background: radial-gradient(circle, #fbebe4, transparent 60%);"></div>
+    <div class="g-blob" style="width: 65vw; height: 65vw; top: 65%; right: -10%; background: radial-gradient(circle, #d8e8de, transparent 60%);"></div>
+    <div class="g-blob" style="width: 60vw; height: 60vw; top: 85%; left: -5%; background: radial-gradient(circle, #ebe3f7, transparent 60%);"></div>
+  </div>
+
+  <!-- Content — kompakter Hub: Hero → Was/Wo → Briefing → Deep Dives → Dashboard → About -->
+  <Navigation />
+  <HeroSection />
+  <main id="main">
+    <AgiDefinition />
+    <ProximityMeter />
+    <BriefingTeaser />
+    <DeepDivesTeaser />
+    <DashboardTeaser />
+    <About />
+  </main>
+  <Footer />
+  <CommandPalette />
+</Layout>
+
+<style is:global>
+  .g-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(120px);
+    opacity: 0.35;
+  }
+</style>
+
+<script>
+  import { initScrollAnimations } from '../scripts/scroll-animations';
+  import { initCursorEffects, initScrollProgress, initMagneticButtons, initTextScramble } from '../scripts/cursor-effects';
+  import { initConsoleMessage, initKonamiCode, initLogoSecret, initFocusBlur } from '../scripts/easter-eggs';
+  import { initCustomCursor } from '../scripts/custom-cursor';
+  import { initSplitTextReveal, init3DTilt, initMagneticEnhanced, initParallaxWatermarks } from '../scripts/ui-enhancements';
+  import { initOdometers } from '../scripts/odometer';
+
+  initScrollProgress();
+  initScrollAnimations();
+  initCustomCursor();
+  initSplitTextReveal();
+  init3DTilt();
+  initMagneticEnhanced();
+  initParallaxWatermarks();
+  initOdometers();
+  initMagneticButtons();
+  initTextScramble();
+  initConsoleMessage();
+  initKonamiCode();
+  initLogoSecret();
+  initFocusBlur();
+</script>

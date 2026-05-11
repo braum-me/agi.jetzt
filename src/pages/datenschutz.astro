@@ -1,0 +1,233 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Datenschutz – agi.jetzt"
+  description="Datenschutzerklärung für agi.jetzt gemäß DSGVO. Cookielose Analyse mit Umami, keine Tracker, keine Werbenetzwerke."
+>
+  <Navigation />
+
+  <main id="main" class="pt-28 md:pt-36 pb-20">
+    <div class="section-container mb-8">
+      <a href="/" class="inline-flex items-center gap-2 text-sm text-text-muted hover:text-text-primary transition-colors group">
+        <svg class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+        </svg>
+        <span class="font-mono uppercase tracking-[0.2em] text-[10px]">Zurück zur Übersicht</span>
+      </a>
+    </div>
+
+    <article class="section-container max-w-3xl mx-auto legal-body">
+      <header class="mb-12">
+        <div class="badge mb-6">
+          <span class="w-1 h-1 rounded-full bg-accent"></span>
+          Rechtliches
+        </div>
+        <h1 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2.25rem,6vw,4.5rem)]">
+          Datenschutzerklärung
+        </h1>
+        <p class="text-text-secondary mt-4">
+          Stand: {new Date().toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' })}
+        </p>
+      </header>
+
+      <section>
+        <h2>Auf einen Blick</h2>
+        <p>
+          agi.jetzt ist eine rein statische Website. Es werden <strong>keine Cookies</strong> gesetzt,
+          <strong>keine Werbe-Tracker</strong> geladen und <strong>keine Profildaten</strong> an Dritte weitergegeben.
+          Zur Reichweitenmessung nutzen wir cookieloses, selbst gehostetes <a href="https://umami.is" target="_blank" rel="noopener noreferrer">Umami</a>.
+          Die Seite ist statisch gebaut (Astro) und wird von einem Edge-CDN ausgeliefert.
+        </p>
+      </section>
+
+      <section>
+        <h2>1. Verantwortlicher</h2>
+        <p>
+          Verantwortlich im Sinne von Art. 4 Nr. 7 DSGVO:
+        </p>
+        <p>
+          Stefan Braum<br/>
+          Schlüchterner Straße 31<br/>
+          36391 Sinntal<br/>
+          Deutschland<br/>
+          E-Mail: <a href="mailto:&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;">&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;</a>
+        </p>
+        <p>
+          Vollständige Anbieterkennzeichnung siehe <a href="/impressum/">Impressum</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>2. Server-Logs</h2>
+        <p>
+          Beim Aufruf der Seite übermittelt dein Browser technisch erforderliche Daten an den Web-Server des Hosting-Providers (Coolify/edge-CDN).
+          Diese werden nur kurzzeitig in Zugriffsprotokollen gespeichert und nach spätestens 14 Tagen automatisch gelöscht:
+        </p>
+        <ul>
+          <li>IP-Adresse (anonymisiert)</li>
+          <li>Datum und Uhrzeit des Zugriffs</li>
+          <li>Aufgerufene URL</li>
+          <li>Verweisende Seite (Referrer)</li>
+          <li>Browser-Typ und -Version (User-Agent)</li>
+          <li>HTTP-Statuscode und übertragene Datenmenge</li>
+        </ul>
+        <p>
+          Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO (berechtigtes Interesse an einem funktionsfähigen und sicheren Betrieb).
+        </p>
+      </section>
+
+      <section>
+        <h2>3. Reichweitenmessung mit Umami</h2>
+        <p>
+          Wir nutzen <strong>Umami Analytics</strong> zur anonymen Messung der Seitennutzung (Seitenaufrufe, Verweildauer, aggregiertes Land/Gerät).
+          Umami läuft <strong>selbst gehostet</strong> unter <code>analytics.jetzt.group</code> und
+          <strong>setzt keine Cookies</strong>, generiert keine Nutzer-IDs und erstellt keine wiedererkennbaren Profile.
+          Die erhobenen Daten verlassen die Infrastruktur nicht.
+        </p>
+        <p>
+          Aus diesem Grund ist nach herrschender Meinung <strong>keine Einwilligung (Cookie-Banner) erforderlich</strong>
+          (Art. 6 Abs. 1 lit. f DSGVO, berechtigtes Interesse — keine personenbezogene Auswertung).
+          Eine Widerspruchsmöglichkeit besteht über Standard-Browser-Einstellungen oder DNT / Content-Blocker.
+        </p>
+        <p>
+          <strong>Fehler-Tracking via Umami Custom Events:</strong> Tritt im Browser ein JavaScript-Fehler,
+          eine abgelehnte Promise oder ein fehlgeschlagenes Resource-Loading auf, senden wir ein anonymes
+          Custom-Event an dieselbe Umami-Instanz mit den technischen Detail-Feldern <em>message</em>,
+          <em>source</em> (Datei-URL), <em>line</em>, <em>col</em> und <em>page</em> (URL-Pfad ohne Query).
+          Maximal 10 Events pro Seitenaufruf. Diese Daten enthalten keine personenbezogenen Inhalte und
+          dienen ausschließlich der Fehlerbehebung. Rechtsgrundlage: Art. 6 Abs. 1 lit. f DSGVO.
+        </p>
+      </section>
+
+      <section>
+        <h2>4. Verwendete Schriftarten</h2>
+        <p>
+          Schriften werden <strong>lokal aus dem eigenen Server-Verzeichnis</strong> geladen
+          (WOFF2-Dateien unter <code>/fonts/</code>). Es besteht <strong>keine Verbindung zu externen Font-Diensten</strong>
+          wie Google Fonts oder Adobe Fonts — dein Browser kontaktiert diese Anbieter nicht.
+        </p>
+      </section>
+
+      <section>
+        <h2>5. Eingebettete Inhalte und externe Verlinkungen</h2>
+        <p>
+          Die Seite enthält keine Embeds von YouTube, Twitter, Facebook, Instagram oder vergleichbaren Diensten.
+          Externe Links (etwa zu Benchmark-Anbietern, Papers oder offiziellen Blog-Posts) öffnen sich in einem neuen Tab.
+          Beim Anklicken gelten die Datenschutzbestimmungen des jeweiligen Betreibers.
+        </p>
+      </section>
+
+      <section>
+        <h2>6. RSS-Feeds</h2>
+        <p>
+          Unter <a href="/rss.xml">/rss.xml</a> und <a href="/briefing/feed.xml">/briefing/feed.xml</a> stehen RSS-Feeds bereit.
+          Beim Abruf gelten die oben genannten Server-Logs. Eine Anmeldung oder Registrierung ist nicht erforderlich —
+          es werden keine personenbezogenen Daten erhoben.
+        </p>
+      </section>
+
+      <section>
+        <h2>7. Volltextsuche (Pagefind)</h2>
+        <p>
+          Die optionale Volltextsuche (⌘K / Strg+K) nutzt <a href="https://pagefind.app" target="_blank" rel="noopener noreferrer">Pagefind</a>.
+          Der Suchindex wird <strong>zur Build-Zeit erzeugt und vollständig an deinen Browser ausgeliefert</strong> —
+          Suchanfragen laufen lokal im Browser. Es wird nichts an einen Server gesendet und nichts gespeichert.
+        </p>
+      </section>
+
+      <section>
+        <h2>8. Deine Rechte nach DSGVO</h2>
+        <p>
+          Du hast gegenüber dem Verantwortlichen jederzeit folgende Rechte hinsichtlich der dich betreffenden personenbezogenen Daten:
+        </p>
+        <ul>
+          <li>Recht auf Auskunft (Art. 15 DSGVO)</li>
+          <li>Recht auf Berichtigung (Art. 16 DSGVO)</li>
+          <li>Recht auf Löschung (Art. 17 DSGVO)</li>
+          <li>Recht auf Einschränkung der Verarbeitung (Art. 18 DSGVO)</li>
+          <li>Recht auf Datenübertragbarkeit (Art. 20 DSGVO)</li>
+          <li>Widerspruchsrecht (Art. 21 DSGVO)</li>
+          <li>Beschwerderecht bei einer Aufsichtsbehörde (Art. 77 DSGVO) — zuständig für uns:
+            <a href="https://datenschutz.hessen.de" target="_blank" rel="noopener noreferrer">Der Hessische Beauftragte für Datenschutz und Informationsfreiheit</a>
+          </li>
+        </ul>
+        <p>
+          Zur Ausübung deiner Rechte genügt eine formlose E-Mail an <a href="mailto:&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;">&#104;&#105;&#064;&#097;&#103;&#105;&#046;&#106;&#101;&#116;&#122;&#116;</a>.
+        </p>
+      </section>
+
+      <section>
+        <h2>9. Änderungen dieser Erklärung</h2>
+        <p>
+          Wir passen diese Datenschutzerklärung an, sobald sich die technische Ausgestaltung der Seite ändert
+          (etwa bei Ergänzung eines Newsletters oder weiterer Analyse-Tools). Die jeweils aktuelle Version ist
+          hier abrufbar und durch das Datum oben im Dokument gekennzeichnet.
+        </p>
+      </section>
+    </article>
+  </main>
+
+  <Footer />
+</Layout>
+
+<style is:global>
+  .legal-body section {
+    margin-bottom: 2.25rem;
+  }
+  .legal-body h2 {
+    font-family: var(--font-display);
+    font-size: clamp(1.25rem, 2.4vw, 1.6rem);
+    font-weight: 400;
+    color: var(--color-text-primary);
+    margin-bottom: 0.75rem;
+    margin-top: 0.5rem;
+  }
+  .legal-body p {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.7;
+    margin-bottom: 1rem;
+  }
+  .legal-body a {
+    color: var(--color-accent-deep);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+  .legal-body a:hover {
+    color: var(--color-accent);
+  }
+  .legal-body ul {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 1rem;
+  }
+  .legal-body ul li {
+    position: relative;
+    padding-left: 1.25rem;
+    color: var(--color-text-secondary);
+    line-height: 1.65;
+    margin-bottom: 0.5rem;
+  }
+  .legal-body ul li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.7em;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: var(--color-accent-deep);
+  }
+  .legal-body code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    padding: 0.1rem 0.35rem;
+    border-radius: 0.25rem;
+    background: var(--color-bg-tertiary);
+    color: var(--color-text-primary);
+  }
+</style>

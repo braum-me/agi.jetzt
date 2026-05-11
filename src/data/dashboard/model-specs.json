@@ -1,0 +1,20 @@
+{
+  "stand": "Mai 2026",
+  "source": "Official Model Cards + Artificial Analysis",
+  "note": "Preis: USD per 1M Output-Tokens (Standard-Tier). Speed: Tokens/Sekunde (typisch).",
+  "models": [
+    { "name": "Gemini 3.1 Pro", "vendor": "Google", "context_k": 1024, "price_per_m": 12.00, "speed_tok_s": 220, "release": "2026-02", "open_weight": false },
+    { "name": "GPT-5.5 Pro", "vendor": "OpenAI", "context_k": 1000, "price_per_m": 180.00, "speed_tok_s": 95, "release": "2026-04", "open_weight": false },
+    { "name": "Claude Opus 4.7", "vendor": "Anthropic", "context_k": 1000, "price_per_m": 25.00, "speed_tok_s": 115, "release": "2026-04", "open_weight": false },
+    { "name": "GPT-5.5", "vendor": "OpenAI", "context_k": 1000, "price_per_m": 30.00, "speed_tok_s": 170, "release": "2026-04", "open_weight": false },
+    { "name": "Claude Sonnet 4.6", "vendor": "Anthropic", "context_k": 1000, "price_per_m": 15.00, "speed_tok_s": 180, "release": "2026-02", "open_weight": false },
+    { "name": "Gemini 3 Flash", "vendor": "Google", "context_k": 1024, "price_per_m": 3.50, "speed_tok_s": 350, "release": "2026-02", "open_weight": false },
+    { "name": "Grok 4.20 Heavy", "vendor": "xAI", "context_k": 2000, "price_per_m": 18.00, "speed_tok_s": 88, "release": "2026-02", "open_weight": false },
+    { "name": "Mistral Medium 3.5", "vendor": "Mistral", "context_k": 256, "price_per_m": 7.50, "speed_tok_s": 175, "release": "2026-04", "open_weight": true },
+    { "name": "Llama 4 Scout", "vendor": "Meta", "context_k": 10000, "price_per_m": 0.90, "speed_tok_s": 320, "release": "2025-04", "open_weight": true },
+    { "name": "Llama 4 Maverick", "vendor": "Meta", "context_k": 1000, "price_per_m": 1.40, "speed_tok_s": 280, "release": "2025-04", "open_weight": true },
+    { "name": "DeepSeek V3.2", "vendor": "DeepSeek", "context_k": 164, "price_per_m": 0.70, "speed_tok_s": 110, "release": "2025-12", "open_weight": true },
+    { "name": "Qwen3.6 Plus", "vendor": "Alibaba", "context_k": 1000, "price_per_m": 2.40, "speed_tok_s": 160, "release": "2026-03", "open_weight": false },
+    { "name": "GLM-5", "vendor": "Z.ai", "context_k": 200, "price_per_m": 1.00, "speed_tok_s": 145, "release": "2026-02", "open_weight": true }
+  ]
+}

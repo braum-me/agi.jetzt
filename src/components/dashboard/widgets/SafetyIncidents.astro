@@ -1,0 +1,59 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/incidents.json';
+---
+
+<WidgetCard
+  title="Safety Incidents"
+  subtitle={`${data.total_2025} in 2025 · ${data.total_2026_q1} in Q1 2026 (läuft)`}
+  stand={data.stand}
+  source={data.source}
+  size="md"
+  span="md:col-span-4"
+  moreLink="/kontroversen"
+  moreLinkLabel="Die Debatten"
+>
+  <!-- Severity Breakdown -->
+  <div class="grid grid-cols-3 gap-2 mb-4">
+    <div class="text-center p-2 rounded-lg bg-burgundy/8 border border-burgundy/20">
+      <div class="font-display text-2xl text-burgundy tabular-nums">{data.by_severity.high}</div>
+      <div class="text-[9px] font-mono uppercase tracking-wider text-text-muted mt-0.5">High</div>
+    </div>
+    <div class="text-center p-2 rounded-lg bg-amber/8 border border-amber/20">
+      <div class="font-display text-2xl text-amber tabular-nums">{data.by_severity.medium}</div>
+      <div class="text-[9px] font-mono uppercase tracking-wider text-text-muted mt-0.5">Medium</div>
+    </div>
+    <div class="text-center p-2 rounded-lg bg-forest/8 border border-forest/20">
+      <div class="font-display text-2xl text-forest tabular-nums">{data.by_severity.low}</div>
+      <div class="text-[9px] font-mono uppercase tracking-wider text-text-muted mt-0.5">Low</div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <div class="space-y-1.5 mb-4">
+    {data.by_category.map((c) => (
+      <div>
+        <div class="flex items-center justify-between text-xs mb-0.5">
+          <span class="text-text-secondary truncate pr-2">{c.category}</span>
+          <span class="font-mono tabular-nums text-text-primary shrink-0">{c.pct}%</span>
+        </div>
+        <div class="h-1 bg-bg-tertiary rounded-full overflow-hidden">
+          <div class="h-full bg-accent-deep rounded-full" style={`width: ${c.pct}%;`}></div>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- Recent -->
+  <div>
+    <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-2">Recent 2026</div>
+    <div class="space-y-1">
+      {data.notable_2026.map((n) => (
+        <div class="text-[11px] leading-snug">
+          <div class="font-mono text-text-muted">{n.date} · {n.org}</div>
+          <div class="text-text-primary">{n.title}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</WidgetCard>

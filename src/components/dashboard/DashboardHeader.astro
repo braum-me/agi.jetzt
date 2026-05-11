@@ -1,0 +1,62 @@
+---
+const now = new Date();
+const timestamp = now.toLocaleDateString('de-DE', {
+  day: '2-digit',
+  month: '2-digit',
+  year: 'numeric',
+});
+---
+
+<header class="dashboard-header sticky top-0 z-50 border-b border-border backdrop-blur-xl bg-bg-primary/80">
+  <div class="section-container py-4 flex flex-wrap items-center justify-between gap-4">
+    <div class="flex items-center gap-3">
+      <a href="/" class="flex items-center gap-2.5 font-display text-lg md:text-xl font-normal tracking-tight">
+        <span class="relative flex items-center justify-center w-8 h-8 rounded-full bg-bg-ink">
+          <svg class="w-4 h-4 text-bg-primary" fill="none" viewBox="0 0 24 24">
+            <path d="M9 7c0-1.1.9-2 2-2h2c1.1 0 2 .9 2 2v2.5M9 7v2.5M9 7c-1.1 0-2 .9-2 2v2c0 1.1.9 2 2 2M15 9.5V12c0 1.1-.9 2-2 2M15 9.5c1.1 0 2 .9 2 2s-.9 2-2 2M9 12c0 1.1.9 2 2 2v3M9 12v3M11 17c0 1.1.9 2 2 2h0c1.1 0 2-.9 2-2v-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <circle cx="12" cy="12" r="0.8" fill="currentColor"/>
+          </svg>
+        </span>
+        <span class="text-text-primary">agi<span class="text-text-muted">.</span><span class="italic">jetzt</span></span>
+      </a>
+      <span class="text-text-muted">/</span>
+      <span class="font-mono text-xs uppercase tracking-[0.2em] text-text-secondary">Dashboard</span>
+    </div>
+
+    <div class="flex items-center gap-4 text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted">
+      <span class="flex items-center gap-2">
+        <span class="flex h-1.5 w-1.5 rounded-full bg-burgundy animate-pulse"></span>
+        Stand Mai 2026
+      </span>
+      <span class="hidden md:inline">·</span>
+      <span class="hidden md:inline">Nächstes Update Juli 2026</span>
+      <span class="hidden md:inline">·</span>
+      <a href="/" class="hover:text-text-primary transition-colors">← Zur Landing</a>
+    </div>
+  </div>
+
+  <!-- Title block -->
+  <div class="section-container pb-4 md:pb-6 pt-2">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+      <div>
+        <h1 class="font-display font-normal text-[clamp(1.75rem,5vw,3.5rem)] leading-[1.05] mb-2 md:mb-3">
+          State of <em class="italic gradient-text">Artificial Intelligence</em>
+        </h1>
+        <p class="text-text-secondary text-sm md:text-lg leading-relaxed max-w-2xl">
+          Das gesamte AI-Ökosystem auf einen Blick. Alle Zahlen quellenbasiert, alle Daten mit Zeitstempel.
+        </p>
+      </div>
+      <div class="flex gap-3 shrink-0">
+        <a href="/#news" class="btn-secondary !py-2 !px-4 !text-sm">
+          News Feed →
+        </a>
+        <a href="/rss.xml" class="btn-secondary !py-2 !px-4 !text-sm" aria-label="RSS Feed">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27zm0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93z"/>
+          </svg>
+          RSS
+        </a>
+      </div>
+    </div>
+  </div>
+</header>

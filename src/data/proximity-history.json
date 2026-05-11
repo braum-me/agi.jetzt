@@ -1,0 +1,19 @@
+{
+  "$comment": "Quartalsweise AGI-Proximity-Snapshots. Pro Eintrag: Composite-Score (geometrisches Mittel der 8 Pillars) plus Mini-Notiz. Berechnet aus historischen Benchmark-Werten.",
+  "history": [
+    { "quarter": "2023-Q1", "score": 24, "note": "GPT-4 launch · ARC-AGI 5%" },
+    { "quarter": "2023-Q2", "score": 26, "note": "Claude 2 · GPT-4 Turbo Vorbereitung" },
+    { "quarter": "2023-Q3", "score": 28, "note": "Llama 2 Open Source · DALL-E 3" },
+    { "quarter": "2023-Q4", "score": 31, "note": "GPT-4 Turbo · Gemini 1.0" },
+    { "quarter": "2024-Q1", "score": 35, "note": "Claude 3 Opus · Sora-Preview" },
+    { "quarter": "2024-Q2", "score": 39, "note": "Llama 3 70B · GPT-4o" },
+    { "quarter": "2024-Q3", "score": 44, "note": "OpenAI o1 (Reasoning-Modelle starten)" },
+    { "quarter": "2024-Q4", "score": 49, "note": "o1-Pro · Claude 3.5 Sonnet (Computer Use)" },
+    { "quarter": "2025-Q1", "score": 54, "note": "DeepSeek R1 · o3-mini · Claude 3.7" },
+    { "quarter": "2025-Q2", "score": 58, "note": "GPT-4.5 · Llama 4 · Gemini 2.5 Pro" },
+    { "quarter": "2025-Q3", "score": 62, "note": "Claude 4 · GPT-5 · Long-Horizon-Agency-Sprung" },
+    { "quarter": "2025-Q4", "score": 65, "note": "GPT-5.2 Thinking · Gemini 3 Pro" },
+    { "quarter": "2026-Q1", "score": 70, "note": "GPT-5.4 Pro · Claude Opus 4.6 · Gemini 3.1 Pro · OSWorld gesättigt" },
+    { "quarter": "2026-Q2", "score": 72, "note": "Claude Opus 4.7 (SWE 87.6) · GPT-5.5 Pro · Mistral Medium 3.5 · Qwen3.6 Plus" }
+  ]
+}

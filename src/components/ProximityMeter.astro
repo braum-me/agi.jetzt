@@ -1,0 +1,686 @@
+---
+/**
+ * AGI Proximity Index — 8-Pillar-Modell.
+ * Berechnung: Weighted Geometric Mean der Gaps (SOTA/Baseline) aus öffentlichen Benchmarks.
+ * Keine subjektiven Werte. Jede Zahl belegbar.
+ *
+ * Pillar-Daten kommen aus src/data/dashboard/proximity-pillars.json (single source
+ * of truth, auch von dashboard/widgets/AgiProgress.astro genutzt).
+ */
+import historyData from '../data/proximity-history.json';
+import pillarsData from '../data/dashboard/proximity-pillars.json';
+
+interface Pillar {
+  key: string;
+  label: string;
+  benchmark: string;
+  benchmarkUrl: string;
+  baseline: number;
+  baselineLabel: string;
+  baselineSource: string;
+  sota: number;
+  sotaLeader: string;
+  sotaDate: string;
+  sotaSourceUrl: string;
+  weight: number;            // in %, Summe = 100
+  whatItMeans: string;
+  successor?: string;        // Successor-Benchmark bei Sättigung (≥95% Gap)
+}
+
+const pillars: Pillar[] = pillarsData.pillars as Pillar[];
+
+// Weighted Geometric Mean Berechnung
+// rawGap = tatsächlicher Prozentwert (kann >100 sein, wenn SOTA > Baseline)
+// gap = auf 100 gecapped für die Score-Formel (>100% Performance addiert nichts)
+const pillarsWithGap = pillars.map((p) => {
+  const rawGap = (p.sota / p.baseline) * 100;
+  const gap = Math.min(100, Math.max(1, rawGap));
+  const saturated = rawGap >= 100;
+  return { ...p, rawGap, gap, saturated };
+});
+
+const totalWeight = pillarsWithGap.reduce((s, p) => s + p.weight, 0);
+const lnSum = pillarsWithGap.reduce((s, p) => s + p.weight * Math.log(p.gap), 0);
+const composite = Math.round(Math.exp(lnSum / totalWeight));
+
+// Letztes Update für Footnote
+const lastUpdate = pillars.reduce(
+  (latest, p) => (p.sotaDate > latest ? p.sotaDate : latest),
+  '2025-01'
+);
+
+// Farb-Logik
+const colorFor = (gap: number): string =>
+  gap >= 80 ? 'var(--color-burgundy)' : gap >= 50 ? 'var(--color-accent-deep)' : 'var(--color-amber)';
+---
+
+<section id="proximity" class="relative py-20 md:py-28 overflow-hidden">
+  <!-- Subtle dot pattern -->
+  <div class="absolute inset-0 dot-bg opacity-30 pointer-events-none"></div>
+
+  <div class="relative section-container">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto" style="margin-bottom: 4rem;">
+      <div class="badge mx-auto" style="margin-bottom: 1.5rem;">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Live-Indikator · Stand Q{Math.floor((parseInt(lastUpdate.split('-')[1]) - 1) / 3) + 1} {lastUpdate.split('-')[0]} · Nächstes Update Q{Math.floor((parseInt(lastUpdate.split('-')[1]) - 1) / 3) + 2} {lastUpdate.split('-')[0]}
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Wie nah sind wir<br/>
+        <em class="italic gradient-text">eigentlich</em> dran?
+      </h2>
+      <p class="text-text-secondary text-lg md:text-xl leading-relaxed font-light">
+        Acht Dimensionen, acht externe Benchmarks, keine Meinungen.
+        Der Score ist ein gewichtetes geometrisches Mittel der Lücken zwischen heutiger SOTA und menschlicher Referenz.
+      </p>
+    </div>
+
+    <!-- Composite Score -->
+    <div class="max-w-5xl mx-auto" style="margin-bottom: 4rem;">
+      <div class="ink rounded-3xl p-8 md:p-14 relative overflow-hidden">
+        <div
+          class="absolute -top-1/2 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl pointer-events-none"
+          style="background: radial-gradient(circle, rgba(122, 85, 204, 0.4), transparent 70%);"
+        ></div>
+
+        <div class="relative grid grid-cols-1 md:grid-cols-[1fr_auto_1fr] gap-8 md:gap-12 items-center">
+          <div class="text-center md:text-right">
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-dim mb-3">
+              Composite Score
+            </div>
+            <div class="font-display text-2xl md:text-3xl text-bg-primary leading-tight">
+              AGI Proximity<br/>
+              <span class="opacity-60 italic">Index {lastUpdate.split('-')[0]}</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col items-center">
+            <div class="relative">
+              <div
+                class="font-display text-[clamp(7rem,18vw,16rem)] leading-none text-bg-primary tabular-nums tracking-tighter"
+                data-proximity-counter
+                data-target={composite}
+              >
+                {composite}
+              </div>
+              <span class="absolute top-4 -right-8 md:-right-12 text-3xl md:text-5xl font-display opacity-50 text-bg-primary">%</span>
+            </div>
+            <div class="mt-4 flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em] opacity-50 text-bg-primary">
+              <span class="w-8 h-px bg-bg-primary opacity-50"></span>
+              {composite >= 75 ? 'Schwelle nahe' : composite >= 50 ? 'Vor der Schwelle' : 'Tief unter Schwelle'}
+              <span class="w-8 h-px bg-bg-primary opacity-50"></span>
+            </div>
+          </div>
+
+          <div class="text-center md:text-left">
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-dim mb-3">
+              Wie rechnet sich das?
+            </div>
+            <p class="text-bg-primary opacity-80 text-sm leading-relaxed">
+              Gewichtetes geometrisches Mittel von <span class="font-mono font-medium opacity-100">{pillars.length}</span> Benchmark-Gaps.
+              Geometrisch heißt: eine einzelne niedrige Dimension (z.B. Self-Improvement) drückt den Gesamtwert überproportional — Kompensation ist bewusst ausgeschlossen.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section divider -->
+    <div class="flex items-center gap-4 max-w-5xl mx-auto" style="margin-bottom: 2.5rem;">
+      <div class="flex-1 h-px bg-border-strong"></div>
+      <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted whitespace-nowrap">
+        Die Acht Dimensionen · alle Werte belegbar
+      </div>
+      <div class="flex-1 h-px bg-border-strong"></div>
+    </div>
+
+    <!-- Eight Pillars -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5 md:gap-6">
+      {pillarsWithGap.map((p, i) => {
+        const c = colorFor(p.gap);
+        return (
+          <article
+            class="proximity-card group relative paper-elevated overflow-hidden hover:bg-bg-card-hover transition-all duration-500"
+            style="padding: 1.75rem 2rem; border-radius: 1.5rem;"
+          >
+            <!-- Top meta: Pillar-number + weight -->
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted">
+                {String(i + 1).padStart(2, '0')} · Pillar
+              </div>
+              <div class="text-[10px] font-mono text-text-muted">
+                Gewicht {p.weight}%
+              </div>
+            </div>
+
+            <!-- Title + Gap -->
+            <div class="flex items-end justify-between gap-4 mb-4">
+              <h3 class="font-display font-normal text-text-primary leading-none" style="font-size: clamp(1.4rem, 2.4vw, 1.9rem);">
+                {p.label}
+              </h3>
+              <div
+                class="flex items-baseline gap-1 shrink-0"
+                title={p.saturated ? `Benchmark gesättigt — SOTA ${p.sota}% > Baseline ${p.baseline}% (>100% zählt für den Score nicht doppelt)` : `${Math.round(p.gap)}% der menschlichen Referenz erreicht`}
+              >
+                <span
+                  class="font-display tabular-nums leading-none"
+                  style={`color: ${c}; font-size: clamp(2.25rem, 3.5vw, 2.75rem);`}
+                >
+                  {p.saturated ? '100' : Math.round(p.gap)}
+                </span>
+                <span class="text-sm font-mono text-text-muted">
+                  {p.saturated ? '+' : '%'}
+                </span>
+              </div>
+            </div>
+
+            <!-- Progress bar (cap bei 100 — >100% addiert nichts) -->
+            <div class="relative h-2 bg-bg-tertiary rounded-full overflow-hidden mb-2">
+              <div
+                class="absolute inset-y-0 left-0 rounded-full transition-all duration-1000"
+                style={`width: ${p.gap}%; background: ${c};`}
+              ></div>
+            </div>
+
+            <!-- Saturation-Hinweis: nur anzeigen wenn tatsächlich gesättigt -->
+            {p.saturated && (
+              <div class="text-[10px] font-mono uppercase tracking-[0.15em] mb-3 inline-flex items-center gap-1.5" style={`color: ${c};`}>
+                <span>✓ Benchmark gesättigt</span>
+                <span class="text-text-muted normal-case tracking-normal">
+                  (SOTA {p.sota}% &gt; Baseline {p.baseline}%)
+                </span>
+              </div>
+            )}
+            {!p.saturated && <div class="mb-2"></div>}
+
+            <!-- SOTA vs Baseline -->
+            <div class="grid grid-cols-2 gap-3 mb-4 text-[11px]">
+              <div>
+                <div class="font-mono uppercase tracking-[0.15em] text-text-muted mb-1">Aktuelle SOTA</div>
+                <div class="text-text-primary font-medium">
+                  {p.sota}% · <span class="text-text-secondary">{p.sotaLeader}</span>
+                </div>
+              </div>
+              <div>
+                <div class="font-mono uppercase tracking-[0.15em] text-text-muted mb-1">Referenz (Mensch)</div>
+                <div class="text-text-primary font-medium">
+                  {p.baseline}% · <span class="text-text-secondary">{p.baselineLabel}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Benchmark Link + Successor -->
+            <div class="flex flex-wrap items-center gap-2 text-[10px] font-mono mb-3">
+              <a
+                href={p.benchmarkUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 px-2 py-1 rounded-md border transition-colors hover:border-accent hover:text-accent-deep"
+                style={`border-color: ${c}40; color: ${c};`}
+              >
+                {p.benchmark}
+                <svg class="w-2.5 h-2.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </a>
+              {p.successor && (
+                <span class="text-text-muted">
+                  {p.gap >= 95 ? '⚠ gesättigt' : 'Successor'}: {p.successor}
+                </span>
+              )}
+            </div>
+
+            <!-- Interpretation -->
+            <p class="text-[13px] text-text-secondary leading-relaxed mb-3">
+              {p.whatItMeans}
+            </p>
+
+            <!-- Quellen-Footer -->
+            <div class="pt-3 border-t border-border text-[10px] font-mono text-text-muted flex flex-wrap gap-x-3 gap-y-1">
+              <a
+                href={p.sotaSourceUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1 hover:text-accent-deep transition-colors"
+              >
+                Quelle SOTA ↗
+              </a>
+              <span>·</span>
+              <span>Baseline: {p.baselineSource}</span>
+              <span>·</span>
+              <span>Stand {p.sotaDate}</span>
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <!-- Methodik: Transparenz-Block -->
+    <div class="max-w-4xl mx-auto mt-16">
+      <details class="paper-elevated rounded-3xl overflow-hidden group">
+        <summary class="list-none cursor-pointer p-8 md:p-10 flex items-start gap-5 hover:bg-bg-card-hover transition-colors">
+          <div class="shrink-0 w-10 h-10 rounded-xl bg-bg-ink text-bg-primary flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 7h6m-6 4h6m-6 4h4m3-14H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V5a2 2 0 0 0-2-2z"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Methodik</div>
+            <h3 class="font-display text-2xl md:text-3xl text-text-primary leading-tight mb-1">
+              Wie kommt der Score zustande?
+            </h3>
+            <p class="text-sm text-text-secondary">
+              Komplette Formel, Gewichtungen, Sättigungs-Regel und Quellen — transparent.
+            </p>
+          </div>
+          <svg class="w-5 h-5 mt-2 text-text-muted group-open:rotate-180 transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </summary>
+
+        <div class="px-8 md:px-10 pb-10 space-y-8 text-[14px] text-text-secondary leading-relaxed">
+          <!-- Formel -->
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-3">Berechnungsformel</div>
+            <div class="paper rounded-2xl p-6 font-mono text-sm text-text-primary leading-relaxed">
+              <div class="mb-2"><span class="text-text-muted">// pro Pillar:</span></div>
+              <div class="mb-4">gap<sub>i</sub> = min(100, SOTA<sub>i</sub> ÷ Baseline<sub>i</sub> × 100)</div>
+              <div class="mb-2"><span class="text-text-muted">// Gesamt-Score (Weighted Geometric Mean):</span></div>
+              <div>AGI_Proximity = exp( Σ w<sub>i</sub> × ln(gap<sub>i</sub>) ÷ Σ w<sub>i</sub> )</div>
+            </div>
+          </div>
+
+          <!-- Warum geometrisch -->
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Warum geometrisch statt arithmetisch?</div>
+            <p>
+              Ein arithmetisches Mittel würde Kompensation erlauben: "Multimodal 99% gleicht Self-Improvement 22% aus". Das ist für AGI irreführend.
+              Ein geometrisches Mittel bestraft Extreme — eine sehr niedrige Dimension drückt den Gesamtwert überproportional, weil AGI *alle* Fähigkeiten gleichzeitig braucht.
+            </p>
+          </div>
+
+          <!-- Gewichtungen -->
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-3">Gewichtungslogik</div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[13px]">
+              {pillars
+                .slice()
+                .sort((a, b) => b.weight - a.weight)
+                .map((p) => (
+                  <div class="flex items-center gap-3">
+                    <div class="font-mono tabular-nums text-text-muted w-8">{p.weight}%</div>
+                    <div class="h-2 flex-1 bg-bg-tertiary rounded-full overflow-hidden">
+                      <div class="h-full rounded-full bg-accent-deep" style={`width: ${p.weight * 4}%;`}></div>
+                    </div>
+                    <div class="text-text-primary flex-1 text-xs">{p.label}</div>
+                  </div>
+                ))}
+            </div>
+            <p class="mt-4">
+              <strong class="text-text-primary">Long-Horizon Agency (20%)</strong> und
+              <strong class="text-text-primary">Self-Improvement (15%)</strong> sind die höchsten Gewichte,
+              weil sie die *qualitativen* Sprünge zu AGI repräsentieren.
+              Gesättigte Dimensionen (Knowledge, Math, Multimodal) bekommen nur 8–10%, weil sie "fast durchgelaufen" sind.
+            </p>
+          </div>
+
+          <!-- Saturation -->
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">Sättigungs-Regel (automatisch)</div>
+            <p>
+              Erreicht ein Benchmark-Gap <strong class="text-text-primary">≥ 95% über drei Quartale in Folge</strong>,
+              wird automatisch auf den Successor-Benchmark umgestellt (z.B. GPQA → HLE / Humanity's Last Exam).
+              Damit bleibt der Index eine ehrliche Messung des <em>Rest-Gaps</em> — und wird nicht künstlich "fertig".
+            </p>
+          </div>
+
+          <!-- Primärquellen-Liste -->
+          <div>
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-3">Alle Primärquellen</div>
+            <ul class="space-y-2">
+              {pillars.map((p) => (
+                <li class="flex flex-wrap items-center gap-2 text-[13px]">
+                  <span class="font-mono text-text-muted w-8 text-right">{p.weight}%</span>
+                  <span class="text-text-primary font-medium">{p.label}</span>
+                  <span class="text-text-muted">—</span>
+                  <a
+                    href={p.benchmarkUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-accent-deep hover:underline"
+                  >
+                    {p.benchmark} ↗
+                  </a>
+                  <span class="text-text-muted text-xs">·</span>
+                  <span class="text-text-muted text-xs italic">{p.baselineSource}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <!-- Disclaimer -->
+          <div class="pt-6 border-t border-border">
+            <p class="text-xs font-mono text-text-muted leading-relaxed">
+              Keine Meinungen, keine Gewichte aus dem Bauch — nur öffentliche Benchmarks + veröffentlichte Human-Baselines.
+              Werte werden quartalsweise aktualisiert. Letztes Update: <strong>{lastUpdate}</strong>.
+              Fehler? → Issue auf <a href="https://github.com/braum-me/agi.jetzt" class="underline hover:text-text-primary" target="_blank" rel="noopener noreferrer">GitHub</a> öffnen.
+            </p>
+          </div>
+        </div>
+      </details>
+    </div>
+
+    <!-- Historical Trend (Sparkline) -->
+    {(() => {
+      const hist = historyData.history;
+      const W = 880, H = 220, PAD = 32;
+      const minScore = Math.min(...hist.map(h => h.score));
+      const maxScore = Math.max(composite, ...hist.map(h => h.score));
+      const yScale = (s: number) => H - PAD - ((s - minScore) / (maxScore - minScore)) * (H - 2 * PAD);
+      const xScale = (i: number) => PAD + (i / (hist.length - 1)) * (W - 2 * PAD);
+      const pathD = hist.map((h, i) => `${i === 0 ? 'M' : 'L'}${xScale(i).toFixed(1)},${yScale(h.score).toFixed(1)}`).join(' ');
+      const areaD = `${pathD} L${xScale(hist.length - 1).toFixed(1)},${H - PAD} L${PAD},${H - PAD} Z`;
+      const latest = hist[hist.length - 1];
+      const first = hist[0];
+      const delta = latest.score - first.score;
+      return (
+        <div class="max-w-5xl mx-auto mt-12">
+          <div class="paper-elevated rounded-3xl p-6 md:p-10 overflow-hidden">
+            <div class="flex flex-wrap items-end justify-between gap-4 mb-6">
+              <div>
+                <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-2">
+                  Historische Entwicklung
+                </div>
+                <h3 class="font-display text-2xl md:text-3xl text-text-primary leading-tight">
+                  Wo standen wir <em class="italic">vor 3 Jahren</em>?
+                </h3>
+              </div>
+              <div class="flex items-baseline gap-2 shrink-0">
+                <span class="font-display text-3xl md:text-4xl text-burgundy tabular-nums">+{delta}</span>
+                <span class="text-xs font-mono text-text-muted uppercase tracking-wider">Punkte seit {first.quarter}</span>
+              </div>
+            </div>
+
+            <div class="relative w-full" style="aspect-ratio: 880 / 220;">
+              <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-full" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="histArea" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="var(--color-accent-deep)" stop-opacity="0.32"/>
+                    <stop offset="100%" stop-color="var(--color-accent-deep)" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <!-- Gridlines (3 horizontal) -->
+                {[0.25, 0.5, 0.75].map((t) => (
+                  <line
+                    x1={PAD} x2={W - PAD}
+                    y1={PAD + t * (H - 2 * PAD)}
+                    y2={PAD + t * (H - 2 * PAD)}
+                    stroke="currentColor" stroke-opacity="0.08"
+                  />
+                ))}
+                <path d={areaD} fill="url(#histArea)"/>
+                <path d={pathD} fill="none" stroke="var(--color-accent-deep)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                {hist.map((h, i) => (
+                  <g>
+                    <circle cx={xScale(i)} cy={yScale(h.score)} r={i === hist.length - 1 ? 5 : 3} fill="var(--color-bg-primary)" stroke="var(--color-accent-deep)" stroke-width="1.75"/>
+                    {(i === 0 || i === hist.length - 1 || i % 4 === 0) && (
+                      <text x={xScale(i)} y={H - 8} text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="var(--color-text-muted)">
+                        {h.quarter}
+                      </text>
+                    )}
+                  </g>
+                ))}
+                <text x={xScale(hist.length - 1)} y={yScale(latest.score) - 12} text-anchor="end" font-family="ui-monospace, monospace" font-size="11" font-weight="600" fill="var(--color-burgundy)">
+                  {latest.score}%
+                </text>
+                <text x={xScale(0)} y={yScale(first.score) - 12} text-anchor="start" font-family="ui-monospace, monospace" font-size="11" fill="var(--color-text-muted)">
+                  {first.score}%
+                </text>
+              </svg>
+            </div>
+
+            <div class="mt-5 pt-5 border-t border-border grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+              <div>
+                <div class="font-mono text-text-muted uppercase tracking-wider mb-1">Trend pro Quartal</div>
+                <div class="text-text-primary font-medium">+{(delta / (hist.length - 1)).toFixed(1)} Punkte/Q</div>
+              </div>
+              <div>
+                <div class="font-mono text-text-muted uppercase tracking-wider mb-1">Beschleunigung 2025</div>
+                <div class="text-text-primary font-medium">+{hist[hist.length - 1].score - hist[hist.length - 5].score} Punkte/Jahr</div>
+              </div>
+              <div>
+                <div class="font-mono text-text-muted uppercase tracking-wider mb-1">Aktueller Punkt</div>
+                <div class="text-text-primary font-medium">{latest.note}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })()}
+
+    <!-- Interactive Weight Calculator -->
+    <div class="max-w-5xl mx-auto mt-8" data-pillars-config={JSON.stringify(pillarsWithGap.map((p) => ({ key: p.key, label: p.label, gap: Math.round(p.gap), weight: p.weight })))}>
+      <details class="paper-elevated rounded-3xl overflow-hidden group">
+        <summary class="list-none cursor-pointer p-7 md:p-9 flex items-center gap-5 hover:bg-bg-card-hover transition-colors">
+          <div class="shrink-0 w-10 h-10 rounded-xl bg-burgundy text-bg-primary flex items-center justify-center">
+            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 17l6-6 4 4 8-8M14 7h7v7"/>
+            </svg>
+          </div>
+          <div class="flex-1">
+            <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">Eigene Gewichtung</div>
+            <h3 class="font-display text-xl md:text-2xl text-text-primary leading-tight">
+              <em class="italic">Was wäre, wenn</em> du gewichten würdest?
+            </h3>
+            <p class="text-sm text-text-secondary mt-1">Schiebe die Regler. Score rechnet live nach geometrischem Mittel.</p>
+          </div>
+          <svg class="w-5 h-5 text-text-muted group-open:rotate-180 transition-transform duration-300 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </summary>
+
+        <div class="px-7 md:px-9 pb-9 pt-2">
+          <div class="flex flex-wrap items-end justify-between gap-4 mb-8 pb-6 border-b border-border">
+            <div>
+              <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">Dein Score</div>
+              <div class="font-display text-6xl md:text-7xl text-burgundy tabular-nums leading-none" data-calc-score>{composite}</div>
+            </div>
+            <div class="flex items-end gap-6 text-right">
+              <div>
+                <div class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted mb-1">Δ Default</div>
+                <div class="font-display text-2xl tabular-nums" data-calc-delta>±0</div>
+              </div>
+              <button type="button" data-calc-reset class="text-xs font-mono uppercase tracking-[0.15em] text-text-muted hover:text-text-primary underline underline-offset-4">
+                Reset
+              </button>
+            </div>
+          </div>
+
+          <div class="space-y-4">
+            {pillarsWithGap.map((p) => (
+              <div class="grid grid-cols-[1fr_auto] gap-4 items-center" data-pillar-key={p.key}>
+                <div>
+                  <div class="flex items-baseline justify-between mb-1.5">
+                    <div class="text-sm text-text-primary font-medium">{p.label}</div>
+                    <div class="text-[11px] font-mono text-text-muted tabular-nums">
+                      Gap <span class="text-text-primary">{Math.round(p.gap)}%</span> · Gewicht <span class="text-burgundy font-medium" data-pillar-weight-label>{p.weight}</span>%
+                    </div>
+                  </div>
+                  <input
+                    type="range"
+                    min="0"
+                    max="40"
+                    step="1"
+                    value={p.weight}
+                    data-pillar-weight={p.key}
+                    class="w-full h-1.5 rounded-full appearance-none cursor-pointer pillar-slider"
+                    style={`background: linear-gradient(to right, var(--color-burgundy) 0%, var(--color-burgundy) ${(p.weight / 40) * 100}%, var(--color-bg-tertiary) ${(p.weight / 40) * 100}%, var(--color-bg-tertiary) 100%);`}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <p class="text-xs text-text-muted mt-6 leading-relaxed">
+            <strong class="text-text-primary">Beachte:</strong> Geometrisches Mittel — eine niedrige Dimension zieht den Score überproportional. Wenn du z.B. Self-Improvement (heute 22% Gap) auf 40% Gewicht hebst, fällt der Score deutlich. Das ist kein Bug, sondern die Logik: AGI braucht alle Fähigkeiten gleichzeitig.
+          </p>
+        </div>
+      </details>
+    </div>
+
+    <!-- Share-Row -->
+    <div class="flex flex-col items-center justify-center gap-3 mt-12">
+      <button
+        id="share-proximity"
+        class="btn-secondary"
+        type="button"
+      >
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        <span>Aktuellen Stand teilen</span>
+      </button>
+      <span
+        id="share-feedback"
+        class="text-xs font-mono text-accent-deep opacity-0 transition-opacity h-4"
+      >
+        ✓ Link kopiert
+      </span>
+    </div>
+
+    <script define:vars={{ composite }}>
+      const btn = document.getElementById('share-proximity');
+      const fb = document.getElementById('share-feedback');
+      btn?.addEventListener('click', async () => {
+        const text = `AGI Proximity Index: ${composite}/100 — basierend auf 8 externen Benchmarks. agi.jetzt`;
+        const url = 'https://agi.jetzt/#proximity';
+
+        if (navigator.share) {
+          try {
+            await navigator.share({ title: 'AGI Proximity Index', text, url });
+            return;
+          } catch {}
+        }
+
+        try {
+          await navigator.clipboard.writeText(`${text}\n${url}`);
+          fb.style.opacity = '1';
+          setTimeout(() => { fb.style.opacity = '0'; }, 2000);
+        } catch {}
+      });
+    </script>
+  </div>
+</section>
+
+<script>
+  // Counter-Animation für Composite-Score beim ersten Sichtbarwerden
+  const section = document.getElementById('proximity');
+  if (section) {
+    const counter = section.querySelector<HTMLElement>('[data-proximity-counter]');
+    const target = parseInt(counter?.dataset.target || '0', 10);
+
+    const animate = (el: HTMLElement, to: number, duration = 2000) => {
+      const start = performance.now();
+      const easeOut = (t: number) => 1 - Math.pow(1 - t, 3);
+      const tick = (now: number) => {
+        const progress = Math.min(1, (now - start) / duration);
+        el.textContent = String(Math.round(to * easeOut(progress)));
+        if (progress < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    };
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) {
+          if (e.isIntersecting && counter) {
+            animate(counter, target, 2200);
+            io.unobserve(e.target);
+          }
+        }
+      },
+      { threshold: 0.3 }
+    );
+    io.observe(section);
+  }
+
+  // Interaktiver Gewichtungs-Rechner
+  const calcWrap = document.querySelector<HTMLElement>('[data-pillars-config]');
+  if (calcWrap) {
+    interface CfgPillar { key: string; label: string; gap: number; weight: number; }
+    const config: CfgPillar[] = JSON.parse(calcWrap.dataset.pillarsConfig || '[]');
+    const defaultWeights: Record<string, number> = {};
+    config.forEach((p) => { defaultWeights[p.key] = p.weight; });
+
+    const scoreEl = calcWrap.querySelector<HTMLElement>('[data-calc-score]');
+    const deltaEl = calcWrap.querySelector<HTMLElement>('[data-calc-delta]');
+    const sliders = Array.from(calcWrap.querySelectorAll<HTMLInputElement>('[data-pillar-weight]'));
+    const resetBtn = calcWrap.querySelector<HTMLButtonElement>('[data-calc-reset]');
+    const baseScore = parseInt(scoreEl?.textContent || '0', 10);
+
+    const recompute = () => {
+      let totalWeight = 0;
+      let lnSum = 0;
+      sliders.forEach((slider) => {
+        const key = slider.dataset.pillarWeight!;
+        const w = parseFloat(slider.value);
+        const pillar = config.find((p) => p.key === key)!;
+        const gap = Math.max(1, pillar.gap);
+        totalWeight += w;
+        lnSum += w * Math.log(gap);
+        // Update gradient fill
+        const pct = (w / 40) * 100;
+        slider.style.background = `linear-gradient(to right, var(--color-burgundy) 0%, var(--color-burgundy) ${pct}%, var(--color-bg-tertiary) ${pct}%, var(--color-bg-tertiary) 100%)`;
+        // Update label
+        const wrap = slider.closest<HTMLElement>('[data-pillar-key]');
+        const label = wrap?.querySelector<HTMLElement>('[data-pillar-weight-label]');
+        if (label) label.textContent = String(w);
+      });
+      if (totalWeight === 0) {
+        if (scoreEl) scoreEl.textContent = '—';
+        if (deltaEl) deltaEl.textContent = '—';
+        return;
+      }
+      const score = Math.round(Math.exp(lnSum / totalWeight));
+      if (scoreEl) scoreEl.textContent = String(score);
+      if (deltaEl) {
+        const delta = score - baseScore;
+        deltaEl.textContent = `${delta > 0 ? '+' : ''}${delta}`;
+        deltaEl.style.color = delta === 0 ? '' : delta > 0 ? 'var(--color-success, #2d5a3f)' : 'var(--color-burgundy)';
+      }
+    };
+
+    sliders.forEach((s) => s.addEventListener('input', recompute));
+    resetBtn?.addEventListener('click', () => {
+      sliders.forEach((s) => {
+        s.value = String(defaultWeights[s.dataset.pillarWeight!] ?? 10);
+      });
+      recompute();
+    });
+  }
+</script>
+
+<style>
+  .pillar-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-bg-primary);
+    border: 2px solid var(--color-burgundy);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(139, 44, 77, 0.3);
+    transition: transform 0.15s;
+  }
+  .pillar-slider::-webkit-slider-thumb:hover { transform: scale(1.15); }
+  .pillar-slider::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--color-bg-primary);
+    border: 2px solid var(--color-burgundy);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(139, 44, 77, 0.3);
+  }
+</style>

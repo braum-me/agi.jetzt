@@ -1,0 +1,22 @@
+{
+  "stand": "Q1 2026",
+  "source": "LinkedIn Economic Graph + Levels.fyi + Company Career Pages",
+  "total_ai_job_listings": 128400,
+  "growth_yoy": "+62%",
+  "top_hirers": [
+    { "company": "Meta", "open_roles": 1840, "change": "+340%", "top_role": "AI Research Scientist" },
+    { "company": "OpenAI", "open_roles": 820, "change": "+124%", "top_role": "Applied AI Engineer" },
+    { "company": "Anthropic", "open_roles": 680, "change": "+187%", "top_role": "ML Engineer (Alignment)" },
+    { "company": "Google DeepMind", "open_roles": 610, "change": "+42%", "top_role": "Research Engineer" },
+    { "company": "xAI", "open_roles": 520, "change": "+215%", "top_role": "Systems Engineer" },
+    { "company": "NVIDIA", "open_roles": 480, "change": "+68%", "top_role": "AI Solutions Architect" }
+  ],
+  "salary_medians_usd": [
+    { "role": "ML Research Scientist", "level": "Staff+", "total_comp": 1150000 },
+    { "role": "AI Research Engineer", "level": "Senior", "total_comp": 720000 },
+    { "role": "Applied AI Engineer", "level": "Senior", "total_comp": 485000 },
+    { "role": "ML Infra Engineer", "level": "Senior", "total_comp": 540000 },
+    { "role": "AI Safety Researcher", "level": "Senior", "total_comp": 620000 },
+    { "role": "AI Product Manager", "level": "Senior", "total_comp": 420000 }
+  ]
+}

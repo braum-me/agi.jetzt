@@ -1,0 +1,126 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import newsData from '../../../data/news.json';
+
+const sorted = [...newsData].sort(
+  (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
+);
+
+const catConfig: Record<string, { label: string; color: string; bg: string }> = {
+  research: { label: 'Research', color: '#5b3aa3', bg: 'rgba(91, 58, 163, 0.1)' },
+  industrie: { label: 'Industrie', color: '#1a1814', bg: 'rgba(26, 24, 20, 0.06)' },
+  open_source: { label: 'Open Source', color: '#2d5a3f', bg: 'rgba(45, 90, 63, 0.1)' },
+  politik: { label: 'Politik', color: '#b8721c', bg: 'rgba(184, 114, 28, 0.1)' },
+  produkt: { label: 'Produkt', color: '#8b2c4d', bg: 'rgba(139, 44, 77, 0.1)' },
+};
+
+const categories = [
+  { key: 'alle', label: 'Alle' },
+  { key: 'research', label: 'Research' },
+  { key: 'industrie', label: 'Industrie' },
+  { key: 'open_source', label: 'Open Source' },
+  { key: 'politik', label: 'Politik' },
+];
+---
+
+<WidgetCard
+  anchor="news"
+  title="News Feed — Voll"
+  subtitle={`${sorted.length} Einträge · sortierbar, filterbar · geteilt mit Landing`}
+  size="md"
+  span="col-span-12"
+>
+  <!-- Filter -->
+  <div class="flex flex-wrap gap-2 mb-4" id="dash-news-filters">
+    {categories.map((cat) => (
+      <button
+        class={`dash-filter-btn px-3 py-1 rounded-full text-xs font-medium transition-all duration-300 border ${
+          cat.key === 'alle'
+            ? 'bg-bg-ink text-bg-primary border-bg-ink'
+            : 'bg-bg-card text-text-secondary border-border hover:text-text-primary hover:border-text-muted'
+        }`}
+        data-filter={cat.key}
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3" id="dash-news-grid">
+    {sorted.map((n) => {
+      const cat = catConfig[n.category] || catConfig['research'];
+      const formattedDate = new Date(n.date).toLocaleDateString('de-DE', {
+        day: '2-digit', month: 'short', year: 'numeric',
+      });
+      const hasUrl = !!n.source_url;
+      const Tag: any = hasUrl ? 'a' : 'article';
+      const linkAttrs = hasUrl
+        ? { href: n.source_url, target: '_blank', rel: 'noopener noreferrer' }
+        : {};
+      return (
+        <Tag
+          {...linkAttrs}
+          class="dash-news-card group paper rounded-xl p-4 border border-border hover:bg-bg-card-hover hover:border-accent transition-colors block no-underline"
+          data-category={n.category}
+        >
+          <div class="flex items-start justify-between gap-2 mb-2">
+            <span
+              class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-mono uppercase tracking-wider border"
+              style={`background: ${cat.bg}; color: ${cat.color}; border-color: ${cat.color}40;`}
+            >
+              {cat.label}
+            </span>
+            <div class="flex items-center gap-0.5" title={`Relevanz: ${n.relevance_score}/10`}>
+              {Array.from({ length: 10 }, (_, i) => (
+                <div class={`w-0.5 h-2.5 rounded-full ${i < n.relevance_score ? 'bg-accent-deep' : 'bg-border-strong'}`}></div>
+              ))}
+            </div>
+          </div>
+          <h4 class="font-display text-sm font-medium text-text-primary leading-snug mb-2 group-hover:text-accent-deep transition-colors">{n.headline}</h4>
+          <p class="text-xs text-text-secondary leading-relaxed mb-2 line-clamp-2">{n.summary}</p>
+          <div class="flex items-center justify-between gap-2 text-[10px] font-mono text-text-muted">
+            <span class="truncate">{n.source} · {formattedDate}</span>
+            {hasUrl && (
+              <span class="inline-flex items-center gap-0.5 shrink-0 group-hover:text-accent-deep transition-colors">
+                <span class="hidden sm:inline">öffnen</span>
+                <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4M14 4h6m0 0v6m0-6L10 14"/>
+                </svg>
+              </span>
+            )}
+          </div>
+        </Tag>
+      );
+    })}
+  </div>
+</WidgetCard>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('.dash-filter-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.dash-news-card');
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const filter = btn.dataset.filter;
+      btns.forEach((b) => {
+        b.classList.remove('bg-bg-ink', 'text-bg-primary', 'border-bg-ink');
+        b.classList.add('bg-bg-card', 'text-text-secondary', 'border-border');
+      });
+      btn.classList.add('bg-bg-ink', 'text-bg-primary', 'border-bg-ink');
+      btn.classList.remove('bg-bg-card', 'text-text-secondary', 'border-border');
+
+      cards.forEach((card) => {
+        card.style.display = (filter === 'alle' || card.dataset.category === filter) ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+<style>
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+</style>

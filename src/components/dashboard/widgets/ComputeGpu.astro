@@ -1,0 +1,49 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/compute.json';
+---
+
+<WidgetCard
+  title="Compute & GPU Markt"
+  subtitle="Frontier-Chips, Preise und Cluster-Scale"
+  stand={data.stand}
+  source={data.source}
+  size="md"
+  span="md:col-span-3"
+  moreLink="/compute"
+  moreLinkLabel="Die Kurve"
+>
+  <div class="space-y-4">
+    <!-- GPU Prices -->
+    <div>
+      <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-2">GPU Cloud-Preise</div>
+      <div class="space-y-1.5">
+        {data.gpu_prices.slice(0, 5).map((g) => (
+          <div class="flex items-center justify-between text-xs gap-2">
+            <span class="text-text-primary font-medium truncate">{g.model}</span>
+            <span class="font-mono text-text-secondary shrink-0">${g.cloud_hour}/h</span>
+            <span class={`text-[10px] font-mono uppercase tracking-wider shrink-0 ${
+              g.availability === 'stable' ? 'text-forest' :
+              g.availability === 'limited' ? 'text-amber' : 'text-burgundy'
+            }`}>
+              {g.availability === 'stable' ? '●' : g.availability === 'limited' ? '◐' : '○'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Top Clusters -->
+    <div>
+      <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-text-muted mb-2">Top Clusters</div>
+      <div class="space-y-1.5">
+        {data.cluster_sizes.slice(0, 4).map((c) => (
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-text-primary truncate pr-2">{c.org}</span>
+            <span class="font-mono tabular-nums text-accent-deep shrink-0">{(c.gpus / 1000).toFixed(0)}k</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</WidgetCard>

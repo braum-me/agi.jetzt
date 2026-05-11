@@ -1,0 +1,99 @@
+{
+  "stand": "Q4 2025 (Pichai/Altman Earnings)",
+  "source": "Quartalsweise bestätigte Statements — keine Monatswerte (würden Präzision suggerieren, die niemand hat)",
+  "note": "Drei verschiedene Metriken — bewusst getrennt: ChatGPT als WAU (so kommuniziert OpenAI), Standalone-Apps als opt-in MAU. Plus: Google AI Overviews mit 2 Mrd. monatlichen Search-Nutzern als passive Exposition (siehe Kontext-Box, eigene Größenordnung — würde im Chart alles erschlagen). Wer Google rein über AI Overviews in der normalen Suche nutzt, ist NICHT in der Gemini-App-Linie enthalten. Datenpunkte sind quartalsweise Earnings-Snapshots — keine geglätteten Monatsverläufe.",
+  "quarters": ["2024-Q4", "2025-Q1", "2025-Q2", "2025-Q3", "2025-Q4"],
+  "products": [
+    {
+      "name": "ChatGPT (WAU)",
+      "color": "#5b3aa3",
+      "metric": "WAU",
+      "values": [300, 400, 500, 700, 900],
+      "valueNotes": [
+        "Dez 2024 — Altman/OpenAI Newsroom",
+        "Feb 2025 — verdoppelt seit Aug 2024",
+        "März 2025 — TechCrunch (verdoppelt in <6 Monaten)",
+        "Aug/Okt 2025 — DevDay-Statement Altman",
+        "Feb 2026 — OpenAI offiziell (für Q4 2025)"
+      ],
+      "sources": [
+        {"label": "OpenAI / PYMNTS — Dez 2024: 300M WAU", "url": "https://www.pymnts.com/artificial-intelligence-2/2024/chatgpt-reaches-300-million-weekly-active-users/"},
+        {"label": "TechCrunch — März 2025: 500M WAU", "url": "https://techcrunch.com/2025/03/06/chatgpt-doubled-its-weekly-active-users-in-under-6-months-thanks-to-new-releases/"},
+        {"label": "TechCrunch — Okt 2025: 800M WAU @ DevDay", "url": "https://techcrunch.com/2025/10/06/sam-altman-says-chatgpt-has-hit-800m-weekly-active-users/"},
+        {"label": "Search Engine Land — Feb 2026: 900M WAU", "url": "https://searchengineland.com/chatgpt-900-million-weekly-active-users-470492"}
+      ]
+    },
+    {
+      "name": "Gemini App (MAU)",
+      "color": "#8b2c4d",
+      "metric": "MAU",
+      "values": [90, 350, 450, 650, 750],
+      "valueNotes": [
+        "Okt 2024 — DoJ-Gerichtsdokumente",
+        "März 2025 — DoJ-Akten (350M)",
+        "Juli 2025 — Pichai Q2-Earnings (450M)",
+        "Okt 2025 — Pichai Q3-Earnings (650M)",
+        "Feb 2026 — Pichai Q4-Earnings (750M, explizit nur die App)"
+      ],
+      "sources": [
+        {"label": "PYMNTS — März 2025: 350M MAU (DoJ)", "url": "https://www.pymnts.com/news/artificial-intelligence/2025/google-gemini-reaches-350-million-monthly-active-users-lags-rivals/"},
+        {"label": "9to5Google — Okt 2025: 650M MAU (Q3-Earnings)", "url": "https://9to5google.com/2025/10/29/gemini-app-650-million-users/"},
+        {"label": "TechCrunch — Feb 2026: 750M MAU (Q4-Earnings, explizit nur die App, NICHT AI Overviews)", "url": "https://techcrunch.com/2026/02/04/googles-gemini-app-has-surpassed-750m-monthly-active-users/"},
+        {"label": "Hinweis: Distribution via Pixel/Workspace-Defaults erklärt großen Teil der App-Reichweite", "url": "https://blog.google/company-news/inside-google/message-ceo/alphabet-earnings-q4-2025/"}
+      ]
+    },
+    {
+      "name": "DeepSeek (MAU)",
+      "color": "#b8721c",
+      "metric": "MAU",
+      "values": [5, 33, 125, 132, 130],
+      "valueNotes": [
+        "Dez 2024 — Pre-R1, kleine Nutzerbasis",
+        "Jan 2025 — R1-Launch-Boom, Similarweb",
+        "Mai 2025 — Plateau-Beginn",
+        "Sep 2025 — stabil (China-lastig)",
+        "Dez 2025 — leichter Rückgang im Westen, stabil in CN"
+      ],
+      "sources": [
+        {"label": "SQ Magazine — Jan 2025: 33.7M MAU nach R1", "url": "https://sqmagazine.co.uk/deepseek-ai-statistics/"},
+        {"label": "Demandsage — Apr 2025: 96.88M MAU (+25.8% MoM)", "url": "https://www.demandsage.com/deepseek-statistics/"}
+      ]
+    },
+    {
+      "name": "Claude (MAU)",
+      "color": "#7a55cc",
+      "metric": "MAU",
+      "values": [16, 19, 26, 33, 50],
+      "valueNotes": [
+        "Dez 2024 — Similarweb-Visits / 4 + Apptopia-App",
+        "Q1 2025 — ~19M (Demandsage-Aggregat)",
+        "Q2 2025 — Wachstum durch Sonnet 4 / Projects",
+        "Q3 2025 — Wachstum nach Opus 4.5",
+        "Q4 2025 — geschätzt aus Similarweb-Visit-Sprung (~200M Visits/Monat)"
+      ],
+      "sources": [
+        {"label": "Demandsage — Claude Statistics 2026 (Aggregat)", "url": "https://www.demandsage.com/claude-ai-statistics/"},
+        {"label": "Similarweb — claude.ai (Web-Visits)", "url": "https://www.similarweb.com/website/claude.ai/"},
+        {"label": "Anthropic Economic Index Jan 2026 (kontextuell)", "url": "https://www.anthropic.com/research/anthropic-economic-index-january-2026-report"},
+        {"label": "Caveat: Anthropic veröffentlicht KEINE offiziellen User-Zahlen — alles Schätzung", "url": "https://www.anthropic.com/news"}
+      ]
+    },
+    {
+      "name": "Perplexity (MAU)",
+      "color": "#2d5a3f",
+      "metric": "MAU",
+      "values": [20, 22, 35, 42, 46],
+      "valueNotes": [
+        "Dez 2024 — PR-Briefing",
+        "Q1 2025 — ~22M MAU",
+        "Q2 2025 — 780M Queries/Monat (Srinivas) ≈ 35M MAU",
+        "Q3 2025 — PR-Briefing 42M",
+        "Q4 2025 — ~46M (Konsens aus Stats-Seiten)"
+      ],
+      "sources": [
+        {"label": "TechCrunch — Jun 2025: 780M Queries/Monat (Srinivas)", "url": "https://techcrunch.com/2025/06/05/perplexity-received-780-million-queries-last-month-ceo-says/"},
+        {"label": "Demandsage — Perplexity Statistics", "url": "https://www.demandsage.com/perplexity-ai-statistics/"}
+      ]
+    }
+  ]
+}

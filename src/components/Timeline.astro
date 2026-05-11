@@ -1,0 +1,287 @@
+---
+import timelineData from '../data/timeline.json';
+
+const items = timelineData;
+
+const getEra = (year: number) => {
+  if (year < 1980) return { era: 'Frühzeit', color: '#8b4a2c', icon: '◐' };
+  if (year < 2010) return { era: 'Stagnation & Comeback', color: '#b8721c', icon: '◑' };
+  if (year < 2020) return { era: 'Deep Learning Boom', color: '#5b3aa3', icon: '◓' };
+  if (year < 2025) return { era: 'LLM Revolution', color: '#7a55cc', icon: '◒' };
+  return { era: 'Reasoning Era', color: '#8b2c4d', icon: '●' };
+};
+---
+
+<section id="timeline" class="relative py-24 md:py-32">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        12 Momente · 80 Jahre
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Die Geschichte<br/>
+        <em class="italic gradient-text">in 12 Momenten</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        Nicht jede Veröffentlichung war ein Durchbruch. Diese hier waren es.
+      </p>
+    </div>
+
+    <!-- Hint + Controls -->
+    <div class="flex items-center justify-between gap-4 mb-6">
+      <p class="text-xs font-mono uppercase tracking-[0.2em] text-text-muted flex items-center gap-2">
+        <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M7 16l-4-4m0 0l4-4m-4 4h18"/>
+        </svg>
+        Trackpad, Shift+Wheel oder Pfeiltasten
+      </p>
+      <div class="flex items-center gap-2">
+        <button
+          id="timeline-prev"
+          type="button"
+          class="w-10 h-10 rounded-full paper-elevated flex items-center justify-center hover:bg-bg-card-hover transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          aria-label="Vorheriger Moment"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+          </svg>
+        </button>
+        <button
+          id="timeline-next"
+          type="button"
+          class="w-10 h-10 rounded-full paper-elevated flex items-center justify-center hover:bg-bg-card-hover transition-colors"
+          aria-label="Nächster Moment"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Horizontal scroll container — escapes the container for full-width -->
+  <div
+    id="timeline-scroll"
+    class="relative overflow-x-auto overflow-y-hidden no-scrollbar"
+    style="scroll-snap-type: x mandatory; scroll-behavior: smooth;"
+    tabindex="0"
+    aria-label="Timeline der KI-Geschichte"
+  >
+    <div class="flex items-stretch py-4" style="padding-left: max(1.5rem, calc((100vw - 1280px) / 2 + 1.5rem)); padding-right: max(1.5rem, calc((100vw - 1280px) / 2 + 1.5rem));">
+      {items.map((item, i) => {
+        const era = getEra(item.year);
+        const isFuture = item.impact === 'future';
+        return (
+          <div
+            class="timeline-slide shrink-0 pr-4 md:pr-5"
+            style="scroll-snap-align: start; width: min(520px, calc(100vw - 3rem));"
+            data-index={i}
+            data-year={item.year}
+          >
+            <article
+              class={`relative h-[70vh] min-h-[520px] max-h-[680px] rounded-3xl overflow-hidden group`}
+              style={isFuture
+                ? 'background: linear-gradient(135deg, #1a1814 0%, #3d1a2a 100%); box-shadow: 0 30px 80px -20px rgba(139, 44, 77, 0.3);'
+                : 'background: var(--color-bg-elevated); box-shadow: 0 20px 60px -15px rgba(26, 24, 20, 0.18), 0 0 0 1px var(--color-border);'
+              }
+            >
+              <!-- Big watermark year — bleibt innerhalb der Card -->
+              <div
+                class="absolute bottom-5 right-6 md:bottom-8 md:right-8 font-display leading-none tracking-tighter pointer-events-none select-none"
+                style={`font-size: clamp(5rem, 11vw, 9rem); color: ${isFuture ? 'rgba(255,255,255,0.08)' : 'rgba(26, 24, 20, 0.05)'};`}
+              >
+                {item.year}
+              </div>
+
+              <div class="relative h-full flex flex-col p-8 md:p-10">
+                <div class="flex items-center justify-between mb-6">
+                  <div class="flex items-center gap-2 text-[10px] font-mono uppercase tracking-[0.25em]" style={`color: ${isFuture ? 'rgba(255,255,255,0.55)' : era.color};`}>
+                    <span class="text-base leading-none">{era.icon}</span>
+                    {era.era}
+                  </div>
+                  <div class={`text-[10px] font-mono ${isFuture ? 'text-white/40' : 'text-text-muted'}`}>
+                    {String(i + 1).padStart(2, '0')} / {String(items.length).padStart(2, '0')}
+                  </div>
+                </div>
+
+                <div
+                  class="font-display text-[clamp(3rem,6vw,5.5rem)] leading-none tabular-nums tracking-tighter mb-1"
+                  style={`color: ${isFuture ? '#ffffff' : 'var(--color-text-primary)'};`}
+                >
+                  {item.year}
+                </div>
+
+                <div class={`flex flex-wrap items-center gap-2 text-[11px] font-mono uppercase tracking-wider mb-5 ${isFuture ? 'text-white/60' : 'text-text-muted'}`}>
+                  <span style={isFuture ? '' : `color: ${era.color};`}>{item.label}</span>
+                  <span>·</span>
+                  <span>{item.actor}</span>
+                </div>
+
+                <h3
+                  class="font-display font-normal text-2xl md:text-3xl leading-tight mb-5"
+                  style={`color: ${isFuture ? '#ffffff' : 'var(--color-text-primary)'};`}
+                >
+                  {item.title}
+                </h3>
+
+                <p
+                  class="text-base leading-relaxed mb-auto max-w-md"
+                  style={`color: ${isFuture ? 'rgba(255,255,255,0.75)' : 'var(--color-text-secondary)'};`}
+                >
+                  {item.description}
+                </p>
+
+                {item.quote && (
+                  <div class="mt-6 pt-6 border-t" style={`border-color: ${isFuture ? 'rgba(255,255,255,0.15)' : 'var(--color-border)'};`}>
+                    <p class="font-display italic text-base md:text-lg" style={`color: ${isFuture ? 'rgba(255,255,255,0.85)' : 'var(--color-text-primary)'};`}>
+                      "{item.quote}"
+                    </p>
+                  </div>
+                )}
+
+                {isFuture && (
+                  <div class="absolute top-6 right-6">
+                    <div class="badge" style="background: rgba(139, 44, 77, 0.2); border-color: rgba(139, 44, 77, 0.4); color: #fb7185;">
+                      Erwartet
+                    </div>
+                  </div>
+                )}
+              </div>
+            </article>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+
+  <!-- Progress bar below scroll -->
+  <div class="section-container">
+    <div class="max-w-md mx-auto mt-6 mb-2 flex items-center justify-between text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted">
+      <span data-current-year>1950</span>
+      <span data-current-era class="text-text-primary font-medium">Frühzeit</span>
+      <span>2030</span>
+    </div>
+    <div class="max-w-md mx-auto relative h-[3px] bg-border-strong rounded-full overflow-hidden">
+      <div
+        id="timeline-progress-bar"
+        class="absolute inset-y-0 left-0 rounded-full origin-left"
+        style="background: linear-gradient(90deg, #8b4a2c, #b8721c, #5b3aa3, #8b2c4d); width: 100%; transform: scaleX(0); transition: transform 0.2s ease;"
+      ></div>
+    </div>
+
+    <p class="text-xs font-mono uppercase tracking-[0.25em] text-text-muted text-center mt-16">
+      Die Geschichte wiederholt sich. Aber sie beschleunigt.
+    </p>
+  </div>
+</section>
+
+<style>
+  /* Hide scrollbar but keep scrollability */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  const scrollBox = document.getElementById('timeline-scroll');
+  const prevBtn = document.getElementById('timeline-prev') as HTMLButtonElement | null;
+  const nextBtn = document.getElementById('timeline-next') as HTMLButtonElement | null;
+  const progressBar = document.getElementById('timeline-progress-bar');
+  const slides = document.querySelectorAll<HTMLElement>('.timeline-slide');
+  const yearLabel = document.querySelector<HTMLElement>('[data-current-year]');
+  const eraLabel = document.querySelector<HTMLElement>('[data-current-era]');
+
+  if (!scrollBox) throw new Error('timeline scroll container missing');
+
+  const eraMap = (year: number) => {
+    if (year < 1980) return 'Frühzeit';
+    if (year < 2010) return 'Stagnation & Comeback';
+    if (year < 2020) return 'Deep Learning Boom';
+    if (year < 2025) return 'LLM Revolution';
+    return 'Reasoning Era';
+  };
+
+  const updateProgress = () => {
+    const max = scrollBox.scrollWidth - scrollBox.clientWidth;
+    const prog = max > 0 ? scrollBox.scrollLeft / max : 0;
+    if (progressBar) progressBar.style.transform = `scaleX(${prog})`;
+
+    // Find centered slide
+    const center = scrollBox.scrollLeft + scrollBox.clientWidth / 2;
+    let closestIdx = 0;
+    let closestDist = Infinity;
+    slides.forEach((slide, i) => {
+      const rect = slide.getBoundingClientRect();
+      const containerRect = scrollBox.getBoundingClientRect();
+      const slideCenter = rect.left - containerRect.left + scrollBox.scrollLeft + rect.width / 2;
+      const dist = Math.abs(slideCenter - center);
+      if (dist < closestDist) {
+        closestDist = dist;
+        closestIdx = i;
+      }
+    });
+
+    const currentSlide = slides[closestIdx];
+    if (currentSlide && yearLabel && eraLabel) {
+      const year = parseInt(currentSlide.dataset.year || '1950', 10);
+      yearLabel.textContent = String(year);
+      eraLabel.textContent = eraMap(year);
+    }
+
+    // Update prev/next disabled state
+    if (prevBtn) prevBtn.disabled = scrollBox.scrollLeft < 10;
+    if (nextBtn) nextBtn.disabled = scrollBox.scrollLeft > max - 10;
+  };
+
+  // Convert vertical wheel to horizontal scroll when cursor is over timeline
+  scrollBox.addEventListener(
+    'wheel',
+    (e) => {
+      const isTrackpadHorizontal = Math.abs(e.deltaX) > Math.abs(e.deltaY);
+      if (isTrackpadHorizontal) return; // let native horizontal scroll happen
+      if (e.deltaY === 0) return;
+      // Only hijack if we can still scroll horizontally
+      const max = scrollBox.scrollWidth - scrollBox.clientWidth;
+      const atStart = scrollBox.scrollLeft <= 0;
+      const atEnd = scrollBox.scrollLeft >= max - 1;
+      if ((atStart && e.deltaY < 0) || (atEnd && e.deltaY > 0)) return;
+
+      e.preventDefault();
+      scrollBox.scrollBy({ left: e.deltaY * 2, behavior: 'auto' });
+    },
+    { passive: false }
+  );
+
+  scrollBox.addEventListener('scroll', () => {
+    requestAnimationFrame(updateProgress);
+  });
+
+  // Keyboard navigation
+  scrollBox.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      scrollBox.scrollBy({ left: 540, behavior: 'smooth' });
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      scrollBox.scrollBy({ left: -540, behavior: 'smooth' });
+    }
+  });
+
+  prevBtn?.addEventListener('click', () => {
+    scrollBox.scrollBy({ left: -540, behavior: 'smooth' });
+  });
+  nextBtn?.addEventListener('click', () => {
+    scrollBox.scrollBy({ left: 540, behavior: 'smooth' });
+  });
+
+  // Init
+  updateProgress();
+  window.addEventListener('resize', updateProgress);
+</script>

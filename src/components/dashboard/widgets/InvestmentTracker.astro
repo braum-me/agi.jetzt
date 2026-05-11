@@ -1,0 +1,73 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/investments.json';
+---
+
+<WidgetCard
+  anchor="capital"
+  title="AI Investment Tracker"
+  subtitle={`Venture + strategische Investments · Total seit 2022: $${data.total_since_2022} Mrd`}
+  stand={data.stand}
+  source={data.source}
+  size="lg"
+  span="md:col-span-7"
+  moreLink="/kapital"
+  moreLinkLabel="Deep Dive: Das Geld"
+>
+  <div id="investment-chart" style="width: 100%; height: 340px;"></div>
+</WidgetCard>
+
+<script>
+  import data from '../../../data/dashboard/investments.json';
+
+  const el = document.getElementById('investment-chart');
+  if (el) {
+    const io = new IntersectionObserver(async (entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      const { mountChart, chartTheme } = await import('../../../scripts/dashboard/charts');
+      mountChart(el, {
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: { type: 'shadow' },
+          valueFormatter: (v: number) => v > 0 ? `$${v} Mrd` : '',
+        },
+        legend: {
+          bottom: 0,
+          left: 'center',
+          textStyle: { color: chartTheme.textMuted, fontFamily: 'JetBrains Mono', fontSize: 10 },
+          itemWidth: 14, itemHeight: 8,
+        },
+        grid: { left: 40, right: 20, top: 10, bottom: 50, containLabel: true },
+        xAxis: {
+          type: 'category',
+          data: data.quarters,
+          axisLine: { lineStyle: { color: chartTheme.grid } },
+          axisLabel: { color: chartTheme.textMuted, fontFamily: 'JetBrains Mono', fontSize: 10 },
+          axisTick: { alignWithLabel: true },
+        },
+        yAxis: {
+          type: 'value',
+          axisLine: { show: false },
+          axisLabel: {
+            color: chartTheme.textMuted,
+            fontFamily: 'JetBrains Mono',
+            fontSize: 10,
+            formatter: '${value}B',
+          },
+          axisTick: { show: false },
+          splitLine: { lineStyle: { color: chartTheme.grid, opacity: 0.3, type: 'dashed' } },
+        },
+        series: data.companies.map((c) => ({
+          name: c.name,
+          type: 'bar',
+          stack: 'total',
+          data: c.rounds,
+          itemStyle: { color: c.color, borderRadius: [2, 2, 0, 0] },
+          emphasis: { focus: 'series' },
+        })),
+      });
+    }, { rootMargin: '200px' });
+    io.observe(el);
+  }
+</script>

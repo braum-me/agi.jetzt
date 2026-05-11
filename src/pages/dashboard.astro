@@ -1,0 +1,142 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Navigation from '../components/Navigation.astro';
+import CommandPalette from '../components/CommandPalette.astro';
+import StatsStrip from '../components/dashboard/widgets/StatsStrip.astro';
+import AgiProgress from '../components/dashboard/widgets/AgiProgress.astro';
+import ModelBenchmarks from '../components/dashboard/widgets/ModelBenchmarks.astro';
+import ComputeGpu from '../components/dashboard/widgets/ComputeGpu.astro';
+import InvestmentTracker from '../components/dashboard/widgets/InvestmentTracker.astro';
+import CompanyLeaderboard from '../components/dashboard/widgets/CompanyLeaderboard.astro';
+import HiringTrends from '../components/dashboard/widgets/HiringTrends.astro';
+import RegulationsTracker from '../components/dashboard/widgets/RegulationsTracker.astro';
+import SafetyIncidents from '../components/dashboard/widgets/SafetyIncidents.astro';
+import ModelSpecs from '../components/dashboard/widgets/ModelSpecs.astro';
+import ConsumerAdoption from '../components/dashboard/widgets/ConsumerAdoption.astro';
+import PaperOutput from '../components/dashboard/widgets/PaperOutput.astro';
+import TrendingTopics from '../components/dashboard/widgets/TrendingTopics.astro';
+import FundingBreakdown from '../components/dashboard/widgets/FundingBreakdown.astro';
+import NewsFeed from '../components/dashboard/widgets/NewsFeed.astro';
+import Timeline12M from '../components/dashboard/widgets/Timeline12M.astro';
+import SourcesPanel from '../components/dashboard/widgets/SourcesPanel.astro';
+import BriefingLatest from '../components/dashboard/widgets/BriefingLatest.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="AI Dashboard: 17 Live-Widgets zur KI-Entwicklung | agi.jetzt"
+  description="Benchmarks, Investments, Compute, Regulation, Adoption, Safety — alle KI-Kennzahlen quellenbasiert, quartalsweise aktualisiert. Mit AGI-Proximity-Index und Briefing-Widget."
+  image="/og-dashboard.png"
+>
+  <Navigation />
+
+  {/* TODO (niedrige Prio): Einmalige Intro-Box für Erstbesucher erwägen —
+      localStorage-gesteuert, erklärt in 2-3 Zeilen was das Dashboard ist
+      und wie die quartalsweise Update-Frequenz funktioniert. Noch nicht implementiert. */}
+  <main id="main" class="dashboard-main pt-28 md:pt-36 pb-20">
+    <!-- Header -->
+    <section class="section-container mb-10 md:mb-14">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div class="max-w-3xl">
+          <div class="badge mb-6" style="background: rgba(139, 44, 77, 0.1); border-color: rgba(139, 44, 77, 0.3); color: #8b2c4d;">
+            <span class="relative flex h-1.5 w-1.5">
+              <span class="absolute inline-flex h-full w-full rounded-full bg-burgundy opacity-75 animate-pulse"></span>
+              <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-burgundy"></span>
+            </span>
+            Live-Cockpit · Stand Mai 2026
+          </div>
+          <h1 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2.25rem,6vw,5rem)] mb-5">
+            State of <em class="italic gradient-text">Artificial Intelligence</em>
+          </h1>
+          <p class="text-text-primary text-base md:text-xl leading-relaxed font-medium max-w-2xl">
+            Das gesamte AI-Ökosystem auf einen Blick. Alle Zahlen quellenbasiert, alle Daten mit Zeitstempel.
+          </p>
+          <div class="flex flex-wrap items-center gap-3 mt-5 text-xs font-mono text-text-muted">
+            <span>17 Widgets</span>
+            <span>·</span>
+            <span>Quartalsweises Update</span>
+            <span>·</span>
+            <span>Nächstes Refresh: Juli 2026</span>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-3">
+          <a href="/#news" class="btn-secondary !py-2 !px-4 !text-sm">News Feed →</a>
+          <a href="/rss.xml" class="btn-secondary !py-2 !px-4 !text-sm" aria-label="RSS Feed">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27zm0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93z"/>
+            </svg>
+            RSS
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <div class="section-container">
+    <div class="dashboard-grid">
+      <!-- Row 1: KPI Strip (full width) -->
+      <StatsStrip />
+
+
+      <!-- Row 2: Neuestes Briefing prominent (volle Breite) -->
+      <BriefingLatest />
+
+      <!-- Row 3: Progress + Benchmarks + Compute -->
+      <AgiProgress />
+      <ModelBenchmarks />
+      <ComputeGpu />
+
+      <!-- Row 3: Investment + Leaderboard -->
+      <InvestmentTracker />
+      <CompanyLeaderboard />
+
+      <!-- Row 4: Hiring + Regulations + Safety -->
+      <HiringTrends />
+      <RegulationsTracker />
+      <SafetyIncidents />
+
+      <!-- Row 5: ModelSpecs + Adoption -->
+      <ModelSpecs />
+      <ConsumerAdoption />
+
+      <!-- Row 6: Papers + Trends + Funding -->
+      <PaperOutput />
+      <TrendingTopics />
+      <FundingBreakdown />
+
+      <!-- Row 7: News Feed (full) -->
+      <NewsFeed />
+
+      <!-- Row 8: Timeline 12M (full) -->
+      <Timeline12M />
+
+      <!-- Row 9: Sources Panel (full) -->
+      <SourcesPanel />
+    </div>
+    </div>
+  </main>
+  <Footer />
+  <CommandPalette />
+</Layout>
+
+<style>
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 1.25rem;
+  }
+  /* Tablet: tighten gap slightly */
+  @media (max-width: 1024px) {
+    .dashboard-grid { gap: 1rem; }
+  }
+  /* Mobile: single column, every card full width, tighter gap */
+  @media (max-width: 768px) {
+    .dashboard-grid {
+      grid-template-columns: 1fr;
+      gap: 0.875rem;
+    }
+    .dashboard-grid > :global(*) {
+      grid-column: 1 / -1 !important;
+    }
+  }
+  /* padding-top kommt via Tailwind pt-28 md:pt-36 — kein Override hier, sonst überlappt Nav */
+</style>

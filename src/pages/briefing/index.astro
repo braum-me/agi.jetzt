@@ -1,0 +1,192 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Navigation from '../../components/Navigation.astro';
+import Footer from '../../components/Footer.astro';
+import CommandPalette from '../../components/CommandPalette.astro';
+import { getCollection } from 'astro:content';
+
+const now = new Date();
+const briefings = (await getCollection('briefing', ({ data }) => !data.draft && data.date.valueOf() <= now.valueOf()))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+// Alle Tags zur Filter-UI
+const allTags = Array.from(
+  new Set(briefings.flatMap((b) => b.data.tags))
+).sort();
+---
+
+<Layout
+  title="Wöchentliches KI-Briefing: AI-News eingeordnet | agi.jetzt"
+  description="Jeden Freitag: Die wichtigsten Entwicklungen der KI-Welt — analytisch, quellenbasiert, auf den Punkt. Kein Newsletter-Marketing, keine Hype-Schlagzeilen. Deutsches AGI-Briefing von Stefan Braum."
+  image="/og-briefing.png"
+>
+  <Navigation />
+
+  <main id="main" class="pt-28 md:pt-36 pb-20">
+    <!-- Header -->
+    <section class="section-container mb-12 md:mb-16">
+      <div class="max-w-3xl">
+        <div class="badge mb-6" style="background: rgba(139, 44, 77, 0.1); border-color: rgba(139, 44, 77, 0.3); color: #8b2c4d;">
+          <span class="relative flex h-1.5 w-1.5">
+            <span class="absolute inline-flex h-full w-full rounded-full bg-burgundy opacity-75 animate-pulse"></span>
+            <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-burgundy"></span>
+          </span>
+          Weekly Briefing · RSS verfügbar
+        </div>
+        <h1 class="font-display font-normal text-balance leading-[1.05] text-[clamp(2.75rem,7vw,6rem)] mb-6">
+          Wöchentliches <em class="italic gradient-text">KI-Briefing</em>
+        </h1>
+        <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium max-w-2xl">
+          Jeden Freitag: Was in der KI-Welt passiert ist — und was es bedeutet.
+          Keine bloße News-Liste, sondern eingeordnete Analyse.
+        </p>
+
+        <div class="flex flex-wrap items-center gap-3 mt-6 text-xs font-mono text-text-muted">
+          <span>{briefings.length} Ausgabe{briefings.length === 1 ? '' : 'n'}</span>
+          <span>·</span>
+          <a href="/briefing/feed.xml" class="inline-flex items-center gap-1 hover:text-accent-deep transition-colors">
+            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27zm0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93z"/>
+            </svg>
+            RSS-Feed
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tag-Filter -->
+    {allTags.length > 0 && (
+      <section class="section-container mb-10">
+        <div class="flex flex-wrap gap-2" id="briefing-tag-filter">
+          <button
+            type="button"
+            class="briefing-tag-btn is-active inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono uppercase tracking-[0.08em] font-medium border transition-all duration-300"
+            style="background: #1a1814; border-color: #1a1814; color: var(--color-bg-primary);"
+            data-tag="all"
+          >
+            Alle
+            <span class="text-[10px] opacity-70">{briefings.length}</span>
+          </button>
+          {allTags.map((tag) => {
+            const count = briefings.filter((b) => b.data.tags.includes(tag)).length;
+            return (
+              <button
+                type="button"
+                class="briefing-tag-btn inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-mono uppercase tracking-[0.08em] font-medium border transition-all duration-300 text-text-secondary hover:text-text-primary"
+                style="background: transparent; border-color: rgba(26, 24, 20, 0.3);"
+                data-tag={tag}
+              >
+                {tag}
+                <span class="text-[10px] opacity-70">{count}</span>
+              </button>
+            );
+          })}
+        </div>
+      </section>
+    )}
+
+    <!-- Briefing-Liste -->
+    <section class="section-container">
+      <div class="grid grid-cols-1 gap-5 md:gap-6" id="briefing-grid">
+        {briefings.map((b) => {
+          const formattedDate = b.data.date.toLocaleDateString('de-DE', {
+            day: '2-digit', month: 'long', year: 'numeric',
+          });
+          return (
+            <a
+              href={`/briefing/${b.slug}/`}
+              class="briefing-card group relative paper-elevated rounded-3xl overflow-hidden block no-underline transition-all hover:-translate-y-1 hover:bg-bg-card-hover"
+              data-tags={b.data.tags.join(',')}
+              style="padding: 2rem 2.25rem;"
+            >
+              <div class="flex flex-col md:flex-row md:items-start gap-4 md:gap-8">
+                <!-- Left: KW + Datum -->
+                <div class="md:w-40 shrink-0">
+                  <div class="font-display text-3xl md:text-4xl text-text-primary tabular-nums leading-none">
+                    KW {String(b.data.kw).padStart(2, '0')}
+                  </div>
+                  <div class="text-xs font-mono text-text-muted uppercase tracking-[0.2em] mt-1">
+                    {b.data.year}
+                  </div>
+                  <time class="block text-[11px] font-mono text-text-muted mt-3">
+                    {formattedDate}
+                  </time>
+                </div>
+
+                <!-- Right: Title + Summary + Tags -->
+                <div class="flex-1 min-w-0">
+                  <h2 class="font-display font-normal text-2xl md:text-3xl text-text-primary leading-tight mb-3 group-hover:text-accent-deep transition-colors">
+                    {b.data.subtitle}
+                  </h2>
+                  <p class="text-text-secondary leading-relaxed mb-4">
+                    {b.data.summary}
+                  </p>
+                  <div class="flex items-center justify-between gap-3 flex-wrap">
+                    <div class="flex flex-wrap gap-1.5">
+                      {b.data.tags.map((t) => (
+                        <span class="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-md bg-bg-secondary text-text-muted">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <span class="inline-flex items-center gap-1 text-sm font-mono text-text-muted group-hover:text-accent-deep transition-colors">
+                      Lesen
+                      <svg class="w-4 h-4 group-hover:translate-x-0.5 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+                      </svg>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+
+      <p
+        id="briefing-empty"
+        class="text-center text-sm font-mono text-text-muted mt-10 hidden"
+      >
+        Keine Briefings für diesen Tag gefunden.
+      </p>
+    </section>
+  </main>
+
+  <Footer />
+  <CommandPalette />
+</Layout>
+
+<style>
+  a.briefing-card {
+    text-decoration: none;
+    color: inherit;
+  }
+  .briefing-tag-btn.is-active {
+    background: #1a1814 !important;
+    border-color: #1a1814 !important;
+    color: var(--color-bg-primary) !important;
+  }
+</style>
+
+<script>
+  const btns = document.querySelectorAll<HTMLButtonElement>('.briefing-tag-btn');
+  const cards = document.querySelectorAll<HTMLElement>('.briefing-card');
+  const empty = document.getElementById('briefing-empty');
+
+  btns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const tag = btn.dataset.tag || 'all';
+      btns.forEach((b) => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+
+      let visible = 0;
+      cards.forEach((c) => {
+        const tags = (c.dataset.tags || '').split(',');
+        const show = tag === 'all' || tags.includes(tag);
+        (c as HTMLElement).style.display = show ? '' : 'none';
+        if (show) visible++;
+      });
+      if (empty) empty.classList.toggle('hidden', visible > 0);
+    });
+  });
+</script>

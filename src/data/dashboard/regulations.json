@@ -1,0 +1,86 @@
+{
+  "stand": "Q1 2026",
+  "source": "EU Official Journal + US Federal Register + Chinese CAC + UK AISI",
+  "items": [
+    {
+      "region": "EU",
+      "flag": "🇪🇺",
+      "name": "EU AI Act — GPAI-Pflichten",
+      "status": "in_force",
+      "status_label": "In Kraft",
+      "since": "02.08.2025",
+      "description": "Transparenz- und Dokumentationspflichten für General-Purpose AI Models aktiv (AI Act Art. 111). Erweiterte Pflichten für Modelle mit Systemrisiko ab 10^25 FLOPs.",
+      "url": "https://artificialintelligenceact.eu"
+    },
+    {
+      "region": "EU",
+      "flag": "🇪🇺",
+      "name": "AI Act — Art. 6 High-Risk Guidelines",
+      "status": "in_force",
+      "status_label": "Deadline 02.02.2026",
+      "since": "02.02.2026",
+      "description": "EU-Kommission veröffentlicht Leitlinien zur High-Risk-Klassifikation (Art. 6) und Template für Post-Market-Monitoring-Pläne.",
+      "url": "https://digital-strategy.ec.europa.eu/en/policies/regulatory-framework-ai"
+    },
+    {
+      "region": "US",
+      "flag": "🇺🇸",
+      "name": "AI Diffusion Framework",
+      "status": "in_force",
+      "status_label": "In Kraft",
+      "since": "13.01.2025",
+      "description": "Export-Controls auf Frontier-Chips & Model-Weights. Tiered country system.",
+      "url": "https://www.bis.doc.gov"
+    },
+    {
+      "region": "US",
+      "flag": "🇺🇸",
+      "name": "NIST AI RMF 2.0",
+      "status": "voluntary",
+      "status_label": "Empfehlung",
+      "since": "Q3 2025",
+      "description": "Risk Management Framework für Federal-Kontraktoren. Freiwillig für Private.",
+      "url": "https://www.nist.gov/itl/ai-risk-management-framework"
+    },
+    {
+      "region": "CN",
+      "flag": "🇨🇳",
+      "name": "Generative AI Services Rules v3",
+      "status": "in_force",
+      "status_label": "In Kraft",
+      "since": "01.12.2025",
+      "description": "Content-Filtering Requirements, Security Assessment für alle public-facing GenAI.",
+      "url": "http://www.cac.gov.cn"
+    },
+    {
+      "region": "UK",
+      "flag": "🇬🇧",
+      "name": "AI Security Institute Evaluations",
+      "status": "voluntary",
+      "status_label": "Vereinbart",
+      "since": "Q1 2025",
+      "description": "Pre-release Safety Testing durch UK AISI. Seit Feb 2025 zum 'AI Security Institute' umbenannt, Kooperation mit US AISI und Frontier-Labs.",
+      "url": "https://www.aisi.gov.uk"
+    },
+    {
+      "region": "Global",
+      "flag": "🌐",
+      "name": "India AI Impact Summit 2026",
+      "status": "voluntary",
+      "status_label": "Delhi Declaration",
+      "since": "16.–21.02.2026",
+      "description": "Vierter globaler AI-Gipfel im Bharat Mandapam, Neu-Delhi (Co-Chairs Modi/Macron). Fortsetzung der Bletchley → Seoul → Paris → Delhi-Linie, Fokus auf Entwicklungsländer-Zugang und Energie-Footprint.",
+      "url": "https://indiaaisummit.gov.in"
+    },
+    {
+      "region": "EU",
+      "flag": "🇪🇺",
+      "name": "AI Act Phase 3 (prospective)",
+      "status": "pending",
+      "status_label": "Geplant",
+      "since": "Q3 2026 (erwartet)",
+      "description": "High-Risk System Compliance: Healthcare, Legal, Hiring. Audits durch Notified Bodies.",
+      "url": "https://artificialintelligenceact.eu"
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/stats.json';
+
+const fmt = (v: number): string => {
+  if (v >= 1_000_000) return (v / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'M';
+  if (v >= 1_000) return (v / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  return v.toLocaleString('de-DE');
+};
+---
+
+<WidgetCard
+  anchor="overview"
+  title="KPI Overview"
+  subtitle="Sechs Kernzahlen, quartalsweise aktualisiert"
+  variant="ink"
+  stand={data.stand}
+  size="lg"
+  span="col-span-12"
+>
+  <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 md:gap-8">
+    {data.kpis.map((k) => {
+      const isPositive = k.trend.startsWith('+');
+      const displayValue = k.key === 'ai_funding_2025' ? k.value.toFixed(1) : fmt(k.value);
+      return (
+        <div class="relative">
+          <div class="text-[10px] font-mono uppercase tracking-[0.2em] text-bg-primary/55 mb-2">
+            {k.label}
+          </div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="font-display text-3xl md:text-4xl tabular-nums text-bg-primary">
+              {displayValue}
+            </span>
+            {k.suffix && <span class="text-sm text-bg-primary/60">{k.suffix}</span>}
+          </div>
+          <div class="flex items-center gap-2 text-[11px] font-mono">
+            <span style={`color: ${isPositive ? '#7fd4a7' : '#f0a8b8'};`}>
+              {k.trend}
+            </span>
+            <span class="text-bg-primary/70">{k.trend_label}</span>
+          </div>
+          <a href={k.source_url} target="_blank" rel="noopener noreferrer" class="mt-2 inline-block text-[9px] font-mono text-bg-primary/60 hover:text-bg-primary underline-offset-2 hover:underline transition-colors">
+            {k.source} ↗
+          </a>
+        </div>
+      );
+    })}
+  </div>
+</WidgetCard>

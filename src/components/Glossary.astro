@@ -1,0 +1,80 @@
+---
+import glossaryData from '../data/glossary.json';
+
+const categories = [
+  { key: 'grundbegriffe', label: 'Grundbegriffe' },
+  { key: 'architektur', label: 'Architektur' },
+  { key: 'training', label: 'Training' },
+  { key: 'agents', label: 'Agents & Tools' },
+  { key: 'benchmarks', label: 'Benchmarks' },
+  { key: 'compute', label: 'Compute' },
+  { key: 'safety', label: 'Safety' },
+];
+
+// Group by category, preserve order
+const byCat: Record<string, typeof glossaryData> = {};
+categories.forEach((c) => (byCat[c.key] = []));
+glossaryData.forEach((entry) => {
+  const cat = entry.category;
+  if (byCat[cat]) byCat[cat].push(entry);
+});
+---
+
+<section id="glossary" class="relative py-20 md:py-28">
+  <div class="section-container">
+    <!-- Header -->
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Für Einsteiger & Nachschlagewerk
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        18 Begriffe <em class="italic gradient-text">ohne Buzzword-Bingo</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        Gruppiert nach Themenfeld — so lernst du die Sprache der Frontier-Debatten.
+      </p>
+    </div>
+
+    <!-- Glossary — grouped by category -->
+    <div class="max-w-5xl mx-auto space-y-16">
+      {categories.map((cat) => {
+        const entries = byCat[cat.key];
+        if (!entries?.length) return null;
+        return (
+          <div>
+            <div class="flex items-center gap-4 mb-8">
+              <div class="w-1 h-8 rounded-full bg-accent"></div>
+              <h3 class="font-display text-2xl md:text-3xl text-text-primary">{cat.label}</h3>
+              <div class="flex-1 h-px bg-border"></div>
+              <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted">
+                {String(entries.length).padStart(2, '0')} Begriffe
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {entries.map((entry) => {
+                const slug = entry.term.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+                return (
+                <article id={slug} class="paper-elevated rounded-xl p-6 hover:bg-bg-card-hover transition-all duration-500 group scroll-mt-32 target:ring-2 target:ring-accent">
+                  <div class="flex items-baseline gap-2 mb-3">
+                    <h4 class="font-display text-2xl text-text-primary font-normal group-hover:text-accent-deep transition-colors">
+                      {entry.term}
+                    </h4>
+                    <span class="text-xs font-mono text-text-muted italic">
+                      {entry.long}
+                    </span>
+                  </div>
+                  <p class="text-text-secondary text-sm leading-relaxed">
+                    {entry.definition}
+                  </p>
+                </article>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </div>
+</section>

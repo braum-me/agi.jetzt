@@ -1,0 +1,50 @@
+{
+  "stand": "Q1 2026",
+  "source": "Dealroom + Crunchbase + Public Funding Announcements",
+  "note": "Nur dokumentierte Venture- und strategische Investments. Werte in Mrd USD, kumuliert pro Quartal.",
+  "quarters": ["Q1'22","Q2'22","Q3'22","Q4'22","Q1'23","Q2'23","Q3'23","Q4'23","Q1'24","Q2'24","Q3'24","Q4'24","Q1'25","Q2'25","Q3'25","Q4'25","Q1'26"],
+  "companies": [
+    {
+      "name": "OpenAI",
+      "color": "#5b3aa3",
+      "rounds": [0,0,0,0,10,0,0,0,0,0,6.6,0,40,0,0,0,122]
+    },
+    {
+      "name": "Anthropic",
+      "color": "#8b2c4d",
+      "rounds": [0,0,0.58,0,0.45,0,0,2,0,0.75,0,4,0,3.5,0,0,30]
+    },
+    {
+      "name": "xAI",
+      "color": "#7a55cc",
+      "rounds": [0,0,0,0,0,0,0,0,0,6,0,5,0,0,20,0,0]
+    },
+    {
+      "name": "Databricks",
+      "color": "#b8721c",
+      "rounds": [0,0,0,0,0,0,0.5,0,0,4,0,10,0,0,0,0,0]
+    },
+    {
+      "name": "Perplexity",
+      "color": "#2d5a3f",
+      "rounds": [0,0,0,0,0,0,0.07,0,0.07,0.24,0.5,0.5,0,3,0,0,0]
+    },
+    {
+      "name": "Mistral AI",
+      "color": "#8b4a2c",
+      "rounds": [0,0,0,0,0,0.1,0,0.4,0,0.6,0,0,0,2,0,0,0]
+    },
+    {
+      "name": "Scale AI",
+      "color": "#a08460",
+      "rounds": [0.325,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0]
+    },
+    {
+      "name": "Others (150+ rounds)",
+      "color": "#9a8f7a",
+      "rounds": [2.8,3.1,2.5,2.2,3.8,4.2,5.1,5.8,6.2,7.1,8.4,9.2,10.8,12.4,14.2,16.8,18.5]
+    }
+  ],
+  "total_2025": 163.6,
+  "total_since_2022": 524.4
+}

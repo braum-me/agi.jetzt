@@ -1,0 +1,65 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import pillarsData from '../../../data/dashboard/proximity-pillars.json';
+
+// Single source of truth: proximity-pillars.json. composite_score und value (gap)
+// werden zur Build-Zeit aus den Pillar-Rohdaten abgeleitet — keine Drift möglich.
+const pillars = pillarsData.pillars;
+const dimensions = pillars.map((p) => {
+  const rawGap = (p.sota / p.baseline) * 100;
+  const value = Math.round(Math.min(100, Math.max(1, rawGap)));
+  return { key: p.key, label: p.label, value, weight: p.weight };
+});
+const totalW = dimensions.reduce((s, d) => s + d.weight, 0);
+const lnSum = dimensions.reduce((s, d) => s + d.weight * Math.log(d.value), 0);
+const composite_score = Math.round(Math.exp(lnSum / totalW));
+const data = { stand: pillarsData.stand, composite_score, dimensions };
+---
+
+<WidgetCard
+  anchor="agi"
+  title="AGI Proximity Index"
+  subtitle="Weighted Geometric Mean · 8 Benchmark-Gaps"
+  variant="ink"
+  stand={data.stand}
+  source="Benchmark-basiert (siehe Methodik)"
+  sourceUrl="/#proximity"
+  size="lg"
+  span="md:col-span-4"
+  id="agi-progress"
+  moreLink="/#proximity"
+  moreLinkLabel="Methodik & 8 Pillars"
+>
+  <div class="flex flex-col items-center">
+    <!-- Big score -->
+    <div class="relative my-4">
+      <div class="text-xs font-mono uppercase tracking-[0.25em] text-bg-primary/55 mb-3 text-center">
+        Composite Score
+      </div>
+      <div class="flex items-baseline gap-2 justify-center">
+        <span class="font-display text-[clamp(4.5rem,10vw,6.5rem)] leading-none tabular-nums text-bg-primary">
+          {data.composite_score}
+        </span>
+        <span class="text-3xl font-display opacity-50 text-bg-primary">/100</span>
+      </div>
+    </div>
+
+    <!-- Dimensions -->
+    <div class="w-full space-y-2.5 mt-4">
+      {data.dimensions.map((d) => (
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1">
+            <span class="text-bg-primary/80">{d.label}</span>
+            <span class="font-mono tabular-nums text-bg-primary">{d.value}</span>
+          </div>
+          <div class="relative h-1 bg-bg-primary/10 rounded-full overflow-hidden">
+            <div
+              class="absolute inset-y-0 left-0 rounded-full"
+              style={`width: ${d.value}%; background: ${d.value >= 70 ? '#c4b5fd' : d.value >= 40 ? '#a78bfa' : '#7a55cc'};`}
+            ></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</WidgetCard>

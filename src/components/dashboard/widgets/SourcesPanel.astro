@@ -1,0 +1,46 @@
+---
+import WidgetCard from '../WidgetCard.astro';
+import data from '../../../data/dashboard/sources.json';
+---
+
+<WidgetCard
+  anchor="sources"
+  title="Quellen & Methodik"
+  subtitle="Alle Daten in diesem Dashboard basieren auf öffentlich verifizierbaren Quellen"
+  size="md"
+  span="col-span-12"
+>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {data.categories.map((cat) => (
+      <div>
+        <div class="flex items-center gap-3 mb-3 pb-2 border-b border-border">
+          <div class="w-1 h-6 rounded-full bg-accent-deep"></div>
+          <h4 class="font-display text-base text-text-primary">{cat.label}</h4>
+        </div>
+        <ul class="space-y-1.5">
+          {cat.items.map((item) => (
+            <li>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="block text-xs text-text-secondary hover:text-accent-deep transition-colors"
+              >
+                <span class="font-medium">{item.name}</span>
+                <span class="text-text-muted text-[10px] block">
+                  {item.used_for.slice(0, 2).join(' · ')} ↗
+                </span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-6 pt-4 border-t border-border text-xs text-text-muted leading-relaxed max-w-3xl">
+    <strong class="text-text-primary">Methodik:</strong> Dashboard-Daten werden quartalsweise aktualisiert.
+    Werte ohne explizite Quellenangabe basieren auf Aggregationen mehrerer der oben gelisteten Quellen.
+    Gebaut von <a href="https://braum.me" class="text-accent-deep underline underline-offset-2">Stefan Braum</a>.
+  </div>
+</WidgetCard>

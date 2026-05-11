@@ -1,0 +1,155 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  variant?: 'paper' | 'ink';
+  source?: string;
+  sourceUrl?: string;
+  stand?: string;
+  anchor?: string;  // optional section-anchor id for nav-scroll (separate from DOM `id`)
+  class?: string;
+  span?: string;
+  id?: string;
+  moreLink?: string;       // /deep-dive URL
+  moreLinkLabel?: string;  // "Deep Dive: Das Geld →"
+}
+const {
+  title, subtitle,
+  size = 'md',
+  variant = 'paper',
+  source, sourceUrl, stand,
+  class: className = '',
+  span = '',
+  id,
+  anchor,
+  moreLink,
+  moreLinkLabel,
+} = Astro.props;
+const anchorClass = anchor ? 'scroll-mt-40 md:scroll-mt-44' : '';
+
+const padClass = {
+  sm: 'p-5',
+  md: 'p-6',
+  lg: 'p-7 md:p-8',
+  xl: 'p-8 md:p-10',
+}[size];
+
+const base = variant === 'ink'
+  ? 'ink'
+  : 'paper-elevated';
+
+// Freshness-Indikator aus stand-Label ableiten
+function freshnessFor(label?: string): { tier: 'fresh' | 'current' | 'aging' | 'stale' | 'unknown'; tooltip: string } {
+  if (!label) return { tier: 'unknown', tooltip: 'Keine Datierung' };
+  const now = new Date();
+  // KW NN [/JJJJ]
+  const kwMatch = label.match(/KW\s*(\d{1,2})(?:[\s/.-]+(\d{4}))?/i);
+  if (kwMatch) {
+    const kw = parseInt(kwMatch[1], 10);
+    const year = kwMatch[2] ? parseInt(kwMatch[2], 10) : now.getFullYear();
+    // Aktuelle KW
+    const onejan = new Date(now.getFullYear(), 0, 1);
+    const currentKw = Math.ceil((((+now - +onejan) / 86400000) + onejan.getDay() + 1) / 7);
+    const ageWeeks = (now.getFullYear() - year) * 52 + (currentKw - kw);
+    if (ageWeeks <= 1) return { tier: 'fresh', tooltip: `Aktuelle KW · ${label}` };
+    if (ageWeeks <= 4) return { tier: 'current', tooltip: `${ageWeeks} Wochen alt · ${label}` };
+    if (ageWeeks <= 12) return { tier: 'aging', tooltip: `${ageWeeks} Wochen alt · ${label}` };
+    return { tier: 'stale', tooltip: `${ageWeeks} Wochen alt · ${label}` };
+  }
+  // Q[1-4] JJJJ
+  const qMatch = label.match(/Q([1-4])\s*(\d{4})/i);
+  if (qMatch) {
+    const q = parseInt(qMatch[1], 10);
+    const year = parseInt(qMatch[2], 10);
+    const currentQ = Math.floor(now.getMonth() / 3) + 1;
+    const ageQ = (now.getFullYear() - year) * 4 + (currentQ - q);
+    if (ageQ <= 0) return { tier: 'fresh', tooltip: `Aktuelles Quartal · ${label}` };
+    if (ageQ === 1) return { tier: 'current', tooltip: `Letztes Quartal · ${label}` };
+    if (ageQ === 2) return { tier: 'aging', tooltip: `Vor 2 Quartalen · ${label}` };
+    return { tier: 'stale', tooltip: `Vor ${ageQ} Quartalen · ${label}` };
+  }
+  // JJJJ-MM-TT
+  const dateMatch = label.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (dateMatch) {
+    const d = new Date(`${dateMatch[1]}-${dateMatch[2]}-${dateMatch[3]}`);
+    const ageDays = Math.floor((+now - +d) / 86400000);
+    if (ageDays <= 7) return { tier: 'fresh', tooltip: `${ageDays} Tage alt · ${label}` };
+    if (ageDays <= 30) return { tier: 'current', tooltip: `${ageDays} Tage alt · ${label}` };
+    if (ageDays <= 90) return { tier: 'aging', tooltip: `${ageDays} Tage alt · ${label}` };
+    return { tier: 'stale', tooltip: `${ageDays} Tage alt · ${label}` };
+  }
+  return { tier: 'unknown', tooltip: label };
+}
+
+const freshness = freshnessFor(stand);
+const dotColor = {
+  fresh: '#2d5a3f',
+  current: '#5b3aa3',
+  aging: '#b8721c',
+  stale: '#8b2c4d',
+  unknown: 'var(--color-text-muted)',
+}[freshness.tier];
+---
+
+<article id={id} data-section={anchor} class={`widget-card relative rounded-2xl overflow-hidden ${base} ${padClass} ${span} ${className}`}>
+  <!-- Header (anchor-Target mit scroll-margin-top = Höhe der beiden Navs) -->
+  <header
+    id={anchor}
+    class={`flex items-start justify-between gap-3 mb-5 ${anchor ? 'scroll-mt-40 md:scroll-mt-44' : ''}`}
+  >
+    <div>
+      <h2 class={`font-display font-normal text-lg md:text-xl leading-tight ${variant === 'ink' ? 'text-bg-primary' : 'text-text-primary'}`}>
+        {title}
+      </h2>
+      {subtitle && (
+        <p class={`text-xs mt-1 ${variant === 'ink' ? 'text-bg-primary/60' : 'text-text-muted'}`}>
+          {subtitle}
+        </p>
+      )}
+    </div>
+    {stand && (
+      <span
+        class={`shrink-0 inline-flex items-center gap-1.5 text-[9px] font-mono uppercase tracking-[0.2em] cursor-help ${variant === 'ink' ? 'text-bg-primary/50' : 'text-text-muted'}`}
+        title={freshness.tooltip}
+        aria-label={freshness.tooltip}
+      >
+        <span
+          class="w-1.5 h-1.5 rounded-full"
+          style={`background: ${dotColor}; box-shadow: 0 0 6px ${dotColor}88;`}
+          aria-hidden="true"
+        ></span>
+        {stand}
+      </span>
+    )}
+  </header>
+
+  <!-- Body -->
+  <div class="widget-body">
+    <slot />
+  </div>
+
+  <!-- Source footer + optional deep-dive link -->
+  {(source || moreLink) && (
+    <footer class={`mt-5 pt-3 border-t flex flex-wrap items-center gap-3 justify-between text-[10px] font-mono ${variant === 'ink' ? 'border-bg-primary/20 text-bg-primary/50' : 'border-border text-text-muted'}`}>
+      <span>
+        {source && sourceUrl ? (
+          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" class="hover:underline">
+            ⓘ Quelle: {source} ↗
+          </a>
+        ) : source ? (
+          <span>ⓘ Quelle: {source}</span>
+        ) : null}
+      </span>
+      {moreLink && (
+        <a
+          href={moreLink}
+          class={`group inline-flex items-center gap-1 font-medium uppercase tracking-[0.15em] transition-colors ${variant === 'ink' ? 'text-bg-primary/80 hover:text-bg-primary' : 'text-accent-deep hover:text-accent'}`}
+        >
+          {moreLinkLabel ?? 'Mehr erfahren'}
+          <span class="transition-transform group-hover:translate-x-0.5">→</span>
+        </a>
+      )}
+    </footer>
+  )}
+</article>

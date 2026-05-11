@@ -1,0 +1,94 @@
+---
+const deepDives = [
+  {
+    slug: 'geschichte',
+    label: 'Die Chronik',
+    description: '12 Momente in 80 Jahren, plus 6 Expertenprognosen.',
+    accent: '#5b3aa3',
+  },
+  {
+    slug: 'kapital',
+    label: 'Das Geld',
+    description: 'Investment-Flows, Mega-Deals, $535 Mrd in 2026.',
+    accent: '#b8721c',
+  },
+  {
+    slug: 'laender',
+    label: 'Globaler Wettlauf',
+    description: 'Acht Nationen im Ranking, plus alle Frontier-Labs.',
+    accent: '#2d5a3f',
+  },
+  {
+    slug: 'compute',
+    label: 'Die Kurve',
+    description: 'Exponentielles Compute-Scaling seit 2012.',
+    accent: '#8b2c4d',
+  },
+  {
+    slug: 'kontroversen',
+    label: 'Debatten & Risiken',
+    description: 'Sieben Streitfragen plus fünf Risiko-Dimensionen.',
+    accent: '#8b4a2c',
+  },
+  {
+    slug: 'glossar',
+    label: 'Das Glossar',
+    description: 'AGI, RLHF, RAG — 18 Begriffe verständlich erklärt.',
+    accent: '#3d2670',
+  },
+  {
+    slug: 'methodik',
+    label: 'Die Pipeline',
+    description: 'Wie diese Daten erhoben, geprüft und freigegeben werden.',
+    accent: '#2d5a3f',
+  },
+];
+---
+
+<section class="relative py-20 md:py-28">
+  <div class="section-container">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="badge mx-auto mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Deep Dives
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Geh <em class="italic gradient-text">tiefer</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        Sieben vertiefende Kapitel für die, die mehr wissen wollen.
+      </p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+      {deepDives.map((d) => (
+        <a
+          href={`/${d.slug}`}
+          aria-label={`${d.label} — ${d.description}`}
+          class="group relative paper-elevated rounded-2xl p-8 hover:bg-bg-card-hover hover:-translate-y-1 transition-all duration-500 overflow-hidden"
+        >
+          <div class="absolute top-0 left-0 right-0 h-1" style={`background: ${d.accent};`}></div>
+
+          <div class="text-[10px] font-mono uppercase tracking-[0.25em] mb-3" style={`color: ${d.accent};`}>
+            /{d.slug}
+          </div>
+
+          <h3 class="font-display font-normal text-2xl md:text-3xl text-text-primary leading-tight mb-3 group-hover:text-accent-deep transition-colors">
+            {d.label}
+          </h3>
+
+          <p class="text-text-secondary text-sm leading-relaxed mb-6">
+            {d.description}
+          </p>
+
+          <div class="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-text-muted group-hover:text-text-primary transition-colors">
+            <span>Lesen</span>
+            <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+            </svg>
+          </div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>

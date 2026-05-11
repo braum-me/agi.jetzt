@@ -1,0 +1,46 @@
+{
+  "stand": "Q2 2026",
+  "source": "Artificial Analysis + LMArena + Vendor Model Cards",
+  "source_url": "https://artificialanalysis.ai",
+  "note": "Scores aggregiert aus öffentlichen Benchmark-Resultaten. SWE-bench-Werte für Opus 4.7 und GPT-5.5 aus deren offiziellen Model Cards (April 2026). ARC-AGI-3 weiterhin sehr jung (<1% top scores).",
+  "benchmarks": [
+    "MMLU-Pro",
+    "GPQA Diamond",
+    "SWE-bench V",
+    "ARC-AGI-2",
+    "MATH",
+    "MMMU"
+  ],
+  "models": [
+    {
+      "name": "Gemini 3.1 Pro",
+      "color": "#5b3aa3",
+      "scores": [89.4, 94.3, 76.2, 77.1, 96.8, 88.4]
+    },
+    {
+      "name": "GPT-5.5 Pro",
+      "color": "#8b2c4d",
+      "scores": [90.1, 92.4, 78.9, 66.8, 97.6, 87.2]
+    },
+    {
+      "name": "Claude Opus 4.7",
+      "color": "#7a55cc",
+      "scores": [88.0, 90.5, 87.6, 69.7, 95.4, 85.3]
+    },
+    {
+      "name": "DeepSeek V3.2",
+      "color": "#b8721c",
+      "scores": [83.5, 85.1, 71.4, 52.7, 93.2, 78.3]
+    },
+    {
+      "name": "Qwen3.6 Plus",
+      "color": "#2d5a3f",
+      "scores": [84.7, 84.2, 70.8, 51.2, 92.4, 86.0]
+    },
+    {
+      "name": "Llama 4 Scout",
+      "color": "#8b4a2c",
+      "scores": [81.2, 82.4, 68.1, 48.5, 90.5, 76.8]
+    }
+  ]
+}

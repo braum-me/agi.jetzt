@@ -1,0 +1,25 @@
+{
+  "stand": "Q2 2026",
+  "source": "Curated from News + Company Announcements",
+  "window": "Mai 2025 — Mai 2026",
+  "events": [
+    { "month": "05/25", "date": "18.05.2025", "title": "Google I/O: Gemini 2.5 Deep Think", "org": "Google DeepMind", "impact": "medium", "category": "release" },
+    { "month": "07/25", "date": "22.07.2025", "title": "GPT-5 released", "org": "OpenAI", "impact": "high", "category": "release" },
+    { "month": "08/25", "date": "14.08.2025", "title": "Grok 4 mit Realtime Search", "org": "xAI", "impact": "medium", "category": "release" },
+    { "month": "09/25", "date": "09.09.2025", "title": "Apple Intelligence GA", "org": "Apple", "impact": "medium", "category": "release" },
+    { "month": "10/25", "date": "15.10.2025", "title": "Claude 4.5 Opus", "org": "Anthropic", "impact": "medium", "category": "release" },
+    { "month": "11/25", "date": "11.11.2025", "title": "Gemini 3 Pro launch", "org": "Google DeepMind", "impact": "high", "category": "release" },
+    { "month": "12/25", "date": "04.12.2025", "title": "Stargate Megacluster angekündigt", "org": "Oracle + OpenAI", "impact": "high", "category": "infrastructure" },
+    { "month": "12/25", "date": "02.12.2025", "title": "Mistral Large 3 (675B MoE)", "org": "Mistral", "impact": "medium", "category": "release" },
+    { "month": "02/26", "date": "02.02.2026", "title": "AI Act Art.6 High-Risk Guidelines Deadline", "org": "EU", "impact": "medium", "category": "regulation" },
+    { "month": "02/26", "date": "17.02.2026", "title": "Grok 4.20 Heavy (16-Agent, 2M ctx)", "org": "xAI", "impact": "medium", "category": "release" },
+    { "month": "02/26", "date": "19.02.2026", "title": "Gemini 3.1 Pro — ARC-AGI-2 77%", "org": "Google DeepMind", "impact": "high", "category": "release" },
+    { "month": "03/26", "date": "15.03.2026", "title": "Claude Opus 4.6 — SWE-bench 80.8%", "org": "Anthropic", "impact": "high", "category": "release" },
+    { "month": "03/26", "date": "25.03.2026", "title": "ARC-AGI-3 released (Top: 0.37%)", "org": "ARC Prize", "impact": "high", "category": "benchmark" },
+    { "month": "03/26", "date": "31.03.2026", "title": "Qwen3.6 Plus — 1M Context", "org": "Alibaba", "impact": "medium", "category": "release" },
+    { "month": "04/26", "date": "16.04.2026", "title": "Claude Opus 4.7 — SWE 87.6%", "org": "Anthropic", "impact": "high", "category": "release" },
+    { "month": "04/26", "date": "23.04.2026", "title": "GPT-5.5 (Terminal-Bench 82.7%)", "org": "OpenAI", "impact": "high", "category": "release" },
+    { "month": "04/26", "date": "29.04.2026", "title": "Mistral Medium 3.5 (128B dense)", "org": "Mistral", "impact": "medium", "category": "release" },
+    { "month": "05/26", "date": "05.05.2026", "title": "GPT-5.5 Instant als ChatGPT-Default", "org": "OpenAI", "impact": "medium", "category": "release" }
+  ]
+}

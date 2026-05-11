@@ -1,0 +1,163 @@
+---
+const controversies = [
+  {
+    id: 'openai-governance',
+    title: 'OpenAI Governance Crisis',
+    period: 'Nov 2023 – laufend',
+    status: 'ungelöst',
+    severity: 'high',
+    summary: 'Sam Altman wurde entlassen und nach 5 Tagen wieder eingesetzt. Der Board-Konflikt offenbarte tiefe Spannungen zwischen kommerziellen Interessen und Safety-Mission.',
+    implications: 'Bis heute wechseln Schlüsselpersonen. Ilya Sutskever (Co-Founder) verließ OpenAI, Jan Leike ging zu Anthropic. Die Governance von Frontier-Labs ist ein gesellschaftliches Problem geworden.',
+    sources: ['NYT', 'The Atlantic', 'Stratechery'],
+  },
+  {
+    id: 'superalignment',
+    title: 'OpenAIs Superalignment-Team aufgelöst',
+    period: 'Mai 2024',
+    status: 'teilgelöst',
+    severity: 'high',
+    summary: 'Das für AGI-Sicherheit zuständige Team verließ OpenAI. Jan Leike: "Safety-Kultur wurde vom glänzenden Produkt-Fokus verdrängt."',
+    implications: 'Anthropic wurde primärer Safety-Champion. OpenAI hat 2025 ein neues Safety-Committee etabliert — aber ohne die ursprünglichen Kritiker.',
+    sources: ['Leike Substack', 'OpenAI Announcement'],
+  },
+  {
+    id: 'scaling-wall',
+    title: 'Treffen wir bald eine Skalierungs-Wand?',
+    period: '2024 – laufend',
+    status: 'offen',
+    severity: 'medium',
+    summary: 'Mehrere Labs berichten: Einfaches Hochskalieren (×10 Compute) führt zu kleineren Verbesserungen. Test-Time-Compute (o-Modelle) ist die Antwort — aber wie lange trägt das?',
+    implications: 'Wenn Scaling Laws brechen, brauchen wir neue Paradigmen. Yann LeCun argumentiert: LLMs sind Sackgasse. Altman sagt: "Wir sehen keine Mauer."',
+    sources: ['Information Report', 'Bloomberg'],
+  },
+  {
+    id: 'copyright',
+    title: 'Urheberrechts-Klagen gegen KI-Labs',
+    period: '2023 – laufend',
+    status: 'ungelöst',
+    severity: 'medium',
+    summary: 'NYT vs OpenAI, Getty vs Stability, GitHub Copilot class action. Die Rechtsprechung zu Training-Daten ist fragmentiert. 2026: Erste EU-Urteile erwartet.',
+    implications: 'Könnte Frontier-Training verteuern oder erschweren. Verhandlungslösungen (Lizenz-Deals) zeichnen sich ab — begünstigen aber BigTech gegen Open-Source.',
+    sources: ['Reuters Legal', 'Techdirt'],
+  },
+  {
+    id: 'deepfakes-election',
+    title: 'KI in Wahlkämpfen 2024/2025',
+    period: '2024 – 2025',
+    status: 'teilgelöst',
+    severity: 'high',
+    summary: 'US-Wahl 2024, indische Wahlen, EU-Wahl: Deepfakes und KI-Kampagnen beobachtbar, aber kein dokumentierter Wahlausgang-Impact.',
+    implications: 'Regierungen arbeiten an "Content Provenance" (C2PA). Aber: Detection bleibt Arms Race. Nächste Eskalation bei US-Präsidentschaft 2028 erwartet.',
+    sources: ['EU DisInfo Lab', 'Stanford IO'],
+  },
+  {
+    id: 'meta-llama-license',
+    title: 'Ist Llama wirklich Open Source?',
+    period: '2023 – laufend',
+    status: 'ungelöst',
+    severity: 'low',
+    summary: 'Metas Llama-Lizenz verbietet Nutzung für Konkurrenten und bei >700M Nutzern. Open-Source-Puristen argumentieren: Das ist keine echte Open Source.',
+    implications: 'OSI (Open Source Initiative) hat 2025 eine neue Definition für "Open Source AI" veröffentlicht. Llama erfüllt diese NICHT. Mistral & DeepSeek setzen auf echte Apache 2.0.',
+    sources: ['OSI Blog', 'HackerNews'],
+  },
+  {
+    id: 'jobs-automation',
+    title: 'Wie schnell werden Knowledge-Jobs automatisiert?',
+    period: '2024 – laufend',
+    status: 'offen',
+    severity: 'high',
+    summary: 'Studien zeigen erste messbare Arbeitsplatz-Effekte: Content Creation -30%, Customer Service -25%. Aber: Verlängerung oder neuer Jobmarkt?',
+    implications: 'OECD warnt vor "Jobless Recovery". UBI-Experimente in mehreren Ländern. Politisch: Noch keine koordinierte Antwort — Gewerkschaften mobilisieren.',
+    sources: ['OECD AI', 'Brookings', 'Klarna-Case'],
+  },
+];
+
+const severityConfig: Record<string, { color: string; bg: string; label: string }> = {
+  high: { color: '#8b2c4d', bg: 'rgba(139, 44, 77, 0.1)', label: 'Hoch' },
+  medium: { color: '#b8721c', bg: 'rgba(184, 114, 28, 0.1)', label: 'Mittel' },
+  low: { color: '#5b3aa3', bg: 'rgba(91, 58, 163, 0.1)', label: 'Niedrig' },
+};
+
+const statusConfig: Record<string, { color: string; label: string }> = {
+  ungelöst: { color: '#8b2c4d', label: 'Ungelöst' },
+  teilgelöst: { color: '#b8721c', label: 'Teilgelöst' },
+  offen: { color: '#5b3aa3', label: 'Offen' },
+};
+---
+
+<section id="controversies" class="relative py-20 md:py-28">
+  <div class="section-container">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="badge mx-auto mb-6" style="background: rgba(139, 44, 77, 0.1); border-color: rgba(139, 44, 77, 0.3); color: #8b2c4d;">
+        <span class="w-1 h-1 rounded-full bg-burgundy"></span>
+        Controversies Tracker
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-6">
+        Sieben Debatten <em class="italic gradient-text">ohne Antwort</em>
+      </h2>
+      <p class="text-text-primary text-lg md:text-xl leading-relaxed font-medium">
+        Jede ist aktiv ungelöst — mit Stand, Severity und offenen Implikationen.
+      </p>
+    </div>
+
+    <div class="space-y-4 md:space-y-5">
+      {controversies.map((c, i) => {
+        const sev = severityConfig[c.severity];
+        const stat = statusConfig[c.status];
+        return (
+          <article class="paper-elevated rounded-2xl p-6 md:p-10 group hover:bg-bg-card-hover transition-all">
+            <div class="flex items-start justify-between gap-4 mb-5 flex-wrap">
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-3 mb-3 flex-wrap">
+                  <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
+                  <span
+                    class="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-mono uppercase tracking-[0.08em] font-medium border"
+                    style={`background: ${sev.bg}; color: ${sev.color}; border-color: ${sev.color}40;`}
+                  >
+                    Severity: {sev.label}
+                  </span>
+                  <span class="flex items-center gap-1.5 text-[11px] font-mono uppercase tracking-wider" style={`color: ${stat.color};`}>
+                    <span class="w-1.5 h-1.5 rounded-full" style={`background: ${stat.color};`}></span>
+                    {stat.label}
+                  </span>
+                  <span class="text-[11px] font-mono text-text-muted">{c.period}</span>
+                </div>
+                <h3 class="font-display font-normal text-2xl md:text-3xl text-text-primary leading-tight">
+                  {c.title}
+                </h3>
+              </div>
+            </div>
+
+            <p class="text-text-primary text-base leading-relaxed mb-5">
+              {c.summary}
+            </p>
+
+            <div class="pl-4 border-l-2" style={`border-color: ${sev.color};`}>
+              <div class="text-[10px] font-mono uppercase tracking-[0.25em] mb-1.5" style={`color: ${sev.color};`}>
+                Implikationen
+              </div>
+              <p class="text-sm text-text-secondary leading-relaxed">
+                {c.implications}
+              </p>
+            </div>
+
+            <div class="flex items-center gap-2 mt-5 pt-4 border-t border-border">
+              <span class="text-[10px] font-mono uppercase tracking-[0.25em] text-text-muted">Quellen:</span>
+              {c.sources.map((s) => (
+                <span class="text-[11px] font-mono px-2 py-0.5 rounded-md bg-bg-secondary text-text-secondary">
+                  {s}
+                </span>
+              ))}
+            </div>
+          </article>
+        );
+      })}
+    </div>
+
+    <p class="text-center text-xs font-mono text-text-muted max-w-2xl mx-auto leading-relaxed mt-12">
+      Diese Debatten entwickeln sich schnell. Update-Zyklus: monatlich.
+    </p>
+  </div>
+</section>

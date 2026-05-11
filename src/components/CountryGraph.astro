@@ -1,0 +1,282 @@
+---
+/**
+ * Social Graph der KI-Welt.
+ * Knoten: Länder (Hubs) + ihre Top-Labs als Satelliten.
+ * Kanten: Cross-Country-Beziehungen (Eigentum, Investments, Joint Research).
+ *
+ * Layout: Kreisförmig, statisch berechnet — kein Force-Sim, keine externe Lib.
+ */
+
+interface Hub {
+  code: string;
+  name: string;
+  flag: string;
+  labs: string[];
+  color: string;
+  size: number; // overall score 0–100
+}
+
+const hubs: Hub[] = [
+  { code: 'US', name: 'USA',          flag: '🇺🇸', labs: ['OpenAI', 'Anthropic', 'Meta AI', 'xAI', 'Google'],     color: '#8b2c4d', size: 97 },
+  { code: 'CN', name: 'China',        flag: '🇨🇳', labs: ['DeepSeek', 'Z.ai', 'Qwen', 'Hunyuan'],                 color: '#5b3aa3', size: 78 },
+  { code: 'UK', name: 'UK',           flag: '🇬🇧', labs: ['DeepMind', 'Isomorphic', 'Wayve'],                     color: '#b8721c', size: 62 },
+  { code: 'EU', name: 'EU',           flag: '🇪🇺', labs: ['Mistral', 'DeepL', 'Aleph Alpha', 'Silo AI'],          color: '#b8721c', size: 54 },
+  { code: 'CA', name: 'Kanada',       flag: '🇨🇦', labs: ['Cohere', 'MILA', 'Vector'],                            color: '#7a705e', size: 52 },
+  { code: 'KR', name: 'Südkorea',     flag: '🇰🇷', labs: ['Naver', 'LG', 'Upstage'],                              color: '#7a705e', size: 52 },
+  { code: 'IL', name: 'Israel',       flag: '🇮🇱', labs: ['AI21', 'Run:ai'],                                       color: '#7a705e', size: 42 },
+  { code: 'JP', name: 'Japan',        flag: '🇯🇵', labs: ['Sakana', 'Preferred', 'NTT AI'],                       color: '#7a705e', size: 34 },
+  { code: 'DE', name: 'Deutschland',  flag: '🇩🇪', labs: ['Aleph Alpha', 'DeepL', 'Fraunhofer'],                   color: '#7a705e', size: 32 },
+];
+
+interface Edge {
+  from: string;
+  to: string;
+  label: string;
+  type: 'ownership' | 'investment' | 'partnership' | 'rivalry';
+}
+
+const edges: Edge[] = [
+  { from: 'US', to: 'UK', label: 'Google → DeepMind (Ownership)',      type: 'ownership' },
+  { from: 'US', to: 'EU', label: 'Microsoft → Mistral ($16M)',          type: 'investment' },
+  { from: 'US', to: 'CA', label: 'OpenAI ↔ Cohere (Talent-Flow)',       type: 'partnership' },
+  { from: 'US', to: 'IL', label: 'NVIDIA Mellanox-Akquise',             type: 'ownership' },
+  { from: 'US', to: 'CN', label: 'Frontier-Rivalität',                  type: 'rivalry' },
+  { from: 'CN', to: 'KR', label: 'Hardware-Korridore (HBM)',            type: 'partnership' },
+  { from: 'EU', to: 'DE', label: 'AI Act → DE-Compliance-Leitung',      type: 'partnership' },
+  { from: 'CA', to: 'UK', label: 'DeepMind ↔ MILA Forschung',           type: 'partnership' },
+  { from: 'JP', to: 'US', label: 'SoftBank → OpenAI ($30B)',            type: 'investment' },
+  { from: 'KR', to: 'US', label: 'Samsung HBM → NVIDIA',                type: 'partnership' },
+];
+
+// ─────── Layout berechnen ───────
+const W = 900;
+const H = 700;
+const cx = W / 2;
+const cy = H / 2;
+const R = 240; // Country-Hub-Ring-Radius
+const labR = 60; // Lab-Satellite-Radius
+
+const hubPositions = hubs.map((hub, i) => {
+  const angle = (i / hubs.length) * Math.PI * 2 - Math.PI / 2;
+  return {
+    ...hub,
+    x: cx + Math.cos(angle) * R,
+    y: cy + Math.sin(angle) * R,
+    angle,
+  };
+});
+
+const hubByCode = Object.fromEntries(hubPositions.map((h) => [h.code, h]));
+
+// Pro Lab eine Position auf einem Halbkreis vom Country-Hub *nach außen*
+function labPositions(hub: typeof hubPositions[0]) {
+  const n = hub.labs.length;
+  return hub.labs.map((lab, j) => {
+    const spread = Math.min(Math.PI * 0.7, n * 0.3);
+    const labAngle = hub.angle + (n === 1 ? 0 : (j / (n - 1) - 0.5) * spread);
+    return {
+      label: lab,
+      x: hub.x + Math.cos(labAngle) * labR,
+      y: hub.y + Math.sin(labAngle) * labR,
+    };
+  });
+}
+
+const edgeColor = (t: Edge['type']) => ({
+  ownership: '#8b2c4d',
+  investment: '#b8721c',
+  partnership: '#5b3aa3',
+  rivalry: '#1a1814',
+}[t]);
+
+const edgeStyle = (t: Edge['type']) => ({
+  ownership: 'stroke-width:2.5',
+  investment: 'stroke-width:2',
+  partnership: 'stroke-width:1.5',
+  rivalry: 'stroke-width:2;stroke-dasharray:6 4',
+}[t]);
+---
+
+<section id="country-graph" class="relative py-20 md:py-28 overflow-hidden">
+  <div class="section-container">
+    <div class="max-w-3xl mb-12">
+      <div class="badge mb-6">
+        <span class="w-1 h-1 rounded-full bg-accent"></span>
+        Beziehungs-Graph
+      </div>
+      <h2 class="font-display font-normal text-balance leading-[1.05] text-[clamp(1.875rem,6vw,5rem)] mb-5">
+        Wer hängt mit <em class="italic gradient-text">wem</em> zusammen?
+      </h2>
+      <p class="text-text-secondary text-base md:text-lg leading-relaxed">
+        Eigentum, Investments, Partnerschaften, Rivalitäten — die Diagonalen zeigen, wo das eigentliche Spiel stattfindet.
+      </p>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-xs">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-0.5" style="background:#8b2c4d;"></span>
+        <span class="text-text-secondary">Ownership</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-0.5" style="background:#b8721c;"></span>
+        <span class="text-text-secondary">Investment</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-0.5" style="background:#5b3aa3;"></span>
+        <span class="text-text-secondary">Partnership</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-0.5 border-t-2 border-dashed" style="border-color:#1a1814;"></span>
+        <span class="text-text-secondary">Rivalität</span>
+      </div>
+    </div>
+
+    <!-- Graph (Desktop + Tablet) -->
+    <div class="paper-elevated rounded-3xl p-4 md:p-8 overflow-hidden hidden md:block" id="country-graph-wrap">
+      <svg viewBox={`0 0 ${W} ${H}`} class="w-full h-auto" preserveAspectRatio="xMidYMid meet" role="img" aria-label="Beziehungs-Graph der KI-Länder">
+        <!-- Subtle background ring -->
+        <circle cx={cx} cy={cy} r={R} fill="none" stroke="currentColor" stroke-opacity="0.05" stroke-dasharray="2 6"/>
+
+        <!-- Edges (cross-country) -->
+        <g class="edges">
+          {edges.map((e) => {
+            const a = hubByCode[e.from];
+            const b = hubByCode[e.to];
+            if (!a || !b) return null;
+            // Quadratic curve via center
+            const mx = cx + (a.x + b.x - 2 * cx) * 0.15;
+            const my = cy + (a.y + b.y - 2 * cy) * 0.15;
+            return (
+              <path
+                d={`M${a.x.toFixed(1)},${a.y.toFixed(1)} Q${mx.toFixed(1)},${my.toFixed(1)} ${b.x.toFixed(1)},${b.y.toFixed(1)}`}
+                fill="none"
+                stroke={edgeColor(e.type)}
+                stroke-opacity="0.4"
+                style={edgeStyle(e.type)}
+                class="graph-edge"
+                data-from={e.from}
+                data-to={e.to}
+              >
+                <title>{e.label}</title>
+              </path>
+            );
+          })}
+        </g>
+
+        <!-- Lab-Satelliten unter den Hubs -->
+        <g class="labs">
+          {hubPositions.flatMap((hub) => {
+            const labs = labPositions(hub);
+            return labs.map((lab) => (
+              <g class="lab-node">
+                <line x1={hub.x} y1={hub.y} x2={lab.x} y2={lab.y} stroke={hub.color} stroke-opacity="0.25" stroke-width="1"/>
+                <circle cx={lab.x} cy={lab.y} r="3" fill={hub.color} fill-opacity="0.55"/>
+                <text x={lab.x} y={lab.y - 7} text-anchor="middle" font-family="ui-monospace, monospace" font-size="9" fill="currentColor" fill-opacity="0.7">
+                  {lab.label}
+                </text>
+              </g>
+            ));
+          })}
+        </g>
+
+        <!-- Country-Hubs (über Edges + Labs) -->
+        <g class="hubs">
+          {hubPositions.map((hub) => {
+            const r = 16 + (hub.size / 100) * 18;
+            return (
+              <g
+                class="hub-node cursor-pointer"
+                data-code={hub.code}
+                tabindex="0"
+                role="button"
+                aria-label={`${hub.name} (${hub.code})`}
+              >
+                <circle cx={hub.x} cy={hub.y} r={r + 4} fill={hub.color} fill-opacity="0.12"/>
+                <circle cx={hub.x} cy={hub.y} r={r} fill={hub.color}/>
+                <text x={hub.x} y={hub.y + 4} text-anchor="middle" font-family="Georgia, serif" font-size="14" font-weight="600" fill="white">
+                  {hub.code}
+                </text>
+                <text x={hub.x} y={hub.y + r + 16} text-anchor="middle" font-family="ui-monospace, monospace" font-size="11" fill="currentColor">
+                  {hub.flag} {hub.name}
+                </text>
+              </g>
+            );
+          })}
+        </g>
+      </svg>
+    </div>
+
+    <!-- Mobile Fallback: Gruppierte Beziehungs-Liste -->
+    <div class="md:hidden paper-elevated rounded-3xl p-5 space-y-5">
+      {hubPositions.map((hub) => {
+        const hubEdges = edges.filter((e) => e.from === hub.code || e.to === hub.code);
+        if (hubEdges.length === 0) return null;
+        return (
+          <div>
+            <div class="flex items-center gap-2 mb-2">
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-[10px] font-semibold text-white" style={`background: ${hub.color};`}>{hub.code}</span>
+              <span class="font-display text-base text-text-primary">{hub.flag} {hub.name}</span>
+              <span class="text-[10px] font-mono text-text-muted ml-auto">{hubEdges.length} Verbindung{hubEdges.length !== 1 ? 'en' : ''}</span>
+            </div>
+            <ul class="space-y-1.5 pl-8">
+              {hubEdges.map((e) => {
+                const other = e.from === hub.code ? e.to : e.from;
+                return (
+                  <li class="flex items-start gap-2 text-[12px]">
+                    <span class="w-1.5 h-1.5 rounded-full shrink-0 mt-1.5" style={`background: ${edgeColor(e.type)};`}></span>
+                    <span class="text-text-muted"><span class="font-mono">{other}</span> —</span>
+                    <span class="text-text-secondary">{e.label.replace(/\([^)]+\)/g, '').replace(/^[A-Z]+\s*→\s*|^[A-Z]+\s*↔\s*/, '').trim()}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Edge-Liste als Lesehilfe -->
+    <div class="hidden md:grid mt-8 grid-cols-1 md:grid-cols-2 gap-2">
+      {edges.map((e) => (
+        <div class="flex items-center gap-3 paper rounded-xl px-4 py-3 text-sm">
+          <span class="w-2 h-2 rounded-full shrink-0" style={`background: ${edgeColor(e.type)};`}></span>
+          <span class="font-mono text-[10px] uppercase tracking-wider text-text-muted shrink-0">{e.from} → {e.to}</span>
+          <span class="text-text-secondary truncate">{e.label}</span>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<script>
+  const wrap = document.getElementById('country-graph-wrap');
+  if (wrap) {
+    const hubs = wrap.querySelectorAll<SVGGElement>('.hub-node');
+    const edges = wrap.querySelectorAll<SVGPathElement>('.graph-edge');
+
+    const highlight = (code: string | null) => {
+      edges.forEach((e) => {
+        const isMatch = code && (e.dataset.from === code || e.dataset.to === code);
+        if (!code) {
+          e.style.strokeOpacity = '0.4';
+          e.style.filter = '';
+        } else {
+          e.style.strokeOpacity = isMatch ? '0.95' : '0.08';
+          e.style.filter = isMatch ? 'drop-shadow(0 0 4px currentColor)' : '';
+        }
+      });
+      hubs.forEach((h) => {
+        const c = h.dataset.code;
+        h.style.opacity = !code || c === code || [...edges].some((e) => (e.dataset.from === code && e.dataset.to === c) || (e.dataset.to === code && e.dataset.from === c)) ? '1' : '0.35';
+      });
+    };
+
+    hubs.forEach((h) => {
+      h.addEventListener('mouseenter', () => highlight(h.dataset.code || null));
+      h.addEventListener('focus', () => highlight(h.dataset.code || null));
+      h.addEventListener('mouseleave', () => highlight(null));
+      h.addEventListener('blur', () => highlight(null));
+    });
+  }
+</script>

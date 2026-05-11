@@ -1,0 +1,88 @@
+---
+---
+
+<!-- FIXED — z-index 0, unter content. Scroll-abhängige Opacity. -->
+<div
+  id="three-container"
+  class="fixed inset-0 pointer-events-none"
+  style="z-index: 0;"
+  aria-hidden="true"
+>
+  <canvas
+    id="neural-mesh-canvas"
+    class="w-full h-full"
+    style="display: block; opacity: 0.8; transition: opacity 0.4s ease;"
+  ></canvas>
+</div>
+
+<script>
+  const canvas = document.getElementById('neural-mesh-canvas') as HTMLCanvasElement;
+  const container = document.getElementById('three-container');
+
+  if (canvas && container) {
+    let started = false;
+
+    const start = async () => {
+      if (started) return;
+      if (canvas.clientWidth < 10) {
+        requestAnimationFrame(start);
+        return;
+      }
+      started = true;
+      // Lazy-load Three.js + neural mesh on first paint (chunks split via dynamic import)
+      const { initNeuralMesh } = await import('../scripts/three-hero');
+      initNeuralMesh(canvas);
+    };
+
+    // Defer until browser is idle — keeps TTI/FCP clean
+    const schedule = (fn: () => void) => {
+      if ('requestIdleCallback' in window) {
+        (window as any).requestIdleCallback(fn, { timeout: 1500 });
+      } else {
+        setTimeout(fn, 200);
+      }
+    };
+
+    // Kick off only after DOM ready + idle, and only if hero is on-page.
+    // IntersectionObserver ensures we never init if user arrives on a route without ThreeHero.
+    const boot = () => {
+      const io = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              io.disconnect();
+              schedule(start);
+              return;
+            }
+          }
+        },
+        { rootMargin: '200px' }
+      );
+      io.observe(container);
+    };
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', boot);
+    } else {
+      boot();
+    }
+
+    // Scroll-abhängige Opacity: Hero = 0.8 (prominent), danach = 0.2 (background)
+    const onScroll = () => {
+      const y = window.scrollY;
+      const vh = window.innerHeight;
+      let targetOpacity;
+      if (y < vh * 0.2) {
+        targetOpacity = 0.8;
+      } else if (y > vh) {
+        targetOpacity = 0.2;
+      } else {
+        const t = (y - vh * 0.2) / (vh * 0.8);
+        targetOpacity = 0.8 - t * 0.6;
+      }
+      canvas.style.opacity = String(targetOpacity);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  }
+</script>

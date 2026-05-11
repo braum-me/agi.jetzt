@@ -1,0 +1,188 @@
+[
+  {
+    "id": "turing-1950",
+    "year": 1950,
+    "label": "Die Frage",
+    "title": "Können Maschinen denken?",
+    "description": "Alan Turing veröffentlicht 'Computing Machinery and Intelligence' und schlägt den Turing-Test vor. Eine einzige Frage definiert ein ganzes Forschungsfeld.",
+    "actor": "Alan Turing",
+    "impact": "breakthrough",
+    "quote": "Wir können nur kurz vorausschauen, aber wir sehen viel, das getan werden muss."
+  },
+  {
+    "id": "dartmouth-1956",
+    "year": 1956,
+    "label": "Die Geburt",
+    "title": "Geburtsstunde der KI",
+    "description": "John McCarthy und Marvin Minsky prägen am Dartmouth College den Begriff 'Artificial Intelligence'. Ein zweimonatiger Workshop wird zur Grundsteinlegung eines Feldes.",
+    "actor": "Dartmouth Conference",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "perceptron-1958",
+    "year": 1958,
+    "label": "Erste Lernmaschine",
+    "title": "Das Perceptron lernt",
+    "description": "Frank Rosenblatt baut das erste künstliche neuronale Netz, das aus Daten lernt. Die New York Times spekuliert über Maschinen, die laufen und sprechen können.",
+    "actor": "Frank Rosenblatt",
+    "impact": "significant"
+  },
+  {
+    "id": "backprop-1986",
+    "year": 1986,
+    "label": "Der Algorithmus",
+    "title": "Backpropagation",
+    "description": "Hinton, Rumelhart und Williams zeigen, wie tiefe Netze effizient trainiert werden können. Der Algorithmus, der jahrzehnte später Deep Learning ermöglicht.",
+    "actor": "Hinton et al.",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "deepblue-1997",
+    "year": 1997,
+    "label": "Mensch vs. Maschine",
+    "title": "Deep Blue schlägt Kasparov",
+    "description": "IBMs Schach-Computer besiegt den amtierenden Weltmeister. Die Welt sieht zum ersten Mal: Eine Maschine kann den klügsten Menschen in seiner Domäne schlagen.",
+    "actor": "IBM",
+    "impact": "breakthrough",
+    "quote": "Ich war müde."
+  },
+  {
+    "id": "alexnet-2012",
+    "year": 2012,
+    "label": "Die Revolution",
+    "title": "Deep Learning explodiert",
+    "description": "AlexNet halbiert den ImageNet-Fehler. Drei Forscher (Krizhevsky, Sutskever, Hinton) zeigen mit GPUs und tiefen Netzen, dass die KI-Eiszeit vorbei ist.",
+    "actor": "Krizhevsky / Sutskever / Hinton",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "alphago-2016",
+    "year": 2016,
+    "label": "Der unmögliche Sieg",
+    "title": "AlphaGo besiegt Lee Sedol",
+    "description": "Go galt als zu komplex für Maschinen. DeepMinds AlphaGo gewinnt 4:1. Zug 37 in Spiel 2 — von keinem menschlichen Profi je gespielt — wird zum Symbol einer neuen Ära.",
+    "actor": "DeepMind",
+    "impact": "breakthrough",
+    "quote": "Ein wunderschöner Zug."
+  },
+  {
+    "id": "transformer-2017",
+    "year": 2017,
+    "label": "Die Architektur",
+    "title": "Attention Is All You Need",
+    "description": "Acht Google-Forscher veröffentlichen die Transformer-Architektur. Sie wird zur Grundlage von ChatGPT, Claude, Gemini — und potenziell auch von AGI.",
+    "actor": "Google Brain",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "gpt3-2020",
+    "year": 2020,
+    "label": "Skalierung wirkt",
+    "title": "GPT-3 zeigt Emergenz",
+    "description": "175 Milliarden Parameter. Plötzlich kann ein Sprachmodell programmieren, übersetzen, schreiben — ohne spezifisches Training. Die Bitter Lesson wird sichtbar.",
+    "actor": "OpenAI",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "chatgpt-2022",
+    "year": 2022,
+    "label": "Massentauglich",
+    "title": "ChatGPT erreicht 100 Mio. Nutzer",
+    "description": "Die schnellst wachsende Anwendung der Geschichte. Plötzlich wissen Großmutter und CEO, was ein Sprachmodell ist. KI verlässt das Labor — endgültig.",
+    "actor": "OpenAI",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "gpt-4o-2024",
+    "year": 2024,
+    "label": "Multimodal nativ",
+    "title": "GPT-4o: Das Omni-Modell",
+    "description": "OpenAI veröffentlicht GPT-4o (Mai 2024) — das erste Frontier-Modell mit nativer Text-, Bild-, Audio- und Video-Verarbeitung. Sprach-Latenz 320ms in Echtzeit. 50% günstiger als GPT-4 Turbo, 2× schneller.",
+    "actor": "OpenAI",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "claude-35sonnet-2024",
+    "year": 2024,
+    "label": "Effizienz > Größe",
+    "title": "Claude 3.5 Sonnet schlägt Opus",
+    "description": "Anthropic (Juni 2024): Das Mid-Tier-Modell Sonnet 3.5 outperformed die eigene Flagship Opus — bei 1/5 der Kosten. Paradigmenwechsel: Effizienz wird zum Frontier-Thema.",
+    "actor": "Anthropic",
+    "impact": "significant"
+  },
+  {
+    "id": "llama31-2024",
+    "year": 2024,
+    "label": "Open Frontier",
+    "title": "Meta Llama 3.1 mit 405B",
+    "description": "Meta veröffentlicht Llama 3.1 (Juli 2024) mit 8B/70B/405B Parametern — erstmals ein wirklich Open-Weight-Frontier-Modell. Beschleunigt OSS-Rüstungswettlauf gegen OpenAI/Anthropic.",
+    "actor": "Meta",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "o1-2024",
+    "year": 2024,
+    "label": "Denken vor Antwort",
+    "title": "o1: Reasoning-Architektur",
+    "description": "OpenAI o1 (Sept 2024) 'denkt' vor der Antwort statt während. 83% AIME, PhD-Level Physik/Chemie/Biologie. Erste neue Paradigma-Architektur nach dem Transformer (2017).",
+    "actor": "OpenAI",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "nobel-alphafold-2024",
+    "year": 2024,
+    "label": "KI als Wissenschaft",
+    "title": "Nobelpreis für AlphaFold",
+    "description": "Demis Hassabis und John Jumper erhalten Chemie-Nobelpreis (Oktober 2024) für AlphaFold2. Erstmals Nobelpreis für eine KI-Methode. 200M+ Proteinen strukturiert, 2M+ Wissenschaftler-Nutzer.",
+    "actor": "DeepMind",
+    "impact": "breakthrough",
+    "quote": "Eine 50-jährige Grand Challenge der Biologie gelöst."
+  },
+  {
+    "id": "deepseek-r1-2025",
+    "year": 2025,
+    "label": "China holt auf",
+    "title": "DeepSeek R1 — o1-Konkurrenz Open",
+    "description": "DeepSeek R1 (Januar 2025): erstes Open-Weight-Reasoning-Modell auf o1-Niveau. MIT-Lizenz. Trainings-Kosten angeblich $5.58M. App wird #1 weltweit. Symbol für globales AI-Multipolar-System.",
+    "actor": "DeepSeek",
+    "impact": "breakthrough"
+  },
+  {
+    "id": "stargate-2025",
+    "year": 2025,
+    "label": "Staat + AI",
+    "title": "Stargate — $500B Infrastruktur",
+    "description": "OpenAI, SoftBank, Oracle und MGX kündigen Stargate an (Jan 2025): $500B über 4 Jahre für US-AI-Compute-Infrastruktur. KI-Rechenleistung wird zur neuen geopolitischen Ressource.",
+    "actor": "OpenAI + Partner",
+    "impact": "significant"
+  },
+  {
+    "id": "o3-2024",
+    "year": 2024,
+    "label": "ARC-AGI geknackt",
+    "title": "o3 erreicht ARC-AGI-1",
+    "description": "OpenAIs o3 erreicht menschliches Niveau (87.5%) auf ARC-AGI-1 (Dezember 2024). Der erste Benchmark, der explizit AGI-Fähigkeiten messen sollte, wird geknackt.",
+    "actor": "OpenAI",
+    "impact": "breakthrough",
+    "quote": "Das ist nicht inkrementell. Das ist ein Phasenwechsel."
+  },
+  {
+    "id": "arc-agi-3-2026",
+    "year": 2026,
+    "label": "Neuer Standard",
+    "title": "ARC-AGI-3 resettet den Benchmark",
+    "description": "Nach o3's ARC-AGI-1 Sieg wurde der Test überarbeitet. ARC-AGI-3 misst adaptives Reasoning. Alle Frontier-Modelle (Gemini 3.1 Pro, GPT-5.5, Claude Opus 4.7) liegen unter 1%.",
+    "actor": "ARC Prize Foundation",
+    "impact": "breakthrough",
+    "quote": "AGI ist ein bewegliches Ziel — aus Prinzip."
+  },
+  {
+    "id": "agi-future",
+    "year": 2030,
+    "label": "Erwartet",
+    "title": "AGI?",
+    "description": "Metaculus-Community: Strong-AGI-Median liegt bei 50%-Wahrscheinlichkeit bis ~2033, die ältere Weak-AGI-Frage bei Median ~2028. Die Spanne zeigt die wachsende Unsicherheit der Forecaster. Die Frage ist nicht mehr ob, sondern wann.",
+    "actor": "Metaculus",
+    "impact": "future"
+  }
+]

@@ -1,0 +1,67 @@
+{
+  "stand": "Q1 2026",
+  "sources": "Pro KPI eigene Quelle im jeweiligen Eintrag (siehe source_url). Aggregat aus Benchmark-Leaderboards (Artificial Analysis, ARC Prize, METR), Investment-Trackern (Dealroom), Plattform-Statistiken (Hugging Face, ArXiv) und der AI Incident Database.",
+  "source_url": "/#proximity",
+  "kpis": [
+    {
+      "key": "agi_score",
+      "label": "AGI Proximity",
+      "value": 70,
+      "suffix": "/100",
+      "trend": "+16",
+      "trend_label": "vs. Q1 2025",
+      "source": "Weighted Geometric Mean (8 Benchmarks)",
+      "source_url": "/#proximity"
+    },
+    {
+      "key": "frontier_models",
+      "label": "Frontier-Modelle",
+      "value": 10,
+      "suffix": "",
+      "trend": "+3",
+      "trend_label": "in 12 Monaten",
+      "source": "Artificial Analysis",
+      "source_url": "https://artificialanalysis.ai"
+    },
+    {
+      "key": "ai_funding_2025",
+      "label": "AI-Funding 2025 (Jahr)",
+      "value": 163.6,
+      "suffix": " Mrd $",
+      "trend": "+84%",
+      "trend_label": "YoY",
+      "source": "Dealroom",
+      "source_url": "https://dealroom.co"
+    },
+    {
+      "key": "arxiv_papers",
+      "label": "ArXiv CS-Papers / Monat",
+      "value": 15300,
+      "suffix": "",
+      "trend": "+37%",
+      "trend_label": "vs. Q1 2025",
+      "source": "ArXiv Monthly Submissions (CS total, ~35% davon cs.AI/LG/CL)",
+      "source_url": "https://arxiv.org/stats/monthly_submissions"
+    },
+    {
+      "key": "hf_models",
+      "label": "Hugging Face Modelle",
+      "value": 2100000,
+      "suffix": "",
+      "trend": "+92%",
+      "trend_label": "YoY",
+      "source": "Hugging Face",
+      "source_url": "https://huggingface.co"
+    },
+    {
+      "key": "incidents",
+      "label": "AI Incidents gemeldet",
+      "value": 1247,
+      "suffix": "",
+      "trend": "+156%",
+      "trend_label": "YoY",
+      "source": "AI Incident Database",
+      "source_url": "https://incidentdatabase.ai"
+    }
+  ]
+}

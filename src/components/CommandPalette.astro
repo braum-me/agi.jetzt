@@ -1,0 +1,328 @@
+---
+/**
+ * Cmd+K / Ctrl+K Command Palette
+ * Premium UX — search navigation, news, landscape, glossary.
+ */
+---
+
+<div
+  id="cmdk-overlay"
+  class="fixed inset-0 z-[100] opacity-0 pointer-events-none transition-opacity duration-200"
+  style="background: rgba(15, 13, 10, 0.5); backdrop-filter: blur(8px);"
+>
+  <div class="flex items-start justify-center pt-[15vh] px-4">
+    <div
+      id="cmdk-box"
+      class="w-full max-w-2xl rounded-2xl overflow-hidden transition-transform duration-200"
+      style="background: var(--color-bg-elevated); box-shadow: 0 30px 80px -20px rgba(26, 24, 20, 0.4), 0 0 0 1px var(--color-border-strong); transform: scale(0.95);"
+    >
+      <!-- Search input -->
+      <div class="flex items-center gap-3 px-5 py-4 border-b border-border">
+        <svg class="w-5 h-5 text-text-muted shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+        </svg>
+        <input
+          id="cmdk-input"
+          type="text"
+          placeholder="Suche Sektionen, News, Begriffe..."
+          class="flex-1 bg-transparent outline-none text-text-primary placeholder:text-text-muted text-base"
+          autocomplete="off"
+        />
+        <kbd class="px-2 py-1 rounded text-[10px] font-mono bg-bg-secondary text-text-muted border border-border">ESC</kbd>
+      </div>
+
+      <!-- Results -->
+      <div id="cmdk-results" class="max-h-[50vh] overflow-y-auto py-2">
+        <!-- Filled by JS -->
+      </div>
+
+      <!-- Footer -->
+      <div class="flex items-center justify-between px-5 py-3 border-t border-border text-[11px] font-mono text-text-muted">
+        <div class="flex items-center gap-4">
+          <span class="flex items-center gap-1.5">
+            <kbd class="px-1.5 py-0.5 rounded bg-bg-secondary border border-border">↑</kbd>
+            <kbd class="px-1.5 py-0.5 rounded bg-bg-secondary border border-border">↓</kbd>
+            Navigieren
+          </span>
+          <span class="flex items-center gap-1.5">
+            <kbd class="px-1.5 py-0.5 rounded bg-bg-secondary border border-border">↵</kbd>
+            Öffnen
+          </span>
+        </div>
+        <span>
+          <kbd class="px-1.5 py-0.5 rounded bg-bg-secondary border border-border">⌘K</kbd>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Trigger button in nav (mobile/desktop fallback) -->
+<button
+  id="cmdk-trigger"
+  class="hidden md:flex fixed bottom-6 right-6 z-40 items-center gap-2 px-4 py-2.5 rounded-full paper-elevated hover:-translate-y-0.5 transition-all"
+  style="box-shadow: 0 8px 24px -8px rgba(26, 24, 20, 0.2);"
+  aria-label="Open command palette"
+>
+  <svg class="w-4 h-4 text-text-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+  </svg>
+  <span class="text-sm text-text-secondary">Suche</span>
+  <kbd class="px-1.5 py-0.5 rounded text-[10px] font-mono bg-bg-secondary text-text-muted border border-border">⌘K</kbd>
+</button>
+
+<script>
+  import glossaryData from '../data/glossary.json';
+  import newsData from '../data/news.json';
+  import landscapeData from '../data/landscape.json';
+
+  interface SearchResult {
+    type: 'section' | 'news' | 'brand' | 'glossary' | 'fulltext';
+    title: string;
+    subtitle?: string;
+    href: string;
+    icon: string;
+  }
+
+  let pagefind: any = null;
+  const loadPagefind = async () => {
+    if (pagefind) return pagefind;
+    try {
+      // new Function() umgeht Vite's static analysis — pagefind wird build-time
+      // erzeugt, nicht von Vite gebundlet. Pfad ist hardcoded ('/pagefind/...'),
+      // KEIN User-Input → keine eval-Vector-Risiken. Falls CSP unsafe-eval
+      // entfernt: Tracking-Skript würde stumm scheitern (catch unten).
+      const dynImport = new Function('p', 'return import(p)') as (p: string) => Promise<any>;
+      pagefind = await dynImport('/pagefind/pagefind.js');
+      await pagefind.options({ baseUrl: '/' });
+      return pagefind;
+    } catch (e) {
+      // Pagefind nicht verfügbar (CSP, 404, Build-Fehler). Suchergebnisse
+      // bleiben dann auf statische Section-Hits beschränkt.
+      console.warn('[cmdk] pagefind unavailable:', e);
+      return null;
+    }
+  };
+
+  const sections: SearchResult[] = [
+    { type: 'section', title: 'Hero', subtitle: 'Übersicht + Countdown', href: '/#hero', icon: '◈' },
+    { type: 'section', title: 'Stufen', subtitle: 'ANI / AGI / ASI', href: '/#stages', icon: '◈' },
+    { type: 'section', title: 'Proximity Meter', subtitle: 'Wie nah sind wir?', href: '/#proximity', icon: '◈' },
+    { type: 'section', title: 'Timeline', subtitle: '12 Momente KI-Geschichte', href: '/#timeline', icon: '◈' },
+    { type: 'section', title: 'Watchlist', subtitle: 'Was kommt als Nächstes', href: '/#watchlist', icon: '◈' },
+    { type: 'section', title: 'News', subtitle: 'Live Feed', href: '/#news', icon: '◈' },
+    { type: 'section', title: 'Landschaft', subtitle: 'Ökosystem', href: '/#landscape', icon: '◈' },
+    { type: 'section', title: 'Risiko-Radar', subtitle: 'Was uns Sorgen machen sollte', href: '/#risks', icon: '◈' },
+    { type: 'section', title: 'Über', subtitle: 'Stefan Braum', href: '/#about', icon: '◈' },
+    { type: 'section', title: 'Kapital', subtitle: 'Investment Flows', href: '/kapital', icon: '◆' },
+    { type: 'section', title: 'Länder', subtitle: 'Global AI Race', href: '/laender', icon: '◆' },
+    { type: 'section', title: 'Compute', subtitle: 'Scaling Chart', href: '/compute', icon: '◆' },
+    { type: 'section', title: 'Kontroversen', subtitle: 'Offene Debatten', href: '/kontroversen', icon: '◆' },
+    { type: 'section', title: 'Glossar', subtitle: 'Begriffe erklärt', href: '/glossar', icon: '◆' },
+    { type: 'section', title: 'Methodik', subtitle: 'Pipeline & Quellen', href: '/methodik', icon: '◆' },
+  ];
+
+  const newsResults: SearchResult[] = newsData.map((n: any) => ({
+    type: 'news',
+    title: n.headline,
+    subtitle: `${n.source} · ${n.category}`,
+    href: '#news',
+    icon: '●',
+  }));
+
+  const brandResults: SearchResult[] = landscapeData.map((b: any) => ({
+    type: 'brand',
+    title: b.name,
+    subtitle: b.description,
+    href: '#landscape',
+    icon: '◆',
+  }));
+
+  const glossaryResults: SearchResult[] = glossaryData.map((g: any) => ({
+    type: 'glossary',
+    title: g.term,
+    subtitle: g.long,
+    href: '#glossary',
+    icon: '★',
+  }));
+
+  const allResults = [...sections, ...newsResults, ...brandResults, ...glossaryResults];
+
+  const overlay = document.getElementById('cmdk-overlay') as HTMLElement;
+  const box = document.getElementById('cmdk-box') as HTMLElement;
+  const input = document.getElementById('cmdk-input') as HTMLInputElement;
+  const resultsEl = document.getElementById('cmdk-results') as HTMLElement;
+  const trigger = document.getElementById('cmdk-trigger') as HTMLButtonElement;
+
+  let selectedIdx = 0;
+  let currentResults: SearchResult[] = [];
+
+  const typeColors: Record<string, string> = {
+    section: '#5b3aa3',
+    news: '#8b2c4d',
+    brand: '#b8721c',
+    glossary: '#2d5a3f',
+    fulltext: '#1a1814',
+  };
+
+  const typeLabels: Record<string, string> = {
+    section: 'Sektion',
+    news: 'News',
+    brand: 'Akteur',
+    glossary: 'Begriff',
+    fulltext: 'Volltext',
+  };
+
+  const search = (query: string): SearchResult[] => {
+    if (!query.trim()) {
+      return sections; // Default: show all sections
+    }
+    const q = query.toLowerCase();
+    return allResults
+      .filter((r) => {
+        return (
+          r.title.toLowerCase().includes(q) ||
+          (r.subtitle && r.subtitle.toLowerCase().includes(q))
+        );
+      })
+      .slice(0, 12);
+  };
+
+  const searchFulltext = async (query: string): Promise<SearchResult[]> => {
+    if (!query.trim() || query.trim().length < 2) return [];
+    const pf = await loadPagefind();
+    if (!pf) return [];
+    try {
+      const { results } = await pf.search(query);
+      const top = await Promise.all(results.slice(0, 6).map((r: any) => r.data()));
+      return top
+        .filter((d: any) => d && d.url)
+        .map((d: any): SearchResult => ({
+          type: 'fulltext',
+          title: (d.meta?.title || d.url).replace(/\/index\.html$/, '').replace(/^\//, '') || d.url,
+          subtitle: stripHtml(d.excerpt || '').slice(0, 140),
+          href: d.url.replace(/index\.html$/, ''),
+          icon: '✦',
+        }));
+    } catch {
+      return [];
+    }
+  };
+
+  const stripHtml = (s: string) => s.replace(/<[^>]*>/g, '');
+  // HTML-Escape für innerHTML-Templates. Pagefind-Excerpts und Subtitles können
+  // User-Content (Briefing-Markdown) enthalten — Escape verhindert XSS-Vektoren.
+  const esc = (s: unknown): string =>
+    String(s ?? '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+
+  const render = () => {
+    if (currentResults.length === 0) {
+      resultsEl.innerHTML = `<div class="px-5 py-8 text-center text-sm text-text-muted">Keine Treffer</div>`;
+      return;
+    }
+
+    resultsEl.innerHTML = currentResults.map((r, i) => `
+      <a
+        href="${esc(r.href)}"
+        class="cmdk-result flex items-center gap-3 px-5 py-3 cursor-pointer transition-colors ${i === selectedIdx ? 'bg-bg-card-hover' : ''}"
+        data-idx="${i}"
+      >
+        <span class="text-base leading-none" style="color: ${esc(typeColors[r.type])};">${esc(r.icon)}</span>
+        <div class="flex-1 min-w-0">
+          <div class="text-sm text-text-primary truncate font-medium">${esc(r.title)}</div>
+          ${r.subtitle ? `<div class="text-xs text-text-muted truncate">${esc(r.subtitle)}</div>` : ''}
+        </div>
+        <span class="text-[9px] font-mono uppercase tracking-wider shrink-0" style="color: ${esc(typeColors[r.type])};">${esc(typeLabels[r.type])}</span>
+      </a>
+    `).join('');
+  };
+
+  const open = () => {
+    overlay.classList.remove('opacity-0', 'pointer-events-none');
+    overlay.classList.add('opacity-100');
+    box.style.transform = 'scale(1)';
+    document.body.style.overflow = 'hidden';
+    setTimeout(() => input.focus(), 50);
+    currentResults = search('');
+    selectedIdx = 0;
+    render();
+  };
+
+  const close = () => {
+    overlay.classList.add('opacity-0', 'pointer-events-none');
+    overlay.classList.remove('opacity-100');
+    box.style.transform = 'scale(0.95)';
+    document.body.style.overflow = '';
+    input.value = '';
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      e.preventDefault();
+      overlay.classList.contains('opacity-100') ? close() : open();
+      return;
+    }
+
+    if (!overlay.classList.contains('opacity-100')) return;
+
+    if (e.key === 'Escape') {
+      close();
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      selectedIdx = Math.min(currentResults.length - 1, selectedIdx + 1);
+      render();
+      document.querySelector(`[data-idx="${selectedIdx}"]`)?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      selectedIdx = Math.max(0, selectedIdx - 1);
+      render();
+      document.querySelector(`[data-idx="${selectedIdx}"]`)?.scrollIntoView({ block: 'nearest' });
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const result = currentResults[selectedIdx];
+      if (result) {
+        close();
+        setTimeout(() => {
+          window.location.hash = result.href;
+        }, 100);
+      }
+    }
+  });
+
+  let searchToken = 0;
+  input?.addEventListener('input', () => {
+    const q = input.value;
+    const myToken = ++searchToken;
+    const local = search(q);
+    currentResults = local;
+    selectedIdx = 0;
+    render();
+    // Async full-text — append once back, if still latest query
+    searchFulltext(q).then((ft) => {
+      if (myToken !== searchToken) return;
+      // Avoid duplicating titles already in local results
+      const existingTitles = new Set(currentResults.map((r) => r.title.toLowerCase()));
+      const fresh = ft.filter((r) => !existingTitles.has(r.title.toLowerCase()));
+      currentResults = [...currentResults, ...fresh];
+      render();
+    });
+  });
+
+  overlay?.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+
+  resultsEl?.addEventListener('click', (e) => {
+    const target = (e.target as HTMLElement).closest('.cmdk-result');
+    if (target) {
+      close();
+    }
+  });
+
+  trigger?.addEventListener('click', open);
+</script>

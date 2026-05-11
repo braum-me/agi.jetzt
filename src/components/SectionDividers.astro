@@ -1,0 +1,66 @@
+---
+/**
+ * Liquid section dividers — SVG blob shapes between sections.
+ * Places itself between 2 sections based on variant.
+ */
+interface Props {
+  variant?: 'blob' | 'wave' | 'goo';
+  color?: string;
+  flip?: boolean;
+}
+const { variant = 'blob', color = '#ebe3f7', flip = false } = Astro.props;
+
+const transformStyle = flip ? 'rotate(180deg)' : '';
+---
+
+<div class="relative overflow-hidden pointer-events-none" style="height: 120px; margin-top: -60px; margin-bottom: -60px; z-index: 2;">
+  <svg
+    class="absolute inset-0 w-full h-full"
+    viewBox="0 0 1440 120"
+    preserveAspectRatio="none"
+    style={`transform: ${transformStyle};`}
+  >
+    <defs>
+      <filter id={`goo-${variant}-${color.replace(/[^a-z0-9]/gi, '')}`}>
+        <feGaussianBlur in="SourceGraphic" stdDeviation="8" result="blur" />
+        <feColorMatrix
+          in="blur"
+          values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 22 -10"
+          result="goo"
+        />
+      </filter>
+    </defs>
+
+    {variant === 'blob' && (
+      <g filter={`url(#goo-${variant}-${color.replace(/[^a-z0-9]/gi, '')})`} fill={color} opacity="0.6">
+        <ellipse cx="200" cy="60" rx="130" ry="40">
+          <animate attributeName="rx" values="130;150;130" dur="8s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="600" cy="70" rx="180" ry="35">
+          <animate attributeName="ry" values="35;50;35" dur="10s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="1000" cy="55" rx="150" ry="45">
+          <animate attributeName="rx" values="150;120;150" dur="12s" repeatCount="indefinite"/>
+        </ellipse>
+        <ellipse cx="1300" cy="65" rx="100" ry="30"/>
+      </g>
+    )}
+
+    {variant === 'wave' && (
+      <path
+        d="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z"
+        fill={color}
+        opacity="0.5"
+      >
+        <animate
+          attributeName="d"
+          dur="8s"
+          repeatCount="indefinite"
+          values="M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z;
+                  M0,80 Q360,30 720,80 T1440,80 L1440,120 L0,120 Z;
+                  M0,60 Q360,0 720,60 T1440,60 L1440,120 L0,120 Z"
+        />
+      </path>
+    )}
+  </svg>
+</div>

@@ -1,0 +1,102 @@
+{
+  "milestones": [
+    {
+      "id": "arc-agi-3-10pct",
+      "title": "ARC-AGI-3 überschreitet 10%",
+      "expected": "Q3 2026",
+      "category": "benchmark",
+      "description": "Erstes Frontier-Modell erreicht 10% auf dem neuen ARC-AGI-3 Test. Aktueller Stand: 0.37%.",
+      "watchers": ["Gemini 3.5", "GPT-5.5 Pro", "Claude Opus 5"]
+    },
+    {
+      "id": "gpt-6",
+      "title": "GPT-6 angekündigt",
+      "expected": "Q4 2026 / Q1 2027",
+      "category": "release",
+      "description": "OpenAI hat einen deutlichen Sprung für GPT-6 angekündigt. Erwartet: native Agent-Architektur, 10M+ Kontext.",
+      "watchers": ["Sam Altman", "Anthropic response"]
+    },
+    {
+      "id": "claude-5",
+      "title": "Claude Opus 5",
+      "expected": "H2 2026",
+      "category": "release",
+      "description": "Anthropic's nächste Generation nach Opus 4.7 (16. April 2026). 'Mythos' (interner Codename) läuft im Project-Glasswing-Pilot bei 12 Security-Partnern.",
+      "watchers": ["Dario Amodei", "Project Glasswing"]
+    },
+    {
+      "id": "gemini-3-5",
+      "title": "Gemini 3.5 Ultra",
+      "expected": "Q3 2026",
+      "category": "release",
+      "description": "Google DeepMind arbeitet an Deep-Think-v2. Fokus: längere Deliberation, agentic workflows.",
+      "watchers": ["Demis Hassabis", "DeepMind Zürich"]
+    },
+    {
+      "id": "agent-autonomy",
+      "title": "1-Woche autonome Agent-Tasks",
+      "expected": "2026 / 2027",
+      "category": "capability",
+      "description": "Aktueller State of the Art: 24h+ autonome Task-Ketten. Ziel: eine Arbeitswoche ohne menschliche Intervention.",
+      "watchers": ["METR", "Anthropic Agent Team"]
+    },
+    {
+      "id": "rsi-first-signs",
+      "title": "Erste Anzeichen funktionaler RSI",
+      "expected": "H2 2026 / 2027",
+      "category": "research",
+      "description": "Recursive Self-Improvement in ML-Research-Agents: KI optimiert eigene Trainings-Runs messbar besser als Baseline.",
+      "watchers": ["OpenAI Research", "DeepMind"]
+    }
+  ],
+  "forecasts": [
+    {
+      "source": "Metaculus (1,700+ Forecaster)",
+      "name": "Median-Konsensus",
+      "year": 2030,
+      "confidence": "25% bis 2029, 50% bis 2033",
+      "stance": "pragmatisch",
+      "color": "#5b3aa3"
+    },
+    {
+      "source": "Sam Altman · OpenAI",
+      "name": "Altman",
+      "year": 2027,
+      "confidence": "Möglicherweise bereits 2025–2027",
+      "stance": "sehr optimistisch",
+      "color": "#8b2c4d"
+    },
+    {
+      "source": "Demis Hassabis · DeepMind",
+      "name": "Hassabis",
+      "year": 2030,
+      "confidence": "5–10 Jahre ab 2025",
+      "stance": "optimistisch",
+      "color": "#b8721c"
+    },
+    {
+      "source": "Dario Amodei · Anthropic",
+      "name": "Amodei",
+      "year": 2027,
+      "confidence": "Genug ernstzunehmende Evidenz für 2026–2028",
+      "stance": "sehr optimistisch",
+      "color": "#7a55cc"
+    },
+    {
+      "source": "Yann LeCun · Meta",
+      "name": "LeCun",
+      "year": 2040,
+      "confidence": "Nicht mit aktuellen Architekturen — Jahrzehnte",
+      "stance": "skeptisch",
+      "color": "#2d5a3f"
+    },
+    {
+      "source": "Gary Marcus · NYU",
+      "name": "Marcus",
+      "year": 2045,
+      "confidence": "LLMs führen nicht zu AGI — fundamentaler Paradigmenwechsel nötig",
+      "stance": "sehr skeptisch",
+      "color": "#8b4a2c"
+    }
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "stand": "Q2 2026 (Stand 11. Mai)",
+  "source": "AI Incident Database + METR Research",
+  "total_2025": 487,
+  "total_2026_q1": 142,
+  "total_2026_q2_partial": 71,
+  "by_severity": {
+    "high": 38,
+    "medium": 248,
+    "low": 201
+  },
+  "by_category": [
+    { "category": "Misinformation / Deepfakes", "count": 186, "pct": 38 },
+    { "category": "Bias / Discrimination", "count": 112, "pct": 23 },
+    { "category": "Privacy / Data Leak", "count": 78, "pct": 16 },
+    { "category": "Autonomy / Safety", "count": 63, "pct": 13 },
+    { "category": "Security / Jailbreak", "count": 48, "pct": 10 }
+  ],
+  "notable_2026": [
+    { "date": "2026-05-02", "title": "GPT-5.5 Prompt-Injection via Markdown-Image-Tags in Sharepoint", "severity": "medium", "org": "OpenAI / MS Foundry", "status": "Patched" },
+    { "date": "2026-04-21", "title": "Opus 4.7 Tokenizer-Shift verursacht Cost-Overruns bei Enterprise-Kunden", "severity": "low", "org": "Anthropic", "status": "Documented" },
+    { "date": "2026-03-14", "title": "Claude Opus 4.6 Jailbreak via 'Operator Mode'", "severity": "medium", "org": "Anthropic", "status": "Patched" },
+    { "date": "2026-02-08", "title": "GPT-5.4 Desktop Agent schreibt auf falsche Dateisystem-Pfade", "severity": "medium", "org": "OpenAI", "status": "Resolved" },
+    { "date": "2026-01-22", "title": "Deepfake-Audio in Bundestagswahl-Kampagne (DE)", "severity": "high", "org": "Unknown", "status": "Investigated" }
+  ]
+}

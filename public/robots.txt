@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://agi.jetzt/sitemap-index.xml
+
+# RSS Feed for news
+# https://agi.jetzt/rss.xml
