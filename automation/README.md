@@ -26,7 +26,7 @@ Ein Routine:
 |---------------------------|--------------------|--------------------------|-----------------------------------------------------------|
 | `weekly-news`             | Mo 09:00 CEST      | `data`, `weekly`, `news` | `src/data/news.json`                                      |
 | `weekly-watchlist`        | Do 09:00 CEST      | `data`, `weekly`         | `src/data/watchlist.json`                                 |
-| `weekly-briefing-draft`   | Fr 10:00 CEST      | `content`, `draft`       | `src/content/briefing/kw-NN-YYYY.md`                      |
+| `weekly-briefing-draft`   | Fr 10:00 CEST      | `content`, `weekly`      | `src/content/briefing/kw-NN-YYYY.md` (`draft: false`, Merge = Publish) |
 | `monthly-batch-a`         | 1. 09:00           | `data`, `monthly`        | `dashboard/benchmarks.json`, `model-specs.json`, `landscape.json` |
 | `monthly-batch-b`         | 1. 10:00           | `data`, `monthly`        | `dashboard/investments.json`, `companies.json`, `hiring.json` |
 | `monthly-batch-c`         | 2. 09:00           | `data`, `monthly`        | `dashboard/regulations.json`, `incidents.json`, `adoption.json` |

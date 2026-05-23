@@ -2,8 +2,8 @@
 
 **Trigger:** Schedule — jeden Freitag 10:00 CEST
 **Output:** Ein neuer Markdown-File in `src/content/briefing/kw-NN-YYYY.md`
-**PR-Label:** `content`, `draft`
-**Erwartung:** Rohentwurf — Stefan schreibt den Feinschliff manuell vor Merge.
+**PR-Label:** `content`, `weekly`
+**Erwartung:** Veröffentlichungs-fähiger Entwurf (`draft: false`). PR-Review ist der Publish-Gate — sobald Stefan merged, ist das Briefing live. Kein nachgelagerter Draft-Flip mehr.
 
 ---
 
@@ -95,7 +95,7 @@ tags:
   - <tag1>    # 3-6 tags aus: openai, anthropic, deepmind, meta, xai, mistral, funding,
   - <tag2>    # safety, benchmark, china, eu-ai-act, regulation, opensource, hardware,
   - <tag3>    # deepseek, robotics, etc.
-draft: true   # IMMER draft=true — Stefan setzt vor Merge auf false
+draft: false  # IMMER draft=false. PR-Review ist der Publish-Gate, kein nachgelagerter Flip.
 ---
 ```
 
@@ -160,7 +160,7 @@ draft: true   # IMMER draft=true — Stefan setzt vor Merge auf false
 5. **Sprache:** Deutsch. Fachbegriffe (WAU, MAU, SOTA, RLHF) sind OK,
    werden aber auf erste Erwähnung kurz erklärt.
 6. **Duplikate-Regel** siehe Schritt 2.4.
-7. **`draft: true`** im Frontmatter. IMMER. Stefan entscheidet manuell über Publish.
+7. **`draft: false`** im Frontmatter. IMMER. Der PR-Review ist der Publish-Gate — wenn Stefan merged, ist das Briefing sofort live. Niemals `draft: true` schreiben (Lessons learned KW 17-21/2026: Briefings landeten technisch im Repo, aber `!data.draft`-Filter blendete sie nach Merge aus).
 8. **Wörterzahl Body:** 900–1300 Wörter (ohne Frontmatter, ohne Footer). Nicht unter 900, nicht über 1300.
 9. **Zeitform-Disziplin:**
    - Präteritum für konkrete Ereignisse: *„OpenAI pausierte Stargate UK"*, *„PwC veröffentlichte die Studie"*
@@ -174,7 +174,7 @@ draft: true   # IMMER draft=true — Stefan setzt vor Merge auf false
 
 **Commit-Message:**
 ```
-🤖 draft: KI-Briefing KW NN/YYYY
+🤖 briefing: KI-Briefing KW NN/YYYY
 
 Topstory: <Titel>
 
@@ -187,37 +187,39 @@ Zahl der Woche: <Wert> — <Quelle>
 Leseempfehlung: <Titel> (<Quelle>)
 
 Quellen gesamt: <N distinct URLs>
-Status: draft=true → review & finalize before merge
+Status: draft=false → live nach Merge
 ```
 
-**PR-Title:** `🤖 Briefing KW NN/YYYY — draft`
+**PR-Title:** `🤖 Briefing KW NN/YYYY`
 
 **PR-Body:**
 ```markdown
-## Draft Weekly Briefing KW NN/YYYY
+## Weekly Briefing KW NN/YYYY
 
 Topstory: **<Titel>**
+
+Merge dieser PR = Briefing geht live (`draft: false` ist gesetzt).
 
 ### Stories mit Quellen
 
 1. [<Titel>](<URL>) — <Quelle, Datum>
 2. ...
 
-### Reviewer-Checklist
+### Reviewer-Checklist (Publish-Gate)
 - [ ] Topstory ist die richtige Wahl? (nicht doppelt mit letzter KW)
 - [ ] Alle Zahlen stimmen mit Quellen überein?
 - [ ] Tonfall sachlich, keine Marketing-Floskeln?
 - [ ] statsHighlight ist der stärkste Datenpunkt der Woche?
 - [ ] Zeitform konsistent (Präteritum für Ereignisse, Präsens für Einordnung)?
 - [ ] Wörterzahl ~900–1300?
-- [ ] `draft: true` vor Merge auf `false` setzen.
+- [ ] `date`-Feld liegt in der aktuellen KW (`≤ heute`).
 
-/label ~content ~draft ~weekly
+/label ~content ~weekly
 ```
 
 ## Schritt 7 — Nicht tun
 
-- **Niemals** `draft: false` setzen. Das ist Stefans Entscheidung.
+- **Niemals** `draft: true` setzen. Der PR-Review ist der Publish-Gate, kein nachgelagerter Flip nötig.
 - **Niemals** Dashboard-JSONs aus diesem Task mit-bearbeiten. Nur die Briefing-MD.
 - **Niemals** mehrere Briefings in einem Run. Genau eine KW pro Run.
 - **Niemals** Halluzinieren von Releases/Announcements, die du nicht mit mindestens einer Quelle belegen kannst.
