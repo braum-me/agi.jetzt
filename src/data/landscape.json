@@ -32,11 +32,11 @@
     "name": "Google DeepMind",
     "category": "frontier_lab",
     "description": "Googles KI-Forschungslabor. Hervorgegangen aus AlphaGo und AlphaFold.",
-    "why_matters": "Gemini 3.1 Pro führt GPQA Diamond (94.3%) und ARC-AGI-2 (77.1%) an. Gemini 3 Deep Think erreicht sogar 84.6% auf ARC-AGI-2 — nahe am Plateau.",
+    "why_matters": "Gemini 3.1 Pro führt GPQA Diamond (94.3%) und ARC-AGI-2 (77.1%) an. Gemini 3 Deep Think erreicht 84.6% auf ARC-AGI-2 — nahe am Plateau. Gemini 3.5 Flash (I/O 2026) bringt agentische Performance des 3.1 Pro zu 40% des Preises bei 4× Speed; 3.5 Pro für Juni 2026 avisiert.",
     "agi_relevance": 10,
     "founded": 2010,
     "headquarters": "London, UK",
-    "key_products": ["Gemini 3.1 Pro", "Deep Think", "AlphaFold 3"],
+    "key_products": ["Gemini 3.1 Pro", "Gemini 3.5 Flash", "Deep Think", "AlphaFold 3"],
     "url": "https://deepmind.google",
     "initials": "DM",
     "news_id": "gemini-31-ultra"

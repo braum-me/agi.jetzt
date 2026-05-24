@@ -6,7 +6,7 @@
       "expected": "Q3 2026",
       "category": "benchmark",
       "description": "Erstes Frontier-Modell erreicht 10% auf dem neuen ARC-AGI-3 Test. Aktueller Stand: 0.37%.",
-      "watchers": ["Gemini 3.5", "GPT-5.5 Pro", "Claude Opus 5"]
+      "watchers": ["Gemini 3.5 Pro", "GPT-5.5 Pro", "Claude Opus 5"]
     },
     {
       "id": "gpt-6",
@@ -25,11 +25,11 @@
       "watchers": ["Dario Amodei", "Project Glasswing"]
     },
     {
-      "id": "gemini-3-5",
-      "title": "Gemini 3.5 Ultra",
-      "expected": "Q3 2026",
+      "id": "gemini-3-5-pro",
+      "title": "Gemini 3.5 Pro",
+      "expected": "Juni 2026",
       "category": "release",
-      "description": "Google DeepMind arbeitet an Deep-Think-v2. Fokus: längere Deliberation, agentic workflows.",
+      "description": "Google bestätigte auf der I/O am 19.05.2026: Gemini 3.5 Pro wird intern bereits eingesetzt und ist für Juni 2026 als Release geplant. Gemini 3.5 Flash ist seit 19.05. live.",
       "watchers": ["Demis Hassabis", "DeepMind Zürich"]
     },
     {

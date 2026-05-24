@@ -1,7 +1,27 @@
 {
-  "stand": "Q1 2026",
+  "stand": "Q2 2026",
   "source": "EU Official Journal + US Federal Register + Chinese CAC + UK AISI",
   "items": [
+    {
+      "region": "US",
+      "flag": "🇺🇸",
+      "name": "AI Oversight Executive Order — Drittes Mal vertagt",
+      "status": "withdrawn",
+      "status_label": "Zurückgezogen 21.05.2026",
+      "since": "21.05.2026",
+      "description": "Trump zog am 21. Mai 2026 das geplante Signing eines AI-Oversight-Dekrets (90-Tage-Vorab-Zugang für Bundesbehörden zu Frontier-Modellen) erneut zurück. Sacks/Wiles blockierten den FDA-ähnlichen Ansatz von NEC-Chef Hassett nach Direktansprache durch Zuckerberg und Musk. Drittes Vertagungs-Ereignis in Folge.",
+      "url": "https://www.axios.com/2026/05/20/ai-trump-executive-order-white-house-infighting"
+    },
+    {
+      "region": "US",
+      "flag": "🇺🇸",
+      "name": "Center for AI Standards and Innovation (CAISI) Eval-Abkommen",
+      "status": "voluntary",
+      "status_label": "Vereinbart 05.05.2026",
+      "since": "05.05.2026",
+      "description": "CAISI (vormals US AISI) unterzeichnete Vereinbarungen mit Google DeepMind, Microsoft und xAI über Pre-Release-Evaluationen. US-Regierung erhält frühen Modell-Zugang für Safety-Tests — der einzige bisher operative föderale Aufsichts-Mechanismus.",
+      "url": "https://www.cnbc.com/2026/05/05/ai-oversight-trump-google-microsoft-xai.html"
+    },
     {
       "region": "EU",
       "flag": "🇪🇺",

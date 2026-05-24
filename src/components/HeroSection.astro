@@ -2,20 +2,14 @@
 import ThreeHero from './ThreeHero.astro';
 import CountdownUnit from './CountdownUnit.astro';
 import newsItems from '../data/news.json';
+import { formatNewsStand } from '../lib/news-stand';
 
-const sortedNews = newsItems
+const sortedNews = [...newsItems]
   .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
 const latestNews = sortedNews.slice(0, 6);
 
-const newestNewsDate = sortedNews[0]?.date ?? '';
-const timestamp = newestNewsDate
-  ? new Date(newestNewsDate).toLocaleDateString('de-DE', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    })
-  : '';
+const timestamp = formatNewsStand();
 ---
 
 <section id="hero" class="relative min-h-screen flex flex-col overflow-hidden">

@@ -1,9 +1,9 @@
 {
-  "stand": "Q2 2026 (Stand 11. Mai)",
+  "stand": "Q2 2026 (Stand 23. Mai)",
   "source": "AI Incident Database + METR Research",
   "total_2025": 487,
   "total_2026_q1": 142,
-  "total_2026_q2_partial": 71,
+  "total_2026_q2_partial": 118,
   "by_severity": {
     "high": 38,
     "medium": 248,

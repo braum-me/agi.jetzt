@@ -20,6 +20,9 @@
     { "month": "04/26", "date": "16.04.2026", "title": "Claude Opus 4.7 — SWE 87.6%", "org": "Anthropic", "impact": "high", "category": "release" },
     { "month": "04/26", "date": "23.04.2026", "title": "GPT-5.5 (Terminal-Bench 82.7%)", "org": "OpenAI", "impact": "high", "category": "release" },
     { "month": "04/26", "date": "29.04.2026", "title": "Mistral Medium 3.5 (128B dense)", "org": "Mistral", "impact": "medium", "category": "release" },
-    { "month": "05/26", "date": "05.05.2026", "title": "GPT-5.5 Instant als ChatGPT-Default", "org": "OpenAI", "impact": "medium", "category": "release" }
+    { "month": "05/26", "date": "05.05.2026", "title": "GPT-5.5 Instant als ChatGPT-Default", "org": "OpenAI", "impact": "medium", "category": "release" },
+    { "month": "05/26", "date": "19.05.2026", "title": "Gemini 3.5 Flash @ Google I/O — 4× schneller, 40% günstiger", "org": "Google DeepMind", "impact": "high", "category": "release" },
+    { "month": "05/26", "date": "22.05.2026", "title": "OpenAI reicht S-1 ein — Q4-IPO bei $852 Mrd.–$1 Bio.", "org": "OpenAI", "impact": "high", "category": "industry" },
+    { "month": "05/26", "date": "22.05.2026", "title": "Anthropic schließt $30 Mrd. Runde bei $900 Mrd. — überholt OpenAI", "org": "Anthropic", "impact": "high", "category": "industry" }
   ]
 }

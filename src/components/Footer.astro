@@ -1,11 +1,8 @@
 ---
-// Build-Zeit (einmalig zur Deploy-Zeit gesetzt)
-const buildTime = new Date();
-const timestamp = buildTime.toLocaleDateString('de-DE', {
-  day: '2-digit',
-  month: '2-digit',
-  year: 'numeric',
-});
+import { formatNewsStand } from '../lib/news-stand';
+
+// Single source of truth: News-Stand aus news.json (synchron mit Hero)
+const timestamp = formatNewsStand();
 ---
 
 <footer class="relative pt-24 pb-10 overflow-hidden border-t border-border">

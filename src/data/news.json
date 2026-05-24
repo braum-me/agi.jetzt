@@ -1,5 +1,53 @@
 [
   {
+    "id": "ai-capital-race-eskalation-2026-05",
+    "headline": "Kapital-Eskalation: Anthropic $900 Mrd., OpenAI Richtung $1 Bio. IPO",
+    "summary": "Binnen 72 Stunden überholt Anthropic mit der avisierten $30-Mrd.-Runde (Bewertung $900 Mrd.) OpenAI als wertvollstes privates AI-Unternehmen, während OpenAI parallel sein S-1 für ein Q4-IPO zwischen $852 Mrd. und $1 Bio. einreicht. Dazu treten Compute-Deals in dreistelliger Milliardenhöhe (Anthropic/SpaceX-Colossus, Google-Broadcom-Chips). Capital-Race wird zum eigenständigen Standort-Risiko für europäische Labs.",
+    "category": "industrie",
+    "source": "Bloomberg / CNBC / Axios",
+    "source_url": "https://www.axios.com/2026/05/21/google-ai-anthropic-openai-war",
+    "date": "2026-05-23",
+    "relevance_score": 9,
+    "tags": ["Anthropic", "OpenAI", "Bewertung", "IPO", "Kapital"],
+    "agi_relevance": "Konzentration des AGI-Kapitals auf zwei US-Akteure verändert die Verhandlungsmacht gegenüber Aufsichtsbehörden und definiert das Compute-Plateau, das Wettbewerber überhaupt noch erreichen können."
+  },
+  {
+    "id": "anthropic-30b-round-900b-valuation",
+    "headline": "Anthropic schließt $30-Mrd.-Runde bei $900 Mrd. — überholt OpenAI",
+    "summary": "Bloomberg berichtete am 22. Mai, dass Anthropic eine $30-Mrd.-Finanzierungsrunde bei einer Bewertung von $900 Mrd. (pre-money) in der kommenden Woche schließt. Co-Lead: Sequoia, Dragoneer, Altimeter, Greenoaks (je ~$2 Mrd.), plus Founders Fund und General Catalyst. Damit zieht Anthropic an OpenAIs zuletzt notierter Bewertung von $852 Mrd. (März 2026) vorbei.",
+    "category": "industrie",
+    "source": "Bloomberg",
+    "source_url": "https://www.bloomberg.com/news/articles/2026-05-22/anthropic-to-close-over-30-billion-round-as-soon-as-next-week",
+    "date": "2026-05-22",
+    "relevance_score": 9,
+    "tags": ["Anthropic", "Funding", "Bewertung", "Sequoia"],
+    "agi_relevance": "Erste Bewertung eines AGI-Labs jenseits $900 Mrd. ohne Public-Listing — verschiebt die Capex-Schwelle, die ein Frontier-Modell zur kommerziellen Tragfähigkeit braucht, dauerhaft nach oben."
+  },
+  {
+    "id": "openai-s1-confidential-filing-2026-05-22",
+    "headline": "OpenAI reicht S-1 vertraulich bei SEC ein — Q4-2026-Listing bei $852 Mrd.–$1 Bio.",
+    "summary": "OpenAI legte am 22. Mai 2026 sein S-1 vertraulich bei der SEC vor, Ziel ist ein Public Listing im Q4 2026 (potenziell September). Lead Underwriter: Goldman Sachs, Morgan Stanley. Run-Rate-Umsatz: $25 Mrd. annualisiert per März, $2 Mrd./Monat, 50 Mio. Consumer-Abos, 9 Mio. Business-User. Brennrate: $1,22 Verlust pro $1 Umsatz in Q1 2026.",
+    "category": "industrie",
+    "source": "Fortune",
+    "source_url": "https://fortune.com/2026/05/22/openai-ipo-filing-1-trillion-may-finally-answer-these-big-questions/",
+    "date": "2026-05-22",
+    "relevance_score": 10,
+    "tags": ["OpenAI", "IPO", "SEC", "Bewertung"],
+    "agi_relevance": "Erstmals öffentliche Pflicht-Disclosures eines Frontier-Modell-Labs — Compute-Verträge, Verlust-Profil und Sicherheits-Risiken werden für Investoren und Aufsichtsbehörden gleichermaßen einsehbar."
+  },
+  {
+    "id": "gemini-connect-adobe-canva-capcut",
+    "headline": "Gemini-App bekommt Adobe, Canva und CapCut als native Connectors",
+    "summary": "Binnen vier Tagen nach Google I/O 2026 bestätigten Adobe (20.05.), Canva (19.05.) und CapCut (21.05.) native Integrationen in die Gemini-App. Canva-Connector ist bereits live (`@Canva` als Prompt-Tag), Adobe und CapCut folgen. Effekt: Gemini generiert Content und reicht ihn ohne App-Wechsel an professionelle Editing-Tools weiter. Erstes Beispiel für tiefe Workflow-Bindung zwischen Frontier-Modell und Creator-Stack.",
+    "category": "produkt",
+    "source": "9to5Google",
+    "source_url": "https://9to5google.com/2026/05/21/capcut-announces-partnership-with-gemini-app/",
+    "date": "2026-05-21",
+    "relevance_score": 7,
+    "tags": ["Google", "Gemini", "Adobe", "Canva", "Creator-Tools"],
+    "agi_relevance": "Verlagerung von Modell-Benchmark zu Workflow-Lock-in: Wer den Content-Pipeline-Knoten besetzt, gewinnt strukturelle User-Time, unabhängig von Pure-Capability-Benchmarks."
+  },
+  {
     "id": "trump-ai-executive-order-withdrawn",
     "headline": "Trump zieht AI-Executive-Order kurz vor Unterzeichnung zurück",
     "summary": "Präsident Trump sagte am 21. Mai 2026 das angesetzte Signing eines AI-Oversight-Dekrets ab, das einen freiwilligen 90-Tage-Vorab-Zugang für Bundesbehörden zu nicht-veröffentlichten Frontier-Modellen vorgesehen hätte. Stabschefin Wiles und KI-Czar Sacks blockierten den FDA-ähnlichen Ansatz von NEC-Direktor Hassett. Drittes Mal in Folge: Vertagung in den kommenden Wochen.",

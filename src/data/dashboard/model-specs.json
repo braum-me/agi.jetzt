@@ -3,6 +3,7 @@
   "source": "Official Model Cards + Artificial Analysis",
   "note": "Preis: USD per 1M Output-Tokens (Standard-Tier). Speed: Tokens/Sekunde (typisch).",
   "models": [
+    { "name": "Gemini 3.5 Flash", "vendor": "Google", "context_k": 1024, "price_per_m": 9.00, "speed_tok_s": 850, "release": "2026-05", "open_weight": false },
     { "name": "Gemini 3.1 Pro", "vendor": "Google", "context_k": 1024, "price_per_m": 12.00, "speed_tok_s": 220, "release": "2026-02", "open_weight": false },
     { "name": "GPT-5.5 Pro", "vendor": "OpenAI", "context_k": 1000, "price_per_m": 180.00, "speed_tok_s": 95, "release": "2026-04", "open_weight": false },
     { "name": "Claude Opus 4.7", "vendor": "Anthropic", "context_k": 1000, "price_per_m": 25.00, "speed_tok_s": 115, "release": "2026-04", "open_weight": false },

@@ -3,8 +3,8 @@
   "source": "Dealroom + PitchBook + SEC Filings + Public Announcements",
   "note": "Valuations basieren auf letzter dokumentierter Funding-Runde oder öffentlichem Marktwert. Private Labs nur wenn publik bestätigt.",
   "companies": [
-    { "rank": 1, "name": "OpenAI", "valuation": 852, "trend": "up", "category": "Frontier Lab", "employees": "3200", "key_product": "GPT-5.5 Pro, GPT-5.5 Instant", "hq": "San Francisco" },
-    { "rank": 2, "name": "Anthropic", "valuation": 380, "trend": "up", "category": "Frontier Lab", "employees": "1100", "key_product": "Claude Opus 4.7", "hq": "San Francisco" },
+    { "rank": 1, "name": "Anthropic", "valuation": 900, "trend": "up", "category": "Frontier Lab", "employees": "1400", "key_product": "Claude Opus 4.7", "hq": "San Francisco" },
+    { "rank": 2, "name": "OpenAI", "valuation": 852, "trend": "up", "category": "Frontier Lab", "employees": "3200", "key_product": "GPT-5.5 Pro, GPT-5.5 Instant", "hq": "San Francisco" },
     { "rank": 3, "name": "xAI", "valuation": 230, "trend": "up", "category": "Frontier Lab", "employees": "800", "key_product": "Grok 4.20 Heavy, Colossus 2", "hq": "Memphis" },
     { "rank": 4, "name": "Databricks", "valuation": 134, "trend": "up", "category": "AI Platform", "employees": "7500", "key_product": "Mosaic, Agent Bricks", "hq": "San Francisco" },
     { "rank": 5, "name": "Scale AI", "valuation": 29, "trend": "down", "category": "Data Labeling", "employees": "900", "key_product": "Donovan, SEAL Leaderboards", "hq": "San Francisco" },
