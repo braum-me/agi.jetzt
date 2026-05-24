@@ -1,4 +1,6 @@
 ---
+import GlobalAtmosphere from '../components/GlobalAtmosphere.astro';
+
 interface Props {
   title: string;
   description?: string;
@@ -195,6 +197,7 @@ const jsonLd = {
         erfordern JavaScript. Alle Inhalte — Dashboard-Daten, Briefings, Deep Dives, Glossar — sind auch ohne JS lesbar.
       </div>
     </noscript>
+    <GlobalAtmosphere />
     <slot />
 
     <style>

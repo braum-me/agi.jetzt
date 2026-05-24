@@ -1,0 +1,118 @@
+---
+---
+
+<div class="global-atmosphere" aria-hidden="true">
+  <canvas id="ambient-depth-canvas"></canvas>
+  <div class="atmosphere-veil atmosphere-veil-a"></div>
+  <div class="atmosphere-veil atmosphere-veil-b"></div>
+  <div class="atmosphere-grid"></div>
+  <div class="atmosphere-grain"></div>
+</div>
+
+<script>
+  const canvas = document.getElementById('ambient-depth-canvas') as HTMLCanvasElement | null;
+
+  if (canvas && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const start = async () => {
+      const { initAmbientDepth } = await import('../scripts/ambient-depth');
+      initAmbientDepth(canvas);
+    };
+
+    if ('requestIdleCallback' in window) {
+      (window as any).requestIdleCallback(start, { timeout: 1200 });
+    } else {
+      setTimeout(start, 240);
+    }
+  }
+</script>
+
+<style>
+  .global-atmosphere {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+    contain: strict;
+    background:
+      radial-gradient(circle at 12% 18%, rgba(91, 58, 163, 0.12), transparent 26%),
+      radial-gradient(circle at 83% 11%, rgba(139, 44, 77, 0.1), transparent 30%),
+      radial-gradient(circle at 72% 83%, rgba(45, 90, 63, 0.1), transparent 26%);
+  }
+
+  .global-atmosphere canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0.9;
+  }
+
+  .atmosphere-veil,
+  .atmosphere-grid,
+  .atmosphere-grain {
+    position: absolute;
+    inset: 0;
+  }
+
+  .atmosphere-veil {
+    filter: blur(48px);
+    opacity: 0.55;
+    transform: translate3d(0, 0, 0);
+    will-change: transform;
+  }
+
+  .atmosphere-veil-a {
+    background:
+      conic-gradient(from 210deg at 26% 28%, rgba(91, 58, 163, 0.2), transparent 18%, rgba(184, 114, 28, 0.14), transparent 48%, rgba(45, 90, 63, 0.13), transparent 72%, rgba(139, 44, 77, 0.16));
+    animation: atmosphere-drift-a 24s ease-in-out infinite alternate;
+  }
+
+  .atmosphere-veil-b {
+    background:
+      radial-gradient(ellipse at 78% 34%, rgba(139, 44, 77, 0.18), transparent 42%),
+      radial-gradient(ellipse at 45% 82%, rgba(91, 58, 163, 0.15), transparent 36%);
+    animation: atmosphere-drift-b 31s ease-in-out infinite alternate;
+  }
+
+  .atmosphere-grid {
+    opacity: 0.42;
+    mask-image: linear-gradient(to bottom, transparent, black 8%, black 68%, transparent 100%);
+    background:
+      linear-gradient(rgba(26, 24, 20, 0.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(26, 24, 20, 0.035) 1px, transparent 1px),
+      repeating-linear-gradient(115deg, rgba(91, 58, 163, 0.05) 0 1px, transparent 1px 58px);
+    background-size: 64px 64px, 64px 64px, auto;
+    animation: grid-breathe 18s linear infinite;
+  }
+
+  .atmosphere-grain {
+    opacity: 0.07;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.86' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.1 0 0 0 0 0.085 0 0 0 0 0.055 0 0 0 0.62 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  @keyframes atmosphere-drift-a {
+    0% { transform: translate3d(-2%, -1%, 0) rotate(-4deg) scale(1); }
+    100% { transform: translate3d(3%, 2%, 0) rotate(5deg) scale(1.08); }
+  }
+
+  @keyframes atmosphere-drift-b {
+    0% { transform: translate3d(2%, 3%, 0) rotate(2deg) scale(1.02); }
+    100% { transform: translate3d(-3%, -2%, 0) rotate(-5deg) scale(1.12); }
+  }
+
+  @keyframes grid-breathe {
+    0% { transform: translate3d(0, 0, 0); opacity: 0.32; }
+    50% { transform: translate3d(-18px, 12px, 0); opacity: 0.52; }
+    100% { transform: translate3d(-64px, 64px, 0); opacity: 0.32; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .global-atmosphere canvas,
+    .atmosphere-veil,
+    .atmosphere-grid {
+      animation: none !important;
+    }
+  }
+</style>
