@@ -206,6 +206,12 @@ for (const file of listFiles(briefDir, '.md')) {
       err(`${rel}: Frontmatter-Feld "${field}" fehlt`);
     }
   }
+  // PR-Review ist das Publish-Gate: Fehlendes `draft` wird vom Astro-Schema
+  // auf false gesetzt; ein explizites true darf niemals gemerged werden.
+  const draftField = yaml.match(/^draft:\s*([^\s#]+)(?:\s+#.*)?$/m);
+  if (draftField && draftField[1] !== 'false') {
+    err(`${rel}: draft muss false sein — draft:true blendet das Briefing in Production aus`);
+  }
   // Date-Drift-Check: Briefing-Datum darf nicht in der Zukunft liegen.
   // Future-dated briefings werden vom Index-Filter ausgeblendet → unsichtbar nach Merge.
   // Lessons learned aus KW 18+19/2026 (Routine schrieb +7d zu spät).

@@ -1,16 +1,18 @@
-# Routine: Weekly Briefing (Draft)
+# Routine: Weekly Briefing (Publish-ready)
 
 **Trigger:** Schedule — jeden Freitag 10:00 CEST
 **Output:** Ein neuer Markdown-File in `src/content/briefing/kw-NN-YYYY.md`
 **PR-Label:** `content`, `weekly`
-**Erwartung:** Veröffentlichungs-fähiger Entwurf (`draft: false`). PR-Review ist der Publish-Gate — sobald Stefan merged, ist das Briefing live. Kein nachgelagerter Draft-Flip mehr.
+**Prompt-Version:** `2026-07-13-publish-by-default`
+**Erwartung:** Veröffentlichungsfähige Ausgabe (`draft: false`). PR-Review ist der Publish-Gate — sobald Stefan merged, ist das Briefing live. Kein nachgelagerter Draft-Flip mehr.
+**Harte Invariante:** Jede erzeugte Datei enthält exakt `draft: false`. Falls eine andere Anweisung `draft: true` verlangt, brich den Run ab, statt eine Datei oder einen PR zu erzeugen.
 
 ---
 
 ## Dein Auftrag
 
 Recherchiere die wichtigsten KI-Entwicklungen der **aktuellen Kalenderwoche**
-(Montag–Donnerstag) und erzeuge daraus einen Rohentwurf für das wöchentliche
+(Montag–Donnerstag) und erzeuge daraus eine veröffentlichungsfähige Ausgabe für das wöchentliche
 Briefing auf agi.jetzt.
 
 Du bist ein **Recherche-Assistent**, kein Ghostwriter. Liefere faktisch präzise,
@@ -54,7 +56,7 @@ nicht als Haupt-Link hinter einer Zahl.
 Prüfe VOR Body-Schreiben, ob du **mindestens 3 echte, quellenbelegbare Events aus dem Ziel-Zeitfenster** (Mo 00:00 – Do 23:59 UTC der Ziel-KW) gefunden hast.
 
 Wenn < 3 echte Events: **ABBRUCH**. Keine Commits, kein PR. Output:
-*„Date-Drift-Guard: Nur X Events im Zeitfenster Mo-Do KW NN belegbar. Run verschoben oder manuell ergänzen. Kein Draft erstellt."*
+*„Date-Drift-Guard: Nur X Events im Zeitfenster Mo-Do KW NN belegbar. Run verschoben oder manuell ergänzen. Kein Briefing erstellt."*
 
 Damit wird verhindert dass die Routine Events aus Vor-/Folge-Wochen einbaut um das Format zu füllen.
 

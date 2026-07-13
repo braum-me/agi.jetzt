@@ -17,7 +17,9 @@ const briefingCollection = defineCollection({
       context: z.string(),
     }),
     tags: z.array(z.string()),
-    draft: z.boolean().default(false),
+    // PR review is the publish gate. Omitted values default to published;
+    // an explicit `draft: true` is invalid and must never reach production.
+    draft: z.literal(false).default(false),
   }),
 });
 
