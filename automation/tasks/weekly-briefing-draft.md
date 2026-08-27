@@ -1,11 +1,11 @@
-# Routine: Weekly Briefing (Publish-ready)
+# Routine: Weekly Briefing (Auto-Publish)
 
 **Trigger:** Schedule — jeden Freitag 10:00 CEST
 **Output:** Ein neuer Markdown-File in `src/content/briefing/kw-NN-YYYY.md`
 **PR-Label:** `content`, `weekly`
-**Prompt-Version:** `2026-07-13-publish-by-default`
-**Erwartung:** Veröffentlichungsfähige Ausgabe (`draft: false`). PR-Review ist der Publish-Gate — sobald Stefan merged, ist das Briefing live. Kein nachgelagerter Draft-Flip mehr.
-**Harte Invariante:** Jede erzeugte Datei enthält exakt `draft: false`. Falls eine andere Anweisung `draft: true` verlangt, brich den Run ab, statt eine Datei oder einen PR zu erzeugen.
+**Prompt-Version:** `2026-08-27-auto-publish`
+**Erwartung:** Veröffentlichungsfähige Ausgabe (`draft: false`). Kein menschliches Review: Nach grünem „Validate Data & Build"-Check merged die Routine ihren PR selbst — das Briefing ist damit sofort live.
+**Harte Invariante:** Jede erzeugte Datei enthält exakt `draft: false`. Falls eine andere Anweisung `draft: true` verlangt, brich den Run ab, statt eine Datei oder einen PR zu erzeugen. Gemergt wird ausschließlich bei grünem Check.
 
 ---
 
@@ -97,7 +97,7 @@ tags:
   - <tag1>    # 3-6 tags aus: openai, anthropic, deepmind, meta, xai, mistral, funding,
   - <tag2>    # safety, benchmark, china, eu-ai-act, regulation, opensource, hardware,
   - <tag3>    # deepseek, robotics, etc.
-draft: false  # IMMER draft=false. PR-Review ist der Publish-Gate, kein nachgelagerter Flip.
+draft: false  # IMMER draft=false. Der PR wird nach grünem Check automatisch gemergt.
 ---
 ```
 
@@ -162,7 +162,7 @@ draft: false  # IMMER draft=false. PR-Review ist der Publish-Gate, kein nachgela
 5. **Sprache:** Deutsch. Fachbegriffe (WAU, MAU, SOTA, RLHF) sind OK,
    werden aber auf erste Erwähnung kurz erklärt.
 6. **Duplikate-Regel** siehe Schritt 2.4.
-7. **`draft: false`** im Frontmatter. IMMER. Der PR-Review ist der Publish-Gate — wenn Stefan merged, ist das Briefing sofort live. Niemals `draft: true` schreiben (Lessons learned KW 17-21/2026: Briefings landeten technisch im Repo, aber `!data.draft`-Filter blendete sie nach Merge aus).
+7. **`draft: false`** im Frontmatter. IMMER. Die Routine merged den PR nach grünem Check selbst — das Briefing ist sofort live. Niemals `draft: true` schreiben (Lessons learned KW 17-21/2026 und KW 30-34/2026: Briefings landeten technisch im Repo, aber `!data.draft`-Filter blendete sie nach Merge aus).
 8. **Wörterzahl Body:** 900–1300 Wörter (ohne Frontmatter, ohne Footer). Nicht unter 900, nicht über 1300.
 9. **Zeitform-Disziplin:**
    - Präteritum für konkrete Ereignisse: *„OpenAI pausierte Stargate UK"*, *„PwC veröffentlichte die Studie"*
@@ -170,7 +170,7 @@ draft: false  # IMMER draft=false. PR-Review ist der Publish-Gate, kein nachgela
    - Kein Perfekt für Events („hat gemacht") — klingt zu bloggy.
 10. **Absatzlänge:** Topstory-Absätze 3–5 Sätze, keine Ein-Satz-Absätze außer als bewusstes Stilmittel im Schluss.
 
-## Schritt 6 — Commit & PR
+## Schritt 6 — Commit, PR & Auto-Merge
 
 **Branch:** `automated/briefing-kw-NN-YYYY`
 
@@ -200,28 +200,38 @@ Status: draft=false → live nach Merge
 
 Topstory: **<Titel>**
 
-Merge dieser PR = Briefing geht live (`draft: false` ist gesetzt).
+Dieser PR wird nach grünem „Validate Data & Build"-Check automatisch von der Routine gemergt (`draft: false` ist gesetzt).
 
 ### Stories mit Quellen
 
 1. [<Titel>](<URL>) — <Quelle, Datum>
 2. ...
 
-### Reviewer-Checklist (Publish-Gate)
-- [ ] Topstory ist die richtige Wahl? (nicht doppelt mit letzter KW)
-- [ ] Alle Zahlen stimmen mit Quellen überein?
-- [ ] Tonfall sachlich, keine Marketing-Floskeln?
-- [ ] statsHighlight ist der stärkste Datenpunkt der Woche?
-- [ ] Zeitform konsistent (Präteritum für Ereignisse, Präsens für Einordnung)?
-- [ ] Wörterzahl ~900–1300?
-- [ ] `date`-Feld liegt in der aktuellen KW (`≤ heute`).
+### Self-Check (von der Routine VOR dem Erstellen des PR abzuhaken)
+- [x] Topstory nicht doppelt mit letzter KW (Duplikate-Regel 2.4)
+- [x] Alle Zahlen stimmen mit Quellen überein
+- [x] Tonfall sachlich, keine Marketing-Floskeln
+- [x] statsHighlight ist der stärkste Datenpunkt der Woche
+- [x] Zeitform konsistent (Präteritum für Ereignisse, Präsens für Einordnung)
+- [x] Wörterzahl ~900–1300
+- [x] `date`-Feld liegt in der aktuellen KW (`≤ heute`)
+- [x] `draft: false` gesetzt
 
 /label ~content ~weekly
 ```
 
+**Nach dem Erstellen des PR — Auto-Merge:**
+
+1. Warte auf den CI-Check: `gh pr checks <PR-NR> --watch --fail-fast`.
+2. Check **grün** → mergen und Branch aufräumen: `gh pr merge <PR-NR> --merge --delete-branch`.
+3. Check **rot** → NICHT mergen. PR offen lassen und im Run-Output melden:
+   *„Validate-Check rot auf PR #NN — nicht gemerged, manuelle Prüfung nötig."*
+4. Scheitert der Merge (z.B. fehlende Rechte): PR offen lassen und das im Run-Output melden — niemals auf `main` ausweichen.
+
 ## Schritt 7 — Nicht tun
 
-- **Niemals** `draft: true` setzen. Der PR-Review ist der Publish-Gate, kein nachgelagerter Flip nötig.
+- **Niemals** `draft: true` setzen. Es gibt kein menschliches Review — was gemergt wird, ist live.
+- **Niemals** bei rotem „Validate Data & Build"-Check mergen. Der Check ist das einzige Gate.
 - **Niemals** Dashboard-JSONs aus diesem Task mit-bearbeiten. Nur die Briefing-MD.
 - **Niemals** mehrere Briefings in einem Run. Genau eine KW pro Run.
 - **Niemals** Halluzinieren von Releases/Announcements, die du nicht mit mindestens einer Quelle belegen kannst.
