@@ -222,11 +222,14 @@ Dieser PR wird nach grünem „Validate Data & Build"-Check automatisch von der 
 
 **Nach dem Erstellen des PR — Auto-Merge:**
 
-1. Warte auf den CI-Check: `gh pr checks <PR-NR> --watch --fail-fast`.
-2. Check **grün** → mergen und Branch aufräumen: `gh pr merge <PR-NR> --merge --delete-branch`.
+Nutze dafür die GitHub-Tools, die in deiner Session tatsächlich verfügbar sind — das sind je nach Environment entweder die `mcp__github__*`-Tools (`pull_request_read` mit `method: get_status`/`get_check_run` zum Pollen, `merge_pull_request` zum Mergen) oder die `gh`-CLI (`gh pr checks`, `gh pr merge`). Prüfe zu Beginn des Runs, welche davon existieren, und nutze ausschließlich diese — verlasse dich nicht darauf, dass eine bestimmte davon vorhanden ist.
+
+1. Warte, bis der „Validate Data & Build"-Check auf dem PR abgeschlossen ist (pollen, nicht raten).
+2. Check **grün** → mergen und Branch aufräumen.
 3. Check **rot** → NICHT mergen. PR offen lassen und im Run-Output melden:
    *„Validate-Check rot auf PR #NN — nicht gemerged, manuelle Prüfung nötig."*
 4. Scheitert der Merge (z.B. fehlende Rechte): PR offen lassen und das im Run-Output melden — niemals auf `main` ausweichen.
+5. Kein GitHub-Tool zum Mergen verfügbar: PR offen lassen (nicht draft:true zurücksetzen) und im Run-Output explizit melden, dass der Auto-Merge-Schritt technisch nicht ausführbar war.
 
 ## Schritt 7 — Nicht tun
 

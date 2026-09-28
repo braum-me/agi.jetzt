@@ -1,8 +1,16 @@
 # Automation — Routine-Prompts für agi.jetzt
 
-> **Status (Stand 16.04.2026):** Nur `weekly-briefing-draft` ist produktiv konfiguriert.
+> **Status (Stand 28.09.2026):** `weekly-briefing-draft` und `weekly-news` sind produktiv
+> konfiguriert und laufen **ohne menschliches Review** — Publish-Gate ist ausschließlich
+> der grüne „Validate Data & Build"-CI-Check, die Routine merged ihren eigenen PR selbst.
 > Die restlichen Tasks in der Tabelle unten sind Prompt-Drafts in Vorbereitung —
 > Scheduling und `scripts/run-task.sh` werden in den kommenden Wochen nachgezogen.
+>
+> **Lessons learned (KW 17-39/2026):** Der größte wiederkehrende Fehler war ein
+> auseinandergelaufener Routine-Prompt — die Routine speichert ihre Anweisung beim Erstellen
+> als Kopie, nicht als Live-Referenz auf dieses Repo. Wird `weekly-briefing-draft.md` geändert,
+> muss der gespeicherte Routine-Prompt (Claude Code Remote → Routine bearbeiten) **manuell
+> nachgezogen werden**, sonst driftet er wieder auseinander wie zwischen KW 30-39.
 
 Portable Task-Definitionen. Werden 1:1 in die **Claude Code Routine**-Konfiguration
 kopiert (Anthropic Cloud) — oder in einem Plan-B-Szenario von einem dem internen Cron-Host-Cron-Wrapper aufgerufen.
@@ -24,9 +32,9 @@ Ein Routine:
 
 | Task                      | Schedule           | PR-Label                 | Files                                                     |
 |---------------------------|--------------------|--------------------------|-----------------------------------------------------------|
-| `weekly-news`             | Mo 09:00 CEST      | `data`, `weekly`, `news` | `src/data/news.json`                                      |
+| `weekly-news` ✅ LIVE      | Mo 09:00 CEST      | `data`, `weekly`, `news` | `src/data/news.json` (additiv, Auto-Merge bei grünem CI)  |
 | `weekly-watchlist`        | Do 09:00 CEST      | `data`, `weekly`         | `src/data/watchlist.json`                                 |
-| `weekly-briefing-draft`   | Fr 10:00 CEST      | `content`, `weekly`      | `src/content/briefing/kw-NN-YYYY.md` (`draft: false`, Merge = Publish) |
+| `weekly-briefing-draft` ✅ LIVE | Fr 10:00 CEST | `content`, `weekly`      | `src/content/briefing/kw-NN-YYYY.md` (`draft: false`, Auto-Merge bei grünem CI) |
 | `monthly-batch-a`         | 1. 09:00           | `data`, `monthly`        | `dashboard/benchmarks.json`, `model-specs.json`, `landscape.json` |
 | `monthly-batch-b`         | 1. 10:00           | `data`, `monthly`        | `dashboard/investments.json`, `companies.json`, `hiring.json` |
 | `monthly-batch-c`         | 2. 09:00           | `data`, `monthly`        | `dashboard/regulations.json`, `incidents.json`, `adoption.json` |
