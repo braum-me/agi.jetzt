@@ -1,5 +1,12 @@
 # Automation — Routine-Prompts für agi.jetzt
 
+> **Weekly-Archiv-Freeze:** Der Zustand des Briefing-Archivs steht in
+> `scripts/legacy-weekly-freeze.json` (`open` = Normalbetrieb, `frozen` = Archiv abgeschlossen bei
+> `finalLegacyIssue`). `weekly-briefing-draft` prüft ihn in Schritt 0; im Zustand `frozen` lehnen der
+> Check „Validate Data & Build" und jeder `astro build` jede neue oder geänderte Ausgabe hart ab.
+> Status: `pnpm freeze:status` · Tests: `pnpm test` · End-to-End-Probe: `bash scripts/freeze-rehearsal.sh`.
+> `weekly-news` ist nicht betroffen.
+
 > **Status (Stand 28.09.2026):** `weekly-briefing-draft` und `weekly-news` sind produktiv
 > konfiguriert und laufen **ohne menschliches Review** — Publish-Gate ist ausschließlich
 > der grüne „Validate Data & Build"-CI-Check, die Routine merged ihren eigenen PR selbst.

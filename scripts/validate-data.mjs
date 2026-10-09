@@ -19,6 +19,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
+import { freezeProblems, readFreezeContract } from './legacy-weekly-freeze.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -230,6 +231,20 @@ for (const file of listFiles(briefDir, '.md')) {
   if (linkCount < 3) {
     warn(`${rel}: nur ${linkCount} Links im Body — Quellenpflicht unterlaufen?`);
   }
+}
+
+/* ─────────────────────────────────────────────────────────
+   Rule 5 — Weekly-Archiv-Freeze (scripts/legacy-weekly-freeze.json)
+───────────────────────────────────────────────────────── */
+console.log('› Weekly-Archiv-Freeze …');
+// Zustand „open": Normalbetrieb, keine Einschränkung. Zustand „frozen": jede Abweichung vom
+// festgeschriebenen Archiv ist ein Error (kein Warning). Dieselbe Prüfung bricht zusätzlich jeden
+// `astro build` ab (astro.config.mjs). Eine fehlende oder kaputte Zustandsdatei ist ebenfalls ein Error.
+try {
+  const contract = readFreezeContract();
+  for (const problem of freezeProblems(ROOT, contract)) err(problem);
+} catch (error) {
+  err(error instanceof Error ? error.message : String(error));
 }
 
 /* ─────────────────────────────────────────────────────────
