@@ -451,6 +451,12 @@ export function buildFreezeArtifact(root = ROOT, { contract = readFreezeContract
       firstCommit: sha ? { sha, committedAt } : null,
     });
   }
+  // chronologisch (Jahr, Woche), nicht nach Dateiname: kw-01-2027 kommt nach kw-53-2026
+  issues.sort((a, b) => {
+    const x = issueOfFile(a.file);
+    const y = issueOfFile(b.file);
+    return x.year - y.year || x.week - y.week;
+  });
   const latest = latestIssue(issues.map((i) => issueOfFile(i.file)));
   const today = now.toISOString().slice(0, 10);
   const feedItems = issues.filter((i) => i.date <= today).sort((a, b) => (a.date === b.date ? (a.issue < b.issue ? 1 : -1) : a.date < b.date ? 1 : -1));

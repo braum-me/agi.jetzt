@@ -613,6 +613,16 @@ describe('Nachweisdokument (artifact)', () => {
     assert.notEqual(a.archiveSha256, c.archiveSha256);
   });
 
+  it('über die Jahresgrenze: chronologisch geordnet, jüngste Ausgabe ist die des neuen Jahres', () => {
+    const { root } = artifactRepo([[2026, 52], [2026, 53], [2027, 1], [2027, 2]]);
+    const a = buildFreezeArtifact(root, { contract: OPEN, now: new Date('2027-02-01T00:00:00Z') });
+    assert.deepEqual(a.issues.map((i) => i.issue), ['2026-KW52', '2026-KW53', '2027-KW01', '2027-KW02']);
+    assert.equal(a.latestPublishedIssue, '2027-KW02');
+    assert.equal(a.feed.latestItem, '2027-KW02');
+    const frozen = buildFrozenContract(root, '2027-KW02');
+    assert.equal(frozen.state, 'frozen');
+  });
+
   it('ein Entwurf ist keine veröffentlichte Ausgabe', () => {
     const r = artifactRepo([[2030, 9]]);
     r.add(2030, 10, fixtureIssue(2030, 10, { draft: true }));
