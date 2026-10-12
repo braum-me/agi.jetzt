@@ -9,13 +9,17 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { after, describe, it } from 'node:test';
+import { createHash } from 'node:crypto';
 import { fileURLToPath } from 'node:url';
 import {
   WeeklyArchiveFrozenError,
   WeeklyFreezeContractError,
   archiveProblems,
   assertPublicationAllowed,
+  ARTIFACT_SCHEMA,
   assertWeeklyFreeze,
+  buildFreezeArtifact,
+  canonicalJson,
   buildFrozenContract,
   contractText,
   formatIssue,
@@ -31,6 +35,7 @@ import {
   readFreezeContract,
 } from './legacy-weekly-freeze.mjs';
 
+const createHashHex = (text) => createHash('sha256').update(text).digest('hex');
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const HASH = 'c'.repeat(64);
 const OPEN = { state: 'open' };
@@ -558,4 +563,98 @@ describe('Der echte Publikationspfad in einer Wegwerf-Kopie: validate-data.mjs, 
       assert.match(hook.stderr, /invalid weekly freeze contract/);
     });
   }
+});
+
+/** Wegwerf-Repo mit Zustandsdatei, damit das Nachweisdokument den Vertrag lesen kann. */
+const artifactRepo = (issues, contract = OPEN) => {
+  const r = repo(issues);
+  fs.mkdirSync(path.join(r.root, 'scripts'), { recursive: true });
+  fs.writeFileSync(path.join(r.root, 'scripts/legacy-weekly-freeze.json'), contractText(contract));
+  return r;
+};
+const NOW = new Date('2030-03-15T10:00:00Z');
+
+describe('Nachweisdokument (artifact)', () => {
+  it('open: nennt die jüngste Ausgabe und ist ausdrücklich nicht final', () => {
+    const { root } = artifactRepo([[2030, 9], [2030, 10]]);
+    const a = buildFreezeArtifact(root, { contract: OPEN, now: NOW });
+    assert.equal(a.schema, ARTIFACT_SCHEMA);
+    assert.equal(a.state, 'open');
+    assert.equal(a.final, false);
+    assert.equal(a.finalLegacyIssue, null);
+    assert.equal(a.latestPublishedIssue, '2030-KW10');
+    assert.equal(a.issueCount, 2);
+    assert.deepEqual(a.issues.map((i) => i.file), [file(2030, 9), file(2030, 10)]);
+    assert.equal(a.feed.latestItem, '2030-KW10');
+  });
+
+  it('frozen: nennt finalLegacyIssue, Hashes und Archiv-Hash; artifactSha256 prüft sich nach', () => {
+    const { root } = artifactRepo([[2030, 9], [2030, 10]]);
+    const frozen = buildFrozenContract(root, '2030-KW10');
+    fs.writeFileSync(path.join(root, 'scripts/legacy-weekly-freeze.json'), contractText(frozen));
+    const a = buildFreezeArtifact(root, { contract: readFreezeContract(path.join(root, 'scripts/legacy-weekly-freeze.json')), now: NOW });
+    assert.equal(a.final, true);
+    assert.equal(a.finalLegacyIssue, '2030-KW10');
+    assert.equal(a.latestPublishedIssue, '2030-KW10');
+    for (const entry of a.issues) assert.equal(entry.sha256, frozen.archive[entry.file]);
+    const { generatedAt, artifactSha256, ...body } = a;
+    assert.equal(artifactSha256, createHashHex(canonicalJson(body)));
+    assert.ok(generatedAt);
+  });
+
+  it('der Hash hängt nicht vom Zeitpunkt der Erzeugung ab, wohl aber von jedem Byte einer Ausgabe', () => {
+    const r = artifactRepo([[2030, 9], [2030, 10]]);
+    const a = buildFreezeArtifact(r.root, { contract: OPEN, now: NOW });
+    const b = buildFreezeArtifact(r.root, { contract: OPEN, now: new Date('2030-03-16T00:00:00Z') });
+    assert.equal(a.artifactSha256, b.artifactSha256);
+    r.add(2030, 10, `${fixtureIssue(2030, 10)}\nGeändert.\n`);
+    const c = buildFreezeArtifact(r.root, { contract: OPEN, now: NOW });
+    assert.notEqual(a.artifactSha256, c.artifactSha256);
+    assert.notEqual(a.archiveSha256, c.archiveSha256);
+  });
+
+  it('ein Entwurf ist keine veröffentlichte Ausgabe', () => {
+    const r = artifactRepo([[2030, 9]]);
+    r.add(2030, 10, fixtureIssue(2030, 10, { draft: true }));
+    const a = buildFreezeArtifact(r.root, { contract: OPEN, now: NOW });
+    assert.equal(a.latestPublishedIssue, '2030-KW09');
+    assert.equal(a.drafts, 1);
+    assert.equal(a.issueCount, 1);
+  });
+
+  it('frozen, aber das Archiv weicht ab (neue Ausgabe, geändertes Byte): kein Dokument', () => {
+    const r = artifactRepo([[2030, 9], [2030, 10]]);
+    const frozen = buildFrozenContract(r.root, '2030-KW10');
+    r.add(2030, 11);
+    assert.throws(() => buildFreezeArtifact(r.root, { contract: frozen, now: NOW }), WeeklyArchiveFrozenError);
+    const r2 = artifactRepo([[2030, 9], [2030, 10]]);
+    const frozen2 = buildFrozenContract(r2.root, '2030-KW10');
+    r2.add(2030, 9, `${fixtureIssue(2030, 9)}\nGeändert.\n`);
+    assert.throws(() => buildFreezeArtifact(r2.root, { contract: frozen2, now: NOW }), WeeklyArchiveFrozenError);
+  });
+
+  it('Revision und erster Commit kommen aus git; ohne git sind sie null', () => {
+    const r = artifactRepo([[2030, 9]]);
+    const none = buildFreezeArtifact(r.root, { contract: OPEN, now: NOW });
+    assert.equal(none.repository.revision, null);
+    assert.equal(none.issues[0].firstCommit, null);
+    const run = (...args) => spawnSync('git', ['-C', r.root, '-c', 'user.name=t', '-c', 'user.email=t@example.invalid', ...args], { encoding: 'utf-8' });
+    run('init', '-q');
+    run('add', '-A');
+    run('commit', '-q', '-m', 'init');
+    const head = run('rev-parse', 'HEAD').stdout.trim();
+    const a = buildFreezeArtifact(r.root, { contract: OPEN, now: NOW });
+    assert.equal(a.repository.revision, head);
+    assert.equal(a.repository.dirty, false);
+    assert.equal(a.issues[0].firstCommit.sha, head);
+  });
+
+  it('das echte Archiv: ein Dokument im Zustand der Datei, jüngste Ausgabe = Maximum der Dateien', () => {
+    const a = buildFreezeArtifact(ROOT, { now: new Date() });
+    const files = fs.readdirSync(path.join(ROOT, 'src/content/briefing')).filter((f) => issueOfFile(f));
+    assert.equal(a.issueCount + a.drafts, files.length);
+    const contract = readFreezeContract();
+    assert.equal(a.state, contract.state);
+    assert.equal(a.final, contract.state === 'frozen');
+  });
 });

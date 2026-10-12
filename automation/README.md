@@ -4,7 +4,7 @@
 > `scripts/legacy-weekly-freeze.json` (`open` = Normalbetrieb, `frozen` = Archiv abgeschlossen bei
 > `finalLegacyIssue`). `weekly-briefing-draft` prüft ihn in Schritt 0; im Zustand `frozen` lehnen der
 > Check „Validate Data & Build" und jeder `astro build` jede neue oder geänderte Ausgabe hart ab.
-> Status: `pnpm freeze:status` · Tests: `pnpm test` · End-to-End-Probe: `bash scripts/freeze-rehearsal.sh`.
+> Status: `pnpm freeze:status` · Nachweisdokument (nur lesend): `node scripts/legacy-weekly-freeze.mjs artifact` · Tests: `pnpm test` · End-to-End-Probe: `bash scripts/freeze-rehearsal.sh`.
 > `weekly-news` ist nicht betroffen.
 
 > **Status (Stand 28.09.2026):** `weekly-briefing-draft` und `weekly-news` sind produktiv

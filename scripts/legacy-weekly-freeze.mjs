@@ -24,6 +24,10 @@
  *
  * Kommandos:
  *   node scripts/legacy-weekly-freeze.mjs status
+ *   node scripts/legacy-weekly-freeze.mjs artifact [--out <datei>]
+ *       gibt den Zustand als maschinenlesbares Nachweisdokument aus (nur lesend, ändert nichts):
+ *       Zustand, letzte Ausgabe, je Ausgabe Datei/SHA-256/Datum/erster Commit, Archiv-Hash,
+ *       Feed-Stand, Repository-Revision. Im Zustand „open" ist es ausdrücklich nicht final.
  *   node scripts/legacy-weekly-freeze.mjs freeze --final YYYY-KWNN
  *       schreibt den Zustand „frozen". `--final` ist immer ausdrücklich anzugeben und muss die
  *       zuletzt veröffentlichte Ausgabe sein; die Hashes werden aus dem tatsächlichen Ordner
@@ -31,6 +35,7 @@
  *       Edit der JSON-Datei.
  */
 
+import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -371,6 +376,108 @@ export function freezeRepository(root, finalLabel, file = CONTRACT_FILE) {
   return frozen;
 }
 
+export const ARTIFACT_SCHEMA = 'legacy-weekly-freeze-artifact-v1';
+
+/** Kanonisches JSON (Schlüssel rekursiv sortiert, ohne Leerraum) — Grundlage jedes Hashes darin. */
+export function canonicalJson(value) {
+  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
+  if (value !== null && typeof value === 'object') {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${canonicalJson(value[key])}`)
+      .join(',')}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function git(root, args) {
+  try {
+    return execFileSync('git', ['-C', root, ...args], { encoding: 'utf-8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+  } catch {
+    return null;
+  }
+}
+
+/** Genau ein Frontmatter-Datum YYYY-MM-DD; sonst null. */
+function dateField(frontmatter) {
+  const lines = frontmatter.split(/\r?\n/).filter((line) => /^date\s*:/.test(line));
+  const value = lines.length === 1 ? /^date\s*:\s*"?(\d{4}-\d{2}-\d{2})"?\s*(?:#.*)?$/.exec(lines[0]) : null;
+  return value ? value[1] : null;
+}
+
+/**
+ * Nachweisdokument des Archivs — nur lesend. Es enthält genug, damit ein Dritter ohne Zugriff auf
+ * dieses Repo prüfen kann, welche Ausgabe die letzte ist und welche Bytes sie hat:
+ *   - state / final / finalLegacyIssue: „open" ist ausdrücklich nicht final (final: false).
+ *   - issues[]: jede veröffentlichte Ausgabe mit Datei, SHA-256, Frontmatter-Datum und dem Commit,
+ *     der die Datei zuerst hinzugefügt hat (die Veröffentlichung auf main).
+ *   - archiveSha256: Hash über alle `Datei<TAB>SHA-256`-Zeilen; feed: der Stand von /briefing/feed.xml.
+ *   - repository.revision / dirty: der Commit, aus dem das Dokument erzeugt wurde.
+ * `artifactSha256` deckt alles außer sich selbst und `generatedAt` ab.
+ * Ein Archiv, das dem Zustand widerspricht (frozen, aber verändert), erzeugt kein Dokument.
+ */
+export function buildFreezeArtifact(root = ROOT, { contract = readFreezeContract(), now = new Date() } = {}) {
+  const problems = freezeProblems(root, contract);
+  if (problems.length) {
+    throw new WeeklyArchiveFrozenError(
+      `no artifact: the archive does not match its state.\n${problems.map((p) => `  · ${p}`).join('\n')}`,
+    );
+  }
+  const dir = path.join(root, BRIEFING_DIR);
+  const { files, links } = walk(dir);
+  if (links.length) throw new WeeklyArchiveFrozenError(`no artifact: symlink in the briefing directory (${links[0]})`);
+  const issues = [];
+  let drafts = 0;
+  for (const rel of files) {
+    const issue = issueOfFile(rel);
+    if (!issue) throw new WeeklyArchiveFrozenError(`no artifact: ${rel} is not a kw-NN-YYYY.md issue file`);
+    const bytes = fs.readFileSync(path.join(dir, rel));
+    const frontmatter = /^---\r?\n([\s\S]*?)\r?\n---/.exec(bytes.toString('utf-8'));
+    if (!frontmatter) throw new WeeklyArchiveFrozenError(`no artifact: ${rel} has no frontmatter`);
+    const draft = /^draft\s*:\s*([^\s#]*)/m.exec(frontmatter[1]);
+    if (draft && draft[1] !== 'false') {
+      drafts += 1;
+      continue;
+    }
+    const date = dateField(frontmatter[1]);
+    if (!date) throw new WeeklyArchiveFrozenError(`no artifact: ${rel} has no single YYYY-MM-DD date`);
+    const first = git(root, ['log', '--diff-filter=A', '--reverse', '--format=%H%x09%cI', '--', `${BRIEFING_DIR}/${rel}`]);
+    const [sha, committedAt] = first ? first.split('\n')[0].split('\t') : [null, null];
+    issues.push({
+      issue: formatIssue(issue),
+      file: rel,
+      sha256: sha256(bytes),
+      date,
+      firstCommit: sha ? { sha, committedAt } : null,
+    });
+  }
+  const latest = latestIssue(issues.map((i) => issueOfFile(i.file)));
+  const today = now.toISOString().slice(0, 10);
+  const feedItems = issues.filter((i) => i.date <= today).sort((a, b) => (a.date === b.date ? (a.issue < b.issue ? 1 : -1) : a.date < b.date ? 1 : -1));
+  const status = git(root, ['status', '--porcelain']);
+  const contractFile = path.join(root, 'scripts', path.basename(CONTRACT_FILE));
+  const body = {
+    schema: ARTIFACT_SCHEMA,
+    state: contract.state,
+    final: contract.state === 'frozen',
+    finalLegacyIssue: contract.state === 'frozen' ? formatIssue(contract.finalLegacyIssue) : null,
+    latestPublishedIssue: latest ? formatIssue(latest) : null,
+    issueCount: issues.length,
+    drafts,
+    issues,
+    archiveSha256: sha256(issues.map((i) => `${i.file}\t${i.sha256}\n`).join('')),
+    feed: {
+      path: '/briefing/feed.xml',
+      items: feedItems.length,
+      latestItem: feedItems[0]?.issue ?? null,
+      sha256: sha256(feedItems.map((i) => `${i.issue}\t${i.date}\n`).join('')),
+    },
+    repository: { revision: git(root, ['rev-parse', 'HEAD']), dirty: status === null ? null : status !== '' },
+    contract: { file: 'scripts/legacy-weekly-freeze.json', sha256: sha256(fs.readFileSync(contractFile)) },
+  };
+  return { ...body, generatedAt: now.toISOString(), artifactSha256: sha256(canonicalJson(body)) };
+}
+
 function main(argv) {
   const [command] = argv;
   const option = (name) => {
@@ -406,6 +513,14 @@ function main(argv) {
     );
     return problems.length ? 1 : 0;
   }
+  if (command === 'artifact') {
+    const artifact = buildFreezeArtifact(ROOT);
+    const text = `${JSON.stringify(artifact, null, 2)}\n`;
+    const out = option('out');
+    if (out) fs.writeFileSync(out, text, { flag: 'wx' });
+    else process.stdout.write(text);
+    return 0;
+  }
   if (command === 'freeze') {
     const final = option('final');
     if (!final) throw new Error('explicit --final YYYY-KWNN required');
@@ -415,7 +530,7 @@ function main(argv) {
     );
     return 0;
   }
-  throw new Error('usage: legacy-weekly-freeze.mjs status | freeze --final YYYY-KWNN');
+  throw new Error('usage: legacy-weekly-freeze.mjs status | artifact [--out <file>] | freeze --final YYYY-KWNN');
 }
 
 // Als Kommando gestartet (nicht importiert)? Über realpath verglichen, damit Symlinks im Pfad nicht stören.
