@@ -9,6 +9,8 @@
     "build": "astro build && pagefind --site dist --output-subdir pagefind",
     "preview": "astro preview",
     "validate": "node scripts/validate-data.mjs",
+    "test": "node --test scripts/legacy-weekly-freeze.test.mjs",
+    "freeze:status": "node scripts/legacy-weekly-freeze.mjs status",
     "astro": "astro"
   },
   "dependencies": {

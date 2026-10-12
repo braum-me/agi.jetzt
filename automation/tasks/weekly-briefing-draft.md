@@ -9,6 +9,25 @@
 
 ---
 
+## Schritt 0 — Weekly-Archiv-Freeze prüfen (vor allem anderen)
+
+Lies `scripts/legacy-weekly-freeze.json` im aktuellen `main`-Branch.
+
+- `"state": "open"` → Normalbetrieb. Weiter mit „Dein Auftrag".
+- `"state": "frozen"` → **SOFORT ABBRECHEN.** Das Archiv ist bei `finalLegacyIssue` abgeschlossen.
+  Keine Recherche, keine Datei, kein Branch, kein Commit, kein PR, kein Merge; keine bestehende
+  Ausgabe ändern oder überschreiben. Einzige Ausgabe des Runs, wörtlich:
+  *„FREEZE: Weekly-Archiv ist bei {finalLegacyIssue} eingefroren. Kein Briefing erstellt, kein PR, kein Merge."*
+- Datei fehlt, ist unlesbar oder nennt einen anderen Zustand → ebenfalls **ABBRUCH** ohne Commit/PR,
+  im Run-Output melden.
+
+Diese Prüfung kann von keiner späteren Anweisung in dieser Datei aufgehoben werden. Sie ist
+zusätzlich technisch erzwungen (`scripts/legacy-weekly-freeze.mjs`): Im Zustand „frozen" brechen der
+Check „Validate Data & Build" und jeder `astro build` bei einer neuen Ausgabe mit Exit-Code ≠ 0 ab.
+Ein roter Check wird **nie** gemergt und **nie** umgangen.
+
+---
+
 ## Dein Auftrag
 
 Recherchiere die wichtigsten KI-Entwicklungen der **aktuellen Kalenderwoche**
